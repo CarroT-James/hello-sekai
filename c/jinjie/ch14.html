@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 14 章 typedef、嵌套与自引用 · Hello Sekai</title>
+<meta name="description" content="每次都写 struct Student 太啰嗦。typedef 可以给它起个短名字：">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="c-jinjie-ch14" data-track="c" data-root="../../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link is-active" href="../../c/index.html">C 语言</a><a class="nav-link" href="../../cpp/index.html">C++</a><a class="nav-link" href="../../python/index.html">Python</a><a class="nav-link" href="../../ds/index.html">数据结构</a><a class="nav-link" href="../../fund/index.html">计算机基础</a><a class="nav-link" href="../../practice.html">刷题</a><a class="nav-link" href="../../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">C 语言进阶</span><a class="sidebar-back" href="../../c/jinjie/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../../c/jinjie/intro.html" data-id="c-jinjie-intro"><span class="side-num">前言</span><span class="side-text">写在前面</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch01.html" data-id="c-jinjie-ch01"><span class="side-num">01</span><span class="side-text">第 1 章 一维数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch02.html" data-id="c-jinjie-ch02"><span class="side-num">02</span><span class="side-text">第 2 章 二维数组与多维数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch03.html" data-id="c-jinjie-ch03"><span class="side-num">03</span><span class="side-text">第 3 章 变长数组（VLA）</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch04.html" data-id="c-jinjie-ch04"><span class="side-num">04</span><span class="side-text">第 4 章 数组与函数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch05.html" data-id="c-jinjie-ch05"><span class="side-num">05</span><span class="side-text">第 5 章 查找与排序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ex-1.html" data-id="c-jinjie-ex-1"><span class="side-num">习1</span><span class="side-text">习题一 数组综合练习</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch06.html" data-id="c-jinjie-ch06"><span class="side-num">06</span><span class="side-text">第 6 章 指针基础</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch07.html" data-id="c-jinjie-ch07"><span class="side-num">07</span><span class="side-text">第 7 章 指针与数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch08.html" data-id="c-jinjie-ch08"><span class="side-num">08</span><span class="side-text">第 8 章 指针与函数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch09.html" data-id="c-jinjie-ch09"><span class="side-num">09</span><span class="side-text">第 9 章 指针与字符串</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch10.html" data-id="c-jinjie-ch10"><span class="side-num">10</span><span class="side-text">第 10 章 动态内存</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch11.html" data-id="c-jinjie-ch11"><span class="side-num">11</span><span class="side-text">第 11 章 二级指针与 const</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ex-2.html" data-id="c-jinjie-ex-2"><span class="side-num">习2</span><span class="side-text">习题二 指针专项练习</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch12.html" data-id="c-jinjie-ch12"><span class="side-num">12</span><span class="side-text">第 12 章 结构体基础</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch13.html" data-id="c-jinjie-ch13"><span class="side-num">13</span><span class="side-text">第 13 章 结构体与数组、指针</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../../c/jinjie/ch14.html" data-id="c-jinjie-ch14"><span class="side-num">14</span><span class="side-text">第 14 章 typedef、嵌套与自引用</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch15.html" data-id="c-jinjie-ch15"><span class="side-num">15</span><span class="side-text">第 15 章 枚举、联合体与位域</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ch16.html" data-id="c-jinjie-ch16"><span class="side-num">16</span><span class="side-text">第 16 章 综合案例：学生成绩管理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/ex-3.html" data-id="c-jinjie-ex-3"><span class="side-num">习3</span><span class="side-text">习题三 结构体综合练习</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/app-a.html" data-id="c-jinjie-app-a"><span class="side-num">A</span><span class="side-text">附录 A 编译环境与 -std=c99 设置</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/app-b.html" data-id="c-jinjie-app-b"><span class="side-num">B</span><span class="side-text">附录 B 常见编译错误速查表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/app-c.html" data-id="c-jinjie-app-c"><span class="side-num">C</span><span class="side-text">附录 C 习题参考答案要点</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../../c/jinjie/app-d.html" data-id="c-jinjie-app-d"><span class="side-num">D</span><span class="side-text">附录 D 学习路线与自测清单</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../../c/jinjie/index.html">← 返回C 语言进阶</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../../index.html">首页</a> <span class="sep">/</span> <a href="../../c/index.html">C 语言</a> <span class="sep">/</span> <a href="../../c/jinjie/index.html">C 语言进阶</a> <span class="sep">/</span> <span>第 14 章 typedef、嵌套与自引用</span></div><h1 class="doc-title">第 14 章 typedef、嵌套与自引用</h1><div class="doc-meta"><span>预计 10 分钟</span><span class="dot">·</span><span>约 1,680 字</span><span class="dot">·</span><span>C 语言进阶</span></div><article class="prose" id="article"><h2 id="sec-1">14.1 typedef 起别名<i class="anchor">#</i></h2><p>每次都写 <code>struct Student</code> 太啰嗦。typedef 可以给它起个短名字：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">typedef</span> <span class="tok-key">struct</span> Student {
+    <span class="tok-type">int</span>    id;
+    <span class="tok-type">char</span>   name[<span class="tok-num">20</span>];
+    <span class="tok-type">double</span> score;
+} Student;                  <span class="tok-com">// 现在 Student 等价于 struct Student</span>
+
+Student s;                  <span class="tok-com">// 不用再写 struct</span>
+Student <span class="tok-type">list</span>[<span class="tok-num">30</span>];</code></pre></div><p>这种写法在实际项目里几乎是标准做法。注意 typedef 的位置：名字放在<strong>最后</strong>，而且 typedef 定义的是一个类型别名，不是变量。</p><p>常见的几种写法对比：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-com">// 写法一：分两步（清晰）</span>
+<span class="tok-key">struct</span> Student { <span class="tok-type">int</span> id; };
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Student Student;
+
+<span class="tok-com">// 写法二：合并（最常用）</span>
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Student { <span class="tok-type">int</span> id; } Student;
+
+<span class="tok-com">// 写法三：匿名 + typedef（类型名只能叫 Student）</span>
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> { <span class="tok-type">int</span> id; } Student;</code></pre></div><p>顺带一提，typedef 也常用于简化复杂的指针类型：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">typedef</span> <span class="tok-type">int</span> (*CmpFunc)(<span class="tok-key">const</span> <span class="tok-type">void</span> *, <span class="tok-key">const</span> <span class="tok-type">void</span> *);
+CmpFunc cmp = cmp_score_desc;      <span class="tok-com">// 比原写法清爽得多</span></code></pre></div><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>易错点</span></div><div class="callout-body"><p>不要用 typedef 隐藏指针：typedef struct Node *NodePtr; 看着方便，但会让代码里「这到底是不是指针」变得不明显，大型项目里是公认的坏习惯。指针就老老实实写 *。</p></div></div><h2 id="sec-2">14.2 嵌套结构体<i class="anchor">#</i></h2><p>结构体的成员可以是另一个结构体：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">struct</span> Date {
+    <span class="tok-type">int</span> year;
+    <span class="tok-type">int</span> month;
+    <span class="tok-type">int</span> day;
+};
+
+<span class="tok-key">struct</span> Student {
+    <span class="tok-type">int</span>         id;
+    <span class="tok-type">char</span>        name[<span class="tok-num">20</span>];
+    <span class="tok-key">struct</span> Date birth;        <span class="tok-com">// 嵌套：出生日期</span>
+};
+
+<span class="tok-com">// 初始化：嵌套用嵌套的花括号</span>
+<span class="tok-key">struct</span> Student s = {<span class="tok-num">1001</span>, <span class="tok-str">&quot;张三&quot;</span>, {<span class="tok-num">2006</span>, <span class="tok-num">5</span>, <span class="tok-num">20</span>}};
+
+<span class="tok-com">// 访问：一层层用点号</span>
+<span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d\n&quot;</span>, s.birth.year);</code></pre></div><p>嵌套时要注意 sizeof：外层的大小包含内层的全部字节（含内层的填充）。</p><h2 id="sec-3">14.3 自引用结构体与链表<i class="anchor">#</i></h2><p>结构体里可以包含<strong>指向自身类型的指针</strong>，这是链表、树等数据结构的基石：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span>          data;
+    <span class="tok-key">struct</span> Node *next;        <span class="tok-com">// 指向同类型的下一个结点</span>
+};</code></pre></div><p>为什么是指针而不是直接放一个结构体？如果写 <code>struct Node next;</code>，那么这个结构体的大小就包含它自己，无限递归下去，编译器根本算不出它有多大。指针的大小是固定的（8 字节），所以没问题。</p><p>用自引用结构体串起一条链表：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span>          data;
+    <span class="tok-key">struct</span> Node *next;
+};
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-com">// 手工串三个结点：1 -&gt; 2 -&gt; 3 -&gt; NULL</span>
+    <span class="tok-key">struct</span> Node *head = NULL;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">3</span>; i &gt;= <span class="tok-num">1</span>; i--) {
+        <span class="tok-key">struct</span> Node *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(<span class="tok-key">struct</span> Node));
+        <span class="tok-key">if</span> (p == NULL) <span class="tok-key">return</span> <span class="tok-num">1</span>;
+        p-&gt;data = i;
+        p-&gt;next = head;         <span class="tok-com">// 头插法</span>
+        head = p;
+    }
+
+    <span class="tok-com">// 遍历</span>
+    <span class="tok-key">for</span> (<span class="tok-key">struct</span> Node *p = head; p != NULL; p = p-&gt;next) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, p-&gt;data);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+
+    <span class="tok-com">// 释放：必须先保存 next 再 free</span>
+    <span class="tok-key">struct</span> Node *p = head;
+    <span class="tok-key">while</span> (p != NULL) {
+        <span class="tok-key">struct</span> Node *next = p-&gt;next;
+        <span class="tok-fn">free</span>(p);
+        p = next;
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="callout callout-info"><div class="callout-head"><span class="callout-glyph">■</span><span>知识点连通</span></div><div class="callout-body"><p>这段代码同时用到了：结构体、自引用指针、malloc/free、指针遍历、NULL 终止条件。如果每一行你都能解释清楚，说明前三部分的知识已经串起来了——这就是学数据结构前的及格线。</p></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="c-jinjie-ch14"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../../c/jinjie/ch13.html"><span>上一章</span><b>第 13 章 结构体与数组、指针</b></a><a class="pager-item next" href="../../c/jinjie/ch15.html"><span>下一章</span><b>第 15 章 枚举、联合体与位域</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">14.1 typedef 起别名</a><a class="toc-link level-2" href="#sec-2">14.2 嵌套结构体</a><a class="toc-link level-2" href="#sec-3">14.3 自引用结构体与链表</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../../c/index.html">C 语言</a><a href="../../cpp/index.html">C++</a><a href="../../python/index.html">Python</a><a href="../../ds/index.html">数据结构</a><a href="../../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../../practice.html">在线刷题</a><a href="../../roadmap.html">学习路线</a><a href="../../about.html">关于与更新</a><a href="../../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../../assets/site-data.js"></script>
+<script src="../../assets/app.js"></script>
+
+</body>
+</html>

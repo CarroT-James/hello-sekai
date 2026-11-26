@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 3 课 链表 · Hello Sekai</title>
+<meta name="description" content="链表让每个结点只记住下一个在哪，这一课画着图写头插、尾插、插入和删除，再和数组比一比代价。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="ds-03-linked-list" data-track="ds" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link is-active" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">数据结构</span><a class="sidebar-back" href="../ds/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../ds/01-complexity.html" data-id="ds-01-complexity"><span class="side-num">01</span><span class="side-text">第 1 课 复杂度与算法思维</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/02-arraylist.html" data-id="ds-02-arraylist"><span class="side-num">02</span><span class="side-text">第 2 课 线性表与动态数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../ds/03-linked-list.html" data-id="ds-03-linked-list"><span class="side-num">03</span><span class="side-text">第 3 课 链表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/04-stack.html" data-id="ds-04-stack"><span class="side-num">04</span><span class="side-text">第 4 课 栈</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/05-queue.html" data-id="ds-05-queue"><span class="side-num">05</span><span class="side-text">第 5 课 队列与双端队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/06-tree.html" data-id="ds-06-tree"><span class="side-num">06</span><span class="side-text">第 6 课 树与二叉树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/07-bst.html" data-id="ds-07-bst"><span class="side-num">07</span><span class="side-text">第 7 课 二叉搜索树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/08-heap.html" data-id="ds-08-heap"><span class="side-num">08</span><span class="side-text">第 8 课 堆与优先队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/09-hash.html" data-id="ds-09-hash"><span class="side-num">09</span><span class="side-text">第 9 课 哈希表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/10-graph.html" data-id="ds-10-graph"><span class="side-num">10</span><span class="side-text">第 10 课 图与遍历</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/11-sorting.html" data-id="ds-11-sorting"><span class="side-num">11</span><span class="side-text">第 11 课 排序算法总览</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/12-dp.html" data-id="ds-12-dp"><span class="side-num">12</span><span class="side-text">第 12 课 递归、分治与动态规划入门</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../ds/index.html">← 返回数据结构</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../ds/index.html">数据结构</a> <span class="sep">/</span> <span>第 3 课 链表</span></div><h1 class="doc-title">第 3 课 链表</h1><div class="doc-meta"><span>预计 35 分钟</span><span class="dot">·</span><span>约 7,689 字</span><span class="dot">·</span><span>数据结构</span></div><article class="prose" id="article"><p>链表是很多人学数据结构遇到的第一个坎。我当年把 <code>p-&gt;next = q</code> 和 <code>q-&gt;next = p</code> 抄了十遍，考试还是写反。后来发现，问题不在指针语法，而在我脑子里没有那张图。</p><p>所以这一课先不急着敲代码，先画图。你只要记住一句话：链表里每个结点只知道「下一个是谁」，别的什么都不知道。</p><p>拿食堂排队类比。队伍不是按学号站的，每个人只认识前面那个人。你想插队，只要让前面那位改认你，你再认原来那位——两个人换了个关系，后面的人根本不用动。数组就不行，数组像按学号排好的座位，中间加一个人，后面所有人都得往后挪。</p><p>写之前先把 <a href="../c/rumen/ch06.html">C 语言 指针</a> 里那点 <code>*</code> 和 <code>-&gt;</code> 捡回来，不用全懂，会读写结构体指针就够这一课用了。</p><h2 id="sec-1">3.1 一个结点长什么样<i class="anchor">#</i></h2><p>链表由一个个「结点」串起来。每个结点存两样东西：你的数据，和下一个结点的地址。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *next;   <span class="tok-com">// 指向下一个结点，最后一个为 NULL</span>
+} Node;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    Node *first = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    Node *second = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    Node *third = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+
+    <span class="tok-key">if</span> (first == NULL || second == NULL || third == NULL) {
+        <span class="tok-fn">free</span>(first);
+        <span class="tok-fn">free</span>(second);
+        <span class="tok-fn">free</span>(third);
+        <span class="tok-key">return</span> <span class="tok-num">1</span>;
+    }
+
+    first-&gt;value = <span class="tok-num">10</span>;
+    first-&gt;next = second;
+
+    second-&gt;value = <span class="tok-num">20</span>;
+    second-&gt;next = third;
+
+    third-&gt;value = <span class="tok-num">30</span>;
+    third-&gt;next = NULL;
+
+    <span class="tok-key">for</span> (Node *p = first; p != NULL; p = p-&gt;next) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, p-&gt;value);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+
+    <span class="tok-fn">free</span>(first);
+    <span class="tok-fn">free</span>(second);
+    <span class="tok-fn">free</span>(third);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>10 20 30</pre></div><p>几个细节值得停一下：</p><ul><li>结构体里面必须写 <code>struct Node *next</code>，不能写 <code>Node *next</code>。因为这时 <code>typedef</code> 还没生效，编译器还不认识 <code>Node</code> 这个名字。</li><li>最后一个结点的 <code>next</code> 是 <code>NULL</code>。遍历、插入、删除全靠它判断「到头了」。</li><li><code>for (Node *p = first; p != NULL; p = p-&gt;next)</code> 是链表遍历的标准写法，背下来不亏。<code>p</code> 每轮变成下一个结点，走到 <code>NULL</code> 就停。</li></ul><p>整条链表只靠一个入口指针进门。示例里它叫 <code>first</code>，后面统一叫 <code>head</code>。它是唯一的入口，丢了，后面的结点就全找不回来了。所以头插、删除头结点这些要动 <code>head</code> 的操作，都得格外小心。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>新建结点后忘了给 <code>next</code> 赋值，它就是一个野指针。遍历时程序会顺着一个随机地址往下跑，轻则乱码，重则段错误。<code>malloc</code> 只负责给内存，不负责清零，每个字段都得自己写。</p></div></div><h2 id="sec-2">3.2 头插和尾插：为什么顺序会反<i class="anchor">#</i></h2><p>往链表里加结点，有两种加法：插到头前面，或者接到尾巴上。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *next;
+} Node;
+
+Node *<span class="tok-fn">push_front</span>(Node *head, <span class="tok-type">int</span> v) {
+    Node *node = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    <span class="tok-key">if</span> (node == NULL) <span class="tok-key">return</span> head;
+    node-&gt;value = v;
+    node-&gt;next = head;   <span class="tok-com">// 新结点指向原来的头</span>
+    <span class="tok-key">return</span> node;         <span class="tok-com">// 新结点成为新头</span>
+}
+
+Node *<span class="tok-fn">push_back</span>(Node *head, <span class="tok-type">int</span> v) {
+    Node *node = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    <span class="tok-key">if</span> (node == NULL) <span class="tok-key">return</span> head;
+    node-&gt;value = v;
+    node-&gt;next = NULL;
+
+    <span class="tok-key">if</span> (head == NULL) <span class="tok-key">return</span> node;   <span class="tok-com">// 空链表，它就是头</span>
+
+    Node *p = head;
+    <span class="tok-key">while</span> (p-&gt;next != NULL) p = p-&gt;next;   <span class="tok-com">// 走到最后一个</span>
+    p-&gt;next = node;
+    <span class="tok-key">return</span> head;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">print_list</span>(Node *head) {
+    <span class="tok-key">for</span> (Node *p = head; p != NULL; p = p-&gt;next) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, p-&gt;value);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">free_list</span>(Node *head) {
+    Node *p = head;
+    <span class="tok-key">while</span> (p != NULL) {
+        Node *next = p-&gt;next;
+        <span class="tok-fn">free</span>(p);
+        p = next;
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    Node *a = NULL;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">1</span>; i &lt;= <span class="tok-num">5</span>; i++) a = <span class="tok-fn">push_front</span>(a, i);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;头插：&quot;</span>);
+    <span class="tok-fn">print_list</span>(a);
+    <span class="tok-fn">free_list</span>(a);
+
+    Node *b = NULL;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">1</span>; i &lt;= <span class="tok-num">5</span>; i++) b = <span class="tok-fn">push_back</span>(b, i);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;尾插：&quot;</span>);
+    <span class="tok-fn">print_list</span>(b);
+    <span class="tok-fn">free_list</span>(b);
+
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>头插：5 4 3 2 1
+尾插：1 2 3 4 5</pre></div><p>同一组数字，一个倒着出来，一个正着出来。原因很直观：头插每次都把新结点放在最前面，后放的盖住先放的；尾插每次都走到最后接上，顺序自然是插入顺序。</p><p>代价也不一样。头插只改两根指针，O(1)；尾插要从头走到尾，O(n)。想让它也变成 O(1)，可以额外维护一个 <code>tail</code> 指针，但删除尾结点时又得找到它的前一个，麻烦事在后头。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p><code>head = push_front(head, v)</code> 这个赋值不能省。函数的参数 <code>head</code> 只是一个副本，你在函数里改它，改了外面也不知道。不接返回值，新结点就丢了——内存泄漏，而且链表里根本找不到它。</p></div></div><h2 id="sec-3">3.3 遍历与查找：只能从头走<i class="anchor">#</i></h2><p>数组能一步跳到 <code>a[999]</code>，链表不行。你手里只有头结点，想知道第 999 个是谁，只能走 998 次 <code>next</code>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *next;
+} Node;
+
+Node *<span class="tok-fn">push_back</span>(Node *head, <span class="tok-type">int</span> v) {
+    Node *node = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    <span class="tok-key">if</span> (node == NULL) <span class="tok-key">return</span> head;
+    node-&gt;value = v;
+    node-&gt;next = NULL;
+    <span class="tok-key">if</span> (head == NULL) <span class="tok-key">return</span> node;
+    Node *p = head;
+    <span class="tok-key">while</span> (p-&gt;next != NULL) p = p-&gt;next;
+    p-&gt;next = node;
+    <span class="tok-key">return</span> head;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">length</span>(Node *head) {
+    <span class="tok-type">int</span> n = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (Node *p = head; p != NULL; p = p-&gt;next) n++;
+    <span class="tok-key">return</span> n;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">find</span>(Node *head, <span class="tok-type">int</span> value) {
+    <span class="tok-type">int</span> index = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (Node *p = head; p != NULL; p = p-&gt;next, index++) {
+        <span class="tok-key">if</span> (p-&gt;value == value) <span class="tok-key">return</span> index;
+    }
+    <span class="tok-key">return</span> -<span class="tok-num">1</span>;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">free_list</span>(Node *head) {
+    Node *p = head;
+    <span class="tok-key">while</span> (p != NULL) {
+        Node *next = p-&gt;next;
+        <span class="tok-fn">free</span>(p);
+        p = next;
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    Node *head = NULL;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">1</span>; i &lt;= <span class="tok-num">5</span>; i++) head = <span class="tok-fn">push_back</span>(head, i * <span class="tok-num">10</span>);
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;长度：%d\n&quot;</span>, <span class="tok-fn">length</span>(head));
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;30 在下标 %d\n&quot;</span>, <span class="tok-fn">find</span>(head, <span class="tok-num">30</span>));
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;99 在下标 %d\n&quot;</span>, <span class="tok-fn">find</span>(head, <span class="tok-num">99</span>));
+
+    <span class="tok-fn">free_list</span>(head);   <span class="tok-com">// 释放整条链表</span>
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>长度：5
+30 在下标 2
+99 在下标 -1</pre></div><p>遍历和查找都是 O(n)，这是链表的硬伤。也正因为如此，说「链表插入是 O(1)」时必须补一句：<strong>前提是你已经站在要插入的位置上</strong>。手里只有头结点的话，先找到那个位置就已经 O(n) 了。</p><p>这就像寻宝纸条：每张只写下一个线索藏在哪。你想看第 10 张，只能一张一张顺着找，不能直接翻到第 10 张；但要在某张后面再塞一张新的，只要改两个线索，很快。</p><p>注意 <code>find</code> 返回的那个下标，是一步一步数出来的，不是算出来的。它和数组的 <code>a[i]</code> 有本质区别：数组是「跳过去」，链表是「走过去」。刷题时看到「返回第 k 个结点」，别下意识写 <code>p = p + k</code>，链表上没有这种加法。</p><h2 id="sec-4">3.4 按位置插入：先接新结点，再断旧线<i class="anchor">#</i></h2><p>插入的代码只有两行，但顺序错了就出事。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *next;
+} Node;
+
+Node *<span class="tok-fn">push_back</span>(Node *head, <span class="tok-type">int</span> v) {
+    Node *node = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    <span class="tok-key">if</span> (node == NULL) <span class="tok-key">return</span> head;
+    node-&gt;value = v;
+    node-&gt;next = NULL;
+    <span class="tok-key">if</span> (head == NULL) <span class="tok-key">return</span> node;
+    Node *p = head;
+    <span class="tok-key">while</span> (p-&gt;next != NULL) p = p-&gt;next;
+    p-&gt;next = node;
+    <span class="tok-key">return</span> head;
+}
+
+Node *<span class="tok-fn">insert_at</span>(Node *head, <span class="tok-type">int</span> pos, <span class="tok-type">int</span> value) {
+    <span class="tok-key">if</span> (pos &lt; <span class="tok-num">0</span>) <span class="tok-key">return</span> head;
+    <span class="tok-key">if</span> (pos == <span class="tok-num">0</span>) {
+        Node *node = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+        <span class="tok-key">if</span> (node == NULL) <span class="tok-key">return</span> head;
+        node-&gt;value = value;
+        node-&gt;next = head;
+        <span class="tok-key">return</span> node;
+    }
+
+    Node *prev = head;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; pos - <span class="tok-num">1</span> &amp;&amp; prev != NULL; i++) {
+        prev = prev-&gt;next;
+    }
+    <span class="tok-key">if</span> (prev == NULL) <span class="tok-key">return</span> head;   <span class="tok-com">// pos 超出长度</span>
+
+    Node *node = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    <span class="tok-key">if</span> (node == NULL) <span class="tok-key">return</span> head;
+    node-&gt;value = value;
+    node-&gt;next = prev-&gt;next;   <span class="tok-com">// 第一步：新结点接上后半段</span>
+    prev-&gt;next = node;         <span class="tok-com">// 第二步：前一个结点改认新结点</span>
+    <span class="tok-key">return</span> head;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">print_list</span>(Node *head) {
+    <span class="tok-key">for</span> (Node *p = head; p != NULL; p = p-&gt;next) <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, p-&gt;value);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">free_list</span>(Node *head) {
+    Node *p = head;
+    <span class="tok-key">while</span> (p != NULL) {
+        Node *next = p-&gt;next;
+        <span class="tok-fn">free</span>(p);
+        p = next;
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    Node *head = NULL;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">1</span>; i &lt;= <span class="tok-num">4</span>; i++) head = <span class="tok-fn">push_back</span>(head, i * <span class="tok-num">10</span>);
+
+    head = <span class="tok-fn">insert_at</span>(head, <span class="tok-num">2</span>, <span class="tok-num">25</span>);
+    <span class="tok-fn">print_list</span>(head);
+
+    head = <span class="tok-fn">insert_at</span>(head, <span class="tok-num">0</span>, <span class="tok-num">5</span>);
+    <span class="tok-fn">print_list</span>(head);
+
+    head = <span class="tok-fn">insert_at</span>(head, <span class="tok-num">99</span>, <span class="tok-num">999</span>);   <span class="tok-com">// 位置越界，什么都不做</span>
+    <span class="tok-fn">print_list</span>(head);
+
+    <span class="tok-fn">free_list</span>(head);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>10 20 25 30 40
+5 10 20 25 30 40
+5 10 20 25 30 40</pre></div><p>核心就两行：</p><ul><li><code>node-&gt;next = prev-&gt;next</code>：先让新结点握住后半段的头</li><li><code>prev-&gt;next = node</code>：再让前一个结点改认新结点</li></ul><p>顺序不能反。如果先写 <code>prev-&gt;next = node</code>，原来 <code>prev-&gt;next</code> 指向的那个结点就再也没人指向它了，后半段整条丢失——而且它还在内存里，你连 <code>free</code> 都找不到它。</p><div class="callout callout-tip"><div class="callout-head"><span class="callout-glyph">★</span><span>补充说明</span></div><div class="callout-body"><p>插入或删除头结点都可能改 <code>head</code> 本身，所以这里的函数都返回新的头。另一种写法是传 <code>Node **head</code>，函数里用 <code>*head</code> 直接改调用者的变量，不用返回值。两种都对，返回值写法更好懂，先把一种写熟。</p></div></div><h2 id="sec-5">3.5 删除：先接上，再拆线，最后 free<i class="anchor">#</i></h2><p>删除比插入多一步：除了改指针，还得把结点还给系统。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *next;
+} Node;
+
+Node *<span class="tok-fn">push_back</span>(Node *head, <span class="tok-type">int</span> v) {
+    Node *node = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    <span class="tok-key">if</span> (node == NULL) <span class="tok-key">return</span> head;
+    node-&gt;value = v;
+    node-&gt;next = NULL;
+    <span class="tok-key">if</span> (head == NULL) <span class="tok-key">return</span> node;
+    Node *p = head;
+    <span class="tok-key">while</span> (p-&gt;next != NULL) p = p-&gt;next;
+    p-&gt;next = node;
+    <span class="tok-key">return</span> head;
+}
+
+Node *<span class="tok-fn">delete_value</span>(Node *head, <span class="tok-type">int</span> value) {
+    Node *prev = NULL;
+    Node *cur = head;
+
+    <span class="tok-key">while</span> (cur != NULL &amp;&amp; cur-&gt;value != value) {
+        prev = cur;
+        cur = cur-&gt;next;
+    }
+    <span class="tok-key">if</span> (cur == NULL) <span class="tok-key">return</span> head;   <span class="tok-com">// 没找到</span>
+
+    <span class="tok-key">if</span> (prev == NULL) {
+        head = cur-&gt;next;           <span class="tok-com">// 删的是头结点</span>
+    } <span class="tok-key">else</span> {
+        prev-&gt;next = cur-&gt;next;     <span class="tok-com">// 前一个跨过 cur</span>
+    }
+    <span class="tok-fn">free</span>(cur);
+    <span class="tok-key">return</span> head;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">print_list</span>(Node *head) {
+    <span class="tok-key">for</span> (Node *p = head; p != NULL; p = p-&gt;next) <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, p-&gt;value);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">free_list</span>(Node *head) {
+    Node *p = head;
+    <span class="tok-key">while</span> (p != NULL) {
+        Node *next = p-&gt;next;
+        <span class="tok-fn">free</span>(p);
+        p = next;
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    Node *head = NULL;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">1</span>; i &lt;= <span class="tok-num">4</span>; i++) head = <span class="tok-fn">push_back</span>(head, i * <span class="tok-num">10</span>);
+
+    head = <span class="tok-fn">delete_value</span>(head, <span class="tok-num">20</span>);
+    <span class="tok-fn">print_list</span>(head);
+
+    head = <span class="tok-fn">delete_value</span>(head, <span class="tok-num">10</span>);
+    <span class="tok-fn">print_list</span>(head);
+
+    head = <span class="tok-fn">delete_value</span>(head, <span class="tok-num">99</span>);
+    <span class="tok-fn">print_list</span>(head);
+
+    <span class="tok-fn">free_list</span>(head);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>10 30 40
+30 40
+30 40</pre></div><p>删除的逻辑是「让前一个结点跳过当前结点」：<code>prev-&gt;next = cur-&gt;next</code>。删头结点时没有前一个，只能改 <code>head</code>。</p><p>顺序很重要：先把指针接好，再 <code>free(cur)</code>。如果你先 <code>free(cur)</code>，然后还想读 <code>cur-&gt;next</code>，那是在读已经还给系统的内存——这叫 use-after-free，可能当场崩，也可能安安静静地跑出错误结果，过半小时再崩给你看。</p><p>这个版本只删第一个匹配的结点。想删掉所有相同值，就在外面套一层循环，但每次删完要从头重新找，别接着用已经 <code>free</code> 掉的 <code>cur</code>。</p><h2 id="sec-6">3.6 链表 vs 动态数组：把代价摆在一张表里<i class="anchor">#</i></h2><div class="table-wrap"><table><thead><tr><th>操作</th><th>动态数组</th><th>链表</th></tr></thead><tbody><tr><td>按下标访问 <code>a[i]</code></td><td>O(1)</td><td>O(n)</td></tr><tr><td>头部插入</td><td>O(n)</td><td>O(1)</td></tr><tr><td>尾部插入</td><td>均摊 O(1)</td><td>O(n)，有尾指针则 O(1)</td></tr><tr><td>已知位置的插入删除</td><td>O(n)</td><td>O(1)</td></tr><tr><td>按值查找</td><td>O(n)</td><td>O(n)</td></tr><tr><td>额外内存</td><td>预留的容量</td><td>每个结点一个指针</td></tr><tr><td>CPU 缓存友好度</td><td>好</td><td>差</td></tr></tbody></table></div><p>这张表有个很容易被误读的结论：链表好像全面占优。实际不是。</p><p>链表每个结点都是单独 <code>malloc</code> 出来的，地址东一块西一块，CPU 缓存基本帮不上忙；而且每次 <code>malloc</code>/<code>free</code> 都有开销。数组虽然「插入 O(n)」，但那是连续内存上的一次 <code>memmove</code>，跑起来极快。数据量不大的时候，数组常常反过来赢链表。</p><p>所以别因为背了「链表插入 O(1)」就到处用链表。真实项目里，数组（以及第 2 课那种动态数组）用得比链表多得多；链表真正的主场是「频繁在已知位置插入删除」和「不想预留大块连续内存」——比如操作系统的空闲内存块管理、图里的邻接表。</p><p>还有个实际问题：链表结点的地址东一个西一个，调试器里看是一跳一跳的，初学时不画图根本对不上号。我的习惯是每写一个链表函数，先在纸上画三个方框、两根箭头，照着图敲代码。图对了，代码基本就对了。</p><p>想亲眼看看缓存的影响，可以做个小实验：生成 100 万个整数，分别放进数组和链表，各遍历 100 遍，用 <code>clock()</code> 计时。链表大概率慢好几倍，尽管两边的复杂度都写着 O(n)。</p><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>写 <code>void print_reverse(Node *head)</code>，递归地从尾到头打印链表，但不要真的反转。再想一下：链表有 10 万个结点时，这个递归会出什么事？</li><li>写 <code>Node *reverse_list(Node *head)</code> 原地反转单链表，只许改 <code>next</code>，不许新建结点。先画出三个指针 <code>prev</code>、<code>cur</code>、<code>next</code> 每一步的位置，再写代码。</li><li>合并两个升序链表，返回合并后的头结点，要求复用原来的结点、不额外 <code>malloc</code>。例如 <code>1 3 5</code> 和 <code>2 4 6</code> 合并成 <code>1 2 3 4 5 6</code>。</li><li>不用 <code>malloc</code>，用三个数组 <code>value[100]</code>、<code>next[100]</code>、<code>head</code> 模拟一条链表，实现头插、遍历和按值删除。体会一下「静态链表」是怎么在没有指针的环境里工作的。</li></ol></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>链表结点 = 一份数据 + 一个 <code>next</code> 指针，最后一个指向 <code>NULL</code></li><li>头插 O(1)，尾插 O(n)，按下标访问 O(n)</li><li>插入两步：新结点先接后半段，前一个结点再改指向；说它 O(1) 的前提是你已经拿到了那个位置</li><li>删除先改指针再接 <code>free</code>，<code>free</code> 之后不能再碰那个结点</li><li>下一课 <a href="04-stack.html">第 4 课 栈</a>：只允许在一头进出的线性表，能干什么？</li></ul></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="ds-03-linked-list"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../ds/02-arraylist.html"><span>上一章</span><b>第 2 课 线性表与动态数组</b></a><a class="pager-item next" href="../ds/04-stack.html"><span>下一章</span><b>第 4 课 栈</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">3.1 一个结点长什么样</a><a class="toc-link level-2" href="#sec-2">3.2 头插和尾插：为什么顺序会反</a><a class="toc-link level-2" href="#sec-3">3.3 遍历与查找：只能从头走</a><a class="toc-link level-2" href="#sec-4">3.4 按位置插入：先接新结点，再断旧线</a><a class="toc-link level-2" href="#sec-5">3.5 删除：先接上，再拆线，最后 free</a><a class="toc-link level-2" href="#sec-6">3.6 链表 vs 动态数组：把代价摆在一张表里</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

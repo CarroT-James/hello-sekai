@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 8 课 auto、nullptr 与范围 for · Hello Sekai</title>
+<meta name="description" content="auto 省打字但不省思考，nullptr 让空指针不再含糊，范围 for 决定你能不能改到元素。这一课把它们讲透，再给一份避坑清单。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="cpp-08-modern-cpp" data-track="cpp" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link is-active" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">C++</span><a class="sidebar-back" href="../cpp/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../cpp/01-first-program.html" data-id="cpp-01-first-program"><span class="side-num">01</span><span class="side-text">第 1 课 第一个 C++ 程序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/02-reference-const.html" data-id="cpp-02-reference-const"><span class="side-num">02</span><span class="side-text">第 2 课 引用与 const</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/03-overload-default.html" data-id="cpp-03-overload-default"><span class="side-num">03</span><span class="side-text">第 3 课 函数重载与默认参数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/04-class-basic.html" data-id="cpp-04-class-basic"><span class="side-num">04</span><span class="side-text">第 4 课 类与对象：把数据和操作捆在一起</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/05-destructor-raii.html" data-id="cpp-05-destructor-raii"><span class="side-num">05</span><span class="side-text">第 5 课 构造、析构与 RAII</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/06-vector-string.html" data-id="cpp-06-vector-string"><span class="side-num">06</span><span class="side-text">第 6 课 vector 与 string</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/07-stl-map.html" data-id="cpp-07-stl-map"><span class="side-num">07</span><span class="side-text">第 7 课 map、set 与 pair</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../cpp/08-modern-cpp.html" data-id="cpp-08-modern-cpp"><span class="side-num">08</span><span class="side-text">第 8 课 auto、nullptr 与范围 for</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/09-inheritance.html" data-id="cpp-09-inheritance"><span class="side-num">09</span><span class="side-text">第 9 课 继承与多态：让不同的东西说同一种话</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/10-operator-overload.html" data-id="cpp-10-operator-overload"><span class="side-num">10</span><span class="side-text">第 10 课 运算符重载与友元：让自定义类型也用上 + 号</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/11-template.html" data-id="cpp-11-template"><span class="side-num">11</span><span class="side-text">第 11 课 模板与泛型：写一遍，适配所有类型</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/12-exception.html" data-id="cpp-12-exception"><span class="side-num">12</span><span class="side-text">第 12 课 异常处理：把「出错了」和「算完了」分开</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/13-stl-algorithms.html" data-id="cpp-13-stl-algorithms"><span class="side-num">13</span><span class="side-text">第 13 课 STL 算法与迭代器：装进去之后，怎么处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/14-smart-pointer.html" data-id="cpp-14-smart-pointer"><span class="side-num">14</span><span class="side-text">第 14 课 智能指针与移动语义：让「谁负责释放」写进类型</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/15-class-design.html" data-id="cpp-15-class-design"><span class="side-num">15</span><span class="side-text">第 15 课 类设计实战：手写一个 MyString</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/16-project.html" data-id="cpp-16-project"><span class="side-num">16</span><span class="side-text">第 16 课 项目组织与调试：把代码拆成多个文件</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../cpp/index.html">← 返回C++</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../cpp/index.html">C++</a> <span class="sep">/</span> <span>第 8 课 auto、nullptr 与范围 for</span></div><h1 class="doc-title">第 8 课 auto、nullptr 与范围 for</h1><div class="doc-meta"><span>预计 25 分钟</span><span class="dot">·</span><span>约 5,361 字</span><span class="dot">·</span><span>C++</span></div><article class="prose" id="article"><p><code>auto</code>、<code>nullptr</code>、范围 for，是 C++11 带进来的三个小工具。它们不解决什么大问题，但能让你少写类型名、少踩空指针、少写循环下标。</p><p>也正因为「看起来只是省事」，它们特别容易被用错。用对了代码短一截，用错了错误也更隐蔽。这一课把三个都过一遍，最后给一份新手避坑清单。</p><h2 id="sec-1">8.1 auto：让编译器替你写类型<i class="anchor">#</i></h2><p><code>auto</code> 不是弱类型，也不是「随便」。变量类型在编译期就定死了，只是这个类型由编译器从初始化表达式推出来。它必须初始化：写 <code>auto x;</code> 编译不过，因为编译器没东西可推。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">vector</span>&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">std</span>::<span class="tok-type">string</span>&gt; names = {<span class="tok-str">&quot;Amy&quot;</span>, <span class="tok-str">&quot;Bob&quot;</span>};
+
+    <span class="tok-key">auto</span> first = names[<span class="tok-num">0</span>];
+    first += <span class="tok-str">&quot;?&quot;</span>;
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;names[0]：&quot;</span> &lt;&lt; names[<span class="tok-num">0</span>] &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+
+    <span class="tok-key">auto</span>&amp; second = names[<span class="tok-num">1</span>];
+    second += <span class="tok-str">&quot;!&quot;</span>;
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;names[1]：&quot;</span> &lt;&lt; names[<span class="tok-num">1</span>] &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+
+    <span class="tok-key">const</span> <span class="tok-key">auto</span>&amp; third = names[<span class="tok-num">0</span>];
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;third：&quot;</span> &lt;&lt; third &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>names[0]：Amy
+names[1]：Bob!
+third：Amy</pre></div><p><code>auto first = names[0]</code> 推出 <code>std::string</code>，是<strong>一份拷贝</strong>。所以给 first 加个问号，<code>names[0]</code> 还是 Amy。</p><p><code>auto&amp; second</code> 推出 <code>std::string&amp;</code>，是<strong>引用</strong>（第 2 课那个别名）。改 second 就是改 <code>names[1]</code>，于是打印出 Bob!。</p><p><code>const auto&amp; third</code> 推出 <code>const std::string&amp;</code>，只读、不拷贝。读大对象时这是最常用的写法。</p><p>三个写法，三行代码，区别全在 <code>&amp;</code> 和 <code>const</code> 上。<code>auto</code> 只是把类型名省掉，语义一点没变。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>别把 auto 当「随便」</span></div><div class="callout-body"><p><code>auto</code> 省的是打字，不是思考。看到 <code>auto</code>，你仍然要知道它推出来是值、引用还是指针。尤其在范围 for 里无脑写 <code>auto x</code>：那是拷贝，你循环里改了半天，容器里一个元素都没变。下面 8.4 专门讲这个。</p></div></div><h2 id="sec-2">8.2 auto 的两条脾气<i class="anchor">#</i></h2><p><code>auto</code> 有个容易忽略的规则：<strong>它会丢掉顶层 const 和引用</strong>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-key">const</span> <span class="tok-type">int</span> n = <span class="tok-num">10</span>;
+    <span class="tok-key">auto</span> m = n;          <span class="tok-com">// m 是普通的 int，不是 const int</span>
+    m = <span class="tok-num">20</span>;
+
+    <span class="tok-type">int</span> x = <span class="tok-num">1</span>;
+    <span class="tok-type">int</span>&amp; r = x;
+    <span class="tok-key">auto</span> y = r;          <span class="tok-com">// y 是 int 的拷贝，不是引用</span>
+    y = <span class="tok-num">99</span>;
+
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;n = &quot;</span> &lt;&lt; n &lt;&lt; <span class="tok-str">&quot;，m = &quot;</span> &lt;&lt; m &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;x = &quot;</span> &lt;&lt; x &lt;&lt; <span class="tok-str">&quot;，y = &quot;</span> &lt;&lt; y &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>n = 10，m = 20
+x = 1，y = 99</pre></div><p><code>auto m = n;</code> 之后 m 是普通 <code>int</code>，能改，而且改了不影响 n。想保留 const 就写 <code>const auto m = n;</code>。</p><p><code>auto y = r;</code> 更值得注意：r 明明是引用，但 <code>auto</code> 只取它的「值类型」，于是 y 是一份独立的拷贝。想让 y 保持引用，写 <code>auto&amp; y = r;</code>。</p><p>这条规则的存在是有道理的：如果 <code>auto</code> 老实地把引用和 const 都带上，你就很难用 <code>auto</code> 复制一个 <code>const</code> 对象。所以标准选择了「默认去掉」，需要的时候你自己加 <code>&amp;</code> 和 <code>const</code>。</p><p>记住一个口诀就够了：<strong>要别名写 <code>auto&amp;</code>，要只读写 <code>const auto&amp;</code>，什么都不加就是拷贝</strong>。</p><h2 id="sec-3">8.3 nullptr：空指针就这一种写法<i class="anchor">#</i></h2><p>先认识一个类型：<code>int*</code> 读作「指向 int 的指针」，装的是「某个 int 在哪儿」。你现在不用会指针的运算，只要知道它是一种<strong>跟 <code>int</code> 不同的类型</strong>——这一点很关键，因为接下来要讲的就是「<code>0</code> 到底算整数还是算指针」。</p><p>表示「什么也没指」的值，C++11 给了 <code>nullptr</code>。它的类型是 <code>std::nullptr_t</code>，只能转成指针，不会转成整数。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+
+<span class="tok-type">void</span> <span class="tok-fn">show</span>(<span class="tok-type">int</span>) {
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;调用了 int 版本\n&quot;</span>;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">show</span>(<span class="tok-type">int</span>*) {
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;调用了 int* 版本\n&quot;</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-fn">show</span>(<span class="tok-num">0</span>);
+    <span class="tok-com">// show(NULL);   // 有的平台是警告，有的是歧义，反正不该写</span>
+    <span class="tok-fn">show</span>(<span class="tok-key">nullptr</span>);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>调用了 int 版本
+调用了 int* 版本</pre></div><p><code>show(0)</code> 选 <code>int</code> 版本，因为 <code>0</code> 本来就是 <code>int</code>。如果你本意是传一个空指针，它不会报错，只会悄悄走错分支——这种「能编过但行为不对」的代码最难查。</p><p><code>NULL</code> 更麻烦。它是个老式宏——你可以理解成编译器在编译前就替你替换好的一个名字，展开后通常就是 <code>0</code>，也可能是编译器内部的特殊值。同一个 <code>show(NULL)</code>，在这个平台调 int 版，在另一个编译器上直接报歧义。这种不确定性没有任何保留价值。</p><p><code>nullptr</code> 只能转成指针，所以明确选 <code>int*</code> 版。判断空指针也统一写 <code>if (p == nullptr)</code>，赋值写 <code>p = nullptr;</code>。</p><p>还有一个反例值得看：如果当前只有 <code>show(int*)</code> 一个版本，<code>show(0)</code> 也能编译——<code>0</code> 被当成空指针。哪天你再加一个 <code>show(int)</code>，原来那行调用会<strong>突然换成本意之外的版本</strong>，而且不报错。用 <code>nullptr</code> 从一开始就把意图钉死：我要的是指针，不是数字 0。</p><div class="callout callout-tip"><div class="callout-head"><span class="callout-glyph">★</span><span>补充说明</span></div><div class="callout-body"><p>第 5 课的 <code>FileGuard</code> 里，<code>std::fopen</code> 失败会返回 <code>nullptr</code>，所以我们写 <code>if (!file.valid())</code> 来兜底。你现在看到的 <code>nullptr</code> 用法，基本就是「检查有没有拿到东西」这一种，够用了。</p></div></div><h2 id="sec-4">8.4 范围 for 要不要加 &amp;<i class="anchor">#</i></h2><p>范围 for 的本质是：每一轮从容器里取出一个元素，赋给循环变量。变量声明成值，就是拷贝；声明成引用，就是别名。所以加不加 <code>&amp;</code>，结果完全不同。</p><p><code>struct Student { ... };</code> 就是把两个值打成一个包，初始化时用花括号按顺序填进去，比如 <code>{&quot;小明&quot;, 80}</code>。它和 <code>class</code> 只差一个默认访问权限：<code>struct</code> 的成员默认公开。第 4 课的补充里提过这一点。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">vector</span>&gt;
+
+<span class="tok-key">struct</span> Student {
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> name;
+    <span class="tok-type">int</span> score;
+};
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;Student&gt; students = {
+        {<span class="tok-str">&quot;小明&quot;</span>, <span class="tok-num">80</span>},
+        {<span class="tok-str">&quot;小红&quot;</span>, <span class="tok-num">95</span>}
+    };
+
+    <span class="tok-key">for</span> (<span class="tok-key">auto</span> s : students) {
+        s.score = <span class="tok-num">100</span>;
+    }
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;按值改完：&quot;</span> &lt;&lt; students[<span class="tok-num">0</span>].score &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-key">auto</span>&amp; s : students) {
+        s.score = <span class="tok-num">100</span>;
+    }
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;按引用改完：&quot;</span> &lt;&lt; students[<span class="tok-num">0</span>].score &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-key">const</span> <span class="tok-key">auto</span>&amp; s : students) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; s.name &lt;&lt; <span class="tok-str">&quot;：&quot;</span> &lt;&lt; s.score &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>按值改完：80
+按引用改完：100
+小明：100
+小红：100</pre></div><p>第一轮 <code>auto s</code> 把每个 Student 复制进 s，改 s.score 改的是临时副本，容器里还是 80。</p><p>第二轮 <code>auto&amp; s</code> 是引用，s 就是容器里的元素，改完就是 100。</p><p>第三轮 <code>const auto&amp; s</code> 只读、不复制。只是打印的话，这是最合适的写法。</p><p>选择其实很简单：<strong>要改元素用 <code>auto&amp;</code>，只读用 <code>const auto&amp;</code>，确实需要一份独立副本时才用 <code>auto</code></strong>。元素是 <code>int</code>、<code>double</code> 这种小类型时，复制很便宜，按值也没问题；元素是字符串、结构体、类的对象时，按值就是白白复制一大块。</p><p>还有一条限制：范围 for 里不要增加或删除元素。<code>push_back</code> 可能触发扩容搬家（第 6 课说过），<code>erase</code> 会直接改动容器结构，循环的行为就不可预测了。要边遍历边改数量，用下标循环，或者先把要改的下标记下来，循环结束后统一处理。</p><h2 id="sec-5">8.5 值、引用、const 引用怎么选<i class="anchor">#</i></h2><p>第 2 课给过一张表，这里用代码再确认一遍，因为它是你这几年写函数时最常做的决定：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+
+<span class="tok-type">void</span> <span class="tok-fn">byValue</span>(<span class="tok-type">std</span>::<span class="tok-type">string</span> s) {
+    s += <span class="tok-str">&quot;!&quot;</span>;
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;函数内按值：&quot;</span> &lt;&lt; s &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">byConstRef</span>(<span class="tok-key">const</span> <span class="tok-type">std</span>::<span class="tok-type">string</span>&amp; s) {
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;函数内只读：&quot;</span> &lt;&lt; s &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">byRef</span>(<span class="tok-type">std</span>::<span class="tok-type">string</span>&amp; s) {
+    s += <span class="tok-str">&quot;!&quot;</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> text = <span class="tok-str">&quot;C++&quot;</span>;
+    <span class="tok-fn">byValue</span>(text);
+    <span class="tok-fn">byConstRef</span>(text);
+    <span class="tok-fn">byRef</span>(text);
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;调用后：&quot;</span> &lt;&lt; text &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>函数内按值：C++!
+函数内只读：C++
+调用后：C++!</pre></div><p><code>byValue</code> 拿到副本，函数里加感叹号不影响 text。<code>byConstRef</code> 不复制，同时保证不改。<code>byRef</code> 拿到引用，直接改原变量。</p><p>口诀还是那三句：<strong>读大对象用 <code>const</code> 引用，改调用方用引用，小类型和要副本用值</strong>。</p><p>再补一个理由：<code>const T&amp;</code> 能接字面量和临时结果，比如 <code>byConstRef(&quot;hello&quot;)</code> 会临时造一个 string 绑上去。普通的 <code>T&amp;</code> 绑不了临时值，编译器直接拦住。这也是只读参数优先写 <code>const T&amp;</code> 的原因——它更宽容。</p><h2 id="sec-6">8.6 新手最容易踩的 8 个坑<i class="anchor">#</i></h2><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>8 个坑</span></div><div class="callout-body"><ol><li>范围 for 里写 <code>auto x</code> 却想改元素。改的是副本，要改就写 <code>auto&amp; x</code>。</li><li>空指针写 <code>0</code> 或 <code>NULL</code>，重载时可能选中整数版本。统一用 <code>nullptr</code>。</li><li>空 vector 直接 <code>v[0] = 1</code>。还没元素，先 <code>push_back</code>，或者一开始就 <code>v(3)</code>。</li><li>用 <code>m[key]</code> 只想查一下，结果表里凭空多了一项。只读用 <code>at</code> 或 <code>find</code>。</li><li>函数返回局部变量的引用。对象已经销毁，拿到的是悬空引用。</li><li>类里管着资源，却依赖编译器默认生成的拷贝。两个对象会释放同一份资源。</li><li>忘了编译选项 <code>-std=c++11</code>，<code>auto</code>、范围 for、<code>nullptr</code> 全线报错。Dev-C++ 里要在编译选项里手动加。</li><li><code>vector</code> 扩容之后还拿着旧元素的引用去改。元素已经搬家，旧引用指向作废的内存。</li></ol></div></div><p>这八条，每一条都能在真实项目里制造一个下午的调试。好在它们有共同点：<strong>问题都出在「复制还是引用」和「资源谁负责」两件事上</strong>。把这两件事想清楚，剩下的都是细节。</p><p>到这儿，C++ 入门的地基就打完了：你能写函数、能组织数据、能让对象自己管资源、能用标准库的容器。接下来不是背更多语法，而是用它们写点东西。再往后是继承与多态、运算符重载、模板、异常、智能指针，一直到多文件项目——这些内容在本站后面的课里，会一件件接上。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li><code>auto</code> 从初始化表达式推类型，默认丢掉引用和顶层 const：要别名写 <code>auto&amp;</code>，要只读写 <code>const auto&amp;</code>。</li><li>空指针统一用 <code>nullptr</code>，<code>0</code> 和 <code>NULL</code> 都会在重载时出意外。</li><li>范围 for 里改元素用 <code>auto&amp;</code>，只读用 <code>const auto&amp;</code>。</li><li>传参口诀：读大对象用 const 引用，改调用方用引用，小类型和要副本用值。</li><li>真正的进步来自少写手工资源管理，多用容器和标准库。</li></ul><p>下一课是<a href="09-inheritance.html">第 9 课 继承与多态：让不同的东西说同一种话</a>，开始把类组织成家族。</p></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>写一个函数接收 <code>const std::vector&lt;int&gt;&amp;</code> 返回平均值，再写一个接收 <code>std::vector&lt;int&gt;&amp;</code> 把所有元素翻倍的函数。分别在 main 里调用，观察原容器有没有变化。</li><li>用范围 for 把 <code>std::vector&lt;std::string&gt;</code> 里所有长度大于 3 的字符串改成大写，再用 <code>const auto&amp;</code> 遍历输出。要求只遍历两次。</li><li>写两个重载函数 <code>print(int)</code> 和 <code>print(int*)</code>，分别用 <code>0</code>、<code>NULL</code>、<code>nullptr</code> 调用，记录编译器给出的警告或错误，并解释原因。</li><li>从下面这段代码里找出至少三个问题并改写：<code>std::vector&lt;int&gt; v; v[0] = 1; for (auto x : v) x = 2; auto p = NULL;</code></li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="cpp-08-modern-cpp"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../cpp/07-stl-map.html"><span>上一章</span><b>第 7 课 map、set 与 pair</b></a><a class="pager-item next" href="../cpp/09-inheritance.html"><span>下一章</span><b>第 9 课 继承与多态：让不同的东西说同一种话</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">8.1 auto：让编译器替你写类型</a><a class="toc-link level-2" href="#sec-2">8.2 auto 的两条脾气</a><a class="toc-link level-2" href="#sec-3">8.3 nullptr：空指针就这一种写法</a><a class="toc-link level-2" href="#sec-4">8.4 范围 for 要不要加 &amp;</a><a class="toc-link level-2" href="#sec-5">8.5 值、引用、const 引用怎么选</a><a class="toc-link level-2" href="#sec-6">8.6 新手最容易踩的 8 个坑</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 9 课 哈希表 · Hello Sekai</title>
+<meta name="description" content="不比较、不遍历，直接算出数据该放哪个格子。这一课用 C 手写拉链法哈希表，再补上扩容和开放寻址。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="ds-09-hash" data-track="ds" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link is-active" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">数据结构</span><a class="sidebar-back" href="../ds/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../ds/01-complexity.html" data-id="ds-01-complexity"><span class="side-num">01</span><span class="side-text">第 1 课 复杂度与算法思维</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/02-arraylist.html" data-id="ds-02-arraylist"><span class="side-num">02</span><span class="side-text">第 2 课 线性表与动态数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/03-linked-list.html" data-id="ds-03-linked-list"><span class="side-num">03</span><span class="side-text">第 3 课 链表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/04-stack.html" data-id="ds-04-stack"><span class="side-num">04</span><span class="side-text">第 4 课 栈</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/05-queue.html" data-id="ds-05-queue"><span class="side-num">05</span><span class="side-text">第 5 课 队列与双端队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/06-tree.html" data-id="ds-06-tree"><span class="side-num">06</span><span class="side-text">第 6 课 树与二叉树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/07-bst.html" data-id="ds-07-bst"><span class="side-num">07</span><span class="side-text">第 7 课 二叉搜索树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/08-heap.html" data-id="ds-08-heap"><span class="side-num">08</span><span class="side-text">第 8 课 堆与优先队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../ds/09-hash.html" data-id="ds-09-hash"><span class="side-num">09</span><span class="side-text">第 9 课 哈希表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/10-graph.html" data-id="ds-10-graph"><span class="side-num">10</span><span class="side-text">第 10 课 图与遍历</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/11-sorting.html" data-id="ds-11-sorting"><span class="side-num">11</span><span class="side-text">第 11 课 排序算法总览</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/12-dp.html" data-id="ds-12-dp"><span class="side-num">12</span><span class="side-text">第 12 课 递归、分治与动态规划入门</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../ds/index.html">← 返回数据结构</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../ds/index.html">数据结构</a> <span class="sep">/</span> <span>第 9 课 哈希表</span></div><h1 class="doc-title">第 9 课 哈希表</h1><div class="doc-meta"><span>预计 40 分钟</span><span class="dot">·</span><span>约 9,236 字</span><span class="dot">·</span><span>数据结构</span></div><article class="prose" id="article"><p>前面几课找东西，靠的都是比较：数组从头扫，链表一个个看，BST 一路比大小。哈希表换了个思路，它不找，它<strong>算</strong>。</p><p>你取快递时不会把柜子一个个打开看，而是看取件码，直接走到编号对应的柜子。哈希做的就是「取件码到柜子」这个映射。理想情况下，一次就到位，O(1)。</p><p>代价是柜子数量有限。快递一多，两个包裹的取件码可能指到同一个柜子。这一课有一半篇幅都在处理这件事，因为哈希表真正的难点从来不是「怎么算」，而是「撞了怎么办」。</p><h2 id="sec-1">9.1 用顺序换速度<i class="anchor">#</i></h2><p>先说清楚哈希表放弃了什么。数组按下标访问是 O(1)，BST 有序遍历 O(n)，哈希表把「顺序」彻底扔了，换来任意 key 的 O(1) 存取。</p><p>扔掉的顺序会在很多地方咬你：</p><ul><li>遍历哈希表的顺序是乱的，按桶号走，跟插入顺序、大小顺序都没关系</li><li>想输出「按学号排序的成绩单」，还得把 key 捞出来再排一次</li><li>「找出分数在 80 到 90 之间的所有学生」这种范围查询，哈希表只能全表扫</li></ul><p>所以哈希表不是「更好的数组」，它是另一种取舍。你只能按 key 精确查，它快得离谱；你要按顺序做任何事，它一无是处。</p><h2 id="sec-2">9.2 哈希函数：把任意 key 压成一个下标<i class="anchor">#</i></h2><p>哈希函数干的事很朴素：输入一个 key，输出一个 <code>0</code> 到 <code>cap-1</code> 之间的整数，这个整数就是槽位下标。</p><p>它得满足三条：</p><ul><li>算得快，最好几条指令搞定，否则 O(1) 没意义</li><li>分布均匀，key 稍微变一点，槽位就要跳得远</li><li>确定性，同一个 key 任何时候都算出同一个值</li></ul><p>整数最简单，取模就行。字符串麻烦些，得把每个字符混进去，常用的是 djb2：<code>h = h * 33 + c</code>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">unsigned</span> <span class="tok-type">int</span> <span class="tok-fn">hash_int</span>(<span class="tok-type">int</span> key, <span class="tok-type">unsigned</span> <span class="tok-type">int</span> cap) {
+    <span class="tok-key">return</span> (<span class="tok-type">unsigned</span> <span class="tok-type">int</span>)key % cap;
+}
+
+<span class="tok-type">unsigned</span> <span class="tok-type">int</span> <span class="tok-fn">hash_str</span>(<span class="tok-key">const</span> <span class="tok-type">char</span> *s, <span class="tok-type">unsigned</span> <span class="tok-type">int</span> cap) {
+    <span class="tok-type">unsigned</span> <span class="tok-type">int</span> h = <span class="tok-num">5381</span>;
+    <span class="tok-key">while</span> (*s != <span class="tok-str">&#x27;\0&#x27;</span>) {
+        h = h * <span class="tok-num">33</span> + (<span class="tok-type">unsigned</span> <span class="tok-type">char</span>)*s;
+        s++;
+    }
+    <span class="tok-key">return</span> h % cap;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> keys[] = {<span class="tok-num">31</span>, <span class="tok-num">51</span>, <span class="tok-num">71</span>, <span class="tok-num">12</span>, <span class="tok-num">99</span>};
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;cap = 10\n&quot;</span>);
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">5</span>; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;key %2d -&gt; 槽位 %u\n&quot;</span>, keys[i], <span class="tok-fn">hash_int</span>(keys[i], <span class="tok-num">10</span>));
+    }
+
+    <span class="tok-key">const</span> <span class="tok-type">char</span> *words[] = {<span class="tok-str">&quot;apple&quot;</span>, <span class="tok-str">&quot;banana&quot;</span>, <span class="tok-str">&quot;cherry&quot;</span>};
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;cap = 16\n&quot;</span>);
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">3</span>; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%-8s-&gt; 槽位 %u\n&quot;</span>, words[i], <span class="tok-fn">hash_str</span>(words[i], <span class="tok-num">16</span>));
+    }
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;-7 %% 10 = %d\n&quot;</span>, -<span class="tok-num">7</span> % <span class="tok-num">10</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;(unsigned)-7 %% 10 = %u\n&quot;</span>, (<span class="tok-type">unsigned</span> <span class="tok-type">int</span>)(-<span class="tok-num">7</span>) % <span class="tok-num">10</span>);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>cap = 10
+key 31 -&gt; 槽位 1
+key 51 -&gt; 槽位 1
+key 71 -&gt; 槽位 1
+key 12 -&gt; 槽位 2
+key 99 -&gt; 槽位 9
+cap = 16
+apple   -&gt; 槽位 7
+banana  -&gt; 槽位 6
+cherry  -&gt; 槽位 2
+-7 % 10 = -7
+(unsigned)-7 % 10 = 9</pre></div><p>31、51、71 全进了 1 号槽。原因很明显：它们的个位都是 1，而 <code>% 10</code> 只看个位。这不是哈希函数写错了，是你的 key 太有规律。</p><p>这就是为什么<strong>桶的数量尽量取质数</strong>。假如 <code>cap</code> 是 1024，<code>key % 1024</code> 只用到 key 的低 10 位，高位完全不参与。真实数据里「低几位相同」的情况多得吓人：学号末位、身份证最后几位、时间的毫秒数。用质数当 cap，能把这些规律打散。</p><p>最后两行是 C 里的负数取模。<code>-7 % 10</code> 在 C 里是 <code>-7</code>，不是 <code>-3</code>，因为 C 的除法朝零取整。拿负数直接当下标，等于往数组前面乱写内存，通常当场段错误。所以 <code>hash_int</code> 里先转 <code>(unsigned int)</code>：转换后是一个很大的正数，再取模就落在正常范围了。</p><h2 id="sec-3">9.3 冲突是必然，不是意外<i class="anchor">#</i></h2><p>20 个包裹，10 个柜子，你说会不会有两个挤一格？这不叫「可能」，这叫鸽笼原理：n 个东西放进 m 个笼子，n 大于 m 就一定有一个笼子装两个以上。</p><p>那 n 小于 m 就安全了？也没有。10 个 key 放进 100 个桶，一个都不撞的概率只有六成左右，撞的概率超过三分之一。这就是生日悖论：23 个人里有两个同生日的概率过半，而一年有 365 天。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-pre">#define</span> BUCKETS <span class="tok-num">10</span>
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> keys[] = {<span class="tok-num">17</span>, <span class="tok-num">27</span>, <span class="tok-num">37</span>, <span class="tok-num">4</span>, <span class="tok-num">14</span>, <span class="tok-num">24</span>, <span class="tok-num">35</span>, <span class="tok-num">46</span>, <span class="tok-num">57</span>, <span class="tok-num">68</span>};
+    <span class="tok-type">int</span> count[BUCKETS] = {<span class="tok-num">0</span>};
+    <span class="tok-type">int</span> n = <span class="tok-num">10</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; n; i++) {
+        count[keys[i] % BUCKETS]++;
+    }
+
+    <span class="tok-type">int</span> bad = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; BUCKETS; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;桶 %d：%d 个&quot;</span>, i, count[i]);
+        <span class="tok-key">if</span> (count[i] &gt; <span class="tok-num">1</span>) {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;   &lt;- 撞了&quot;</span>);
+            bad++;
+        }
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d 个 key，%d 个桶，有 %d 个桶不止一个\n&quot;</span>, n, BUCKETS, bad);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>桶 0：0 个
+桶 1：0 个
+桶 2：0 个
+桶 3：0 个
+桶 4：3 个   &lt;- 撞了
+桶 5：1 个
+桶 6：1 个
+桶 7：4 个   &lt;- 撞了
+桶 8：1 个
+桶 9：0 个
+10 个 key，10 个桶，有 2 个桶不止一个</pre></div><p>10 个 key、10 个桶，结果最挤的桶塞了 4 个。而且注意 9 号桶是空的：有的桶空着，有的桶挤爆，这就是「分布不均」。</p><p>处理冲突只有两条路：</p><div class="table-wrap"><table><thead><tr><th>办法</th><th>撞了之后</th><th>优点</th><th>缺点</th></tr></thead><tbody><tr><td>拉链法</td><td>在同一个桶里挂一条链表</td><td>删除简单，负载因子可以大于 1</td><td>每个结点一个指针，内存不连续</td></tr><tr><td>开放寻址</td><td>顺着数组往后找下一个空位</td><td>没有指针，缓存友好</td><td>负载因子必须小于 1，删除麻烦</td></tr></tbody></table></div><p>先定义一个量：<strong>负载因子 α = 元素个数 / 桶数</strong>。拉链法的 α 可以到 1 甚至更高，代价是链变长；开放寻址的 α 一般压在 0.7 以下，过了这个坎探测长度会爆炸。这件事 9.5 会细说。</p><h2 id="sec-4">9.4 手写拉链法哈希表<i class="anchor">#</i></h2><p>拉链法的结构很好记：一个指针数组当桶，每个桶挂一条单链表。同样，下面 <code>malloc</code> 的返回值没判 <code>NULL</code>，省了几行，别学这个坏习惯。同一个槽位的 key 都在同一条链上，查找时先算槽位，再顺着链比 key。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-pre">#define</span> CAP <span class="tok-num">13</span>
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> key;
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *next;
+} Node;
+
+Node *buckets[CAP];
+
+<span class="tok-type">unsigned</span> <span class="tok-type">int</span> <span class="tok-fn">slot_of</span>(<span class="tok-type">int</span> key) {
+    <span class="tok-key">return</span> (<span class="tok-type">unsigned</span> <span class="tok-type">int</span>)key % CAP;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">put</span>(<span class="tok-type">int</span> key, <span class="tok-type">int</span> value) {
+    <span class="tok-type">unsigned</span> <span class="tok-type">int</span> i = <span class="tok-fn">slot_of</span>(key);
+    <span class="tok-key">for</span> (Node *p = buckets[i]; p != NULL; p = p-&gt;next) {
+        <span class="tok-key">if</span> (p-&gt;key == key) {
+            p-&gt;value = value;
+            <span class="tok-key">return</span>;
+        }
+    }
+    Node *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    p-&gt;key = key;
+    p-&gt;value = value;
+    p-&gt;next = buckets[i];
+    buckets[i] = p;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">get</span>(<span class="tok-type">int</span> key, <span class="tok-type">int</span> *out) {
+    <span class="tok-key">for</span> (Node *p = buckets[<span class="tok-fn">slot_of</span>(key)]; p != NULL; p = p-&gt;next) {
+        <span class="tok-key">if</span> (p-&gt;key == key) {
+            *out = p-&gt;value;
+            <span class="tok-key">return</span> <span class="tok-num">1</span>;
+        }
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">remove_key</span>(<span class="tok-type">int</span> key) {
+    Node **pp = &amp;buckets[<span class="tok-fn">slot_of</span>(key)];
+    <span class="tok-key">while</span> (*pp != NULL) {
+        <span class="tok-key">if</span> ((*pp)-&gt;key == key) {
+            Node *dead = *pp;
+            *pp = dead-&gt;next;
+            <span class="tok-fn">free</span>(dead);
+            <span class="tok-key">return</span> <span class="tok-num">1</span>;
+        }
+        pp = &amp;(*pp)-&gt;next;
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> v;
+    <span class="tok-fn">put</span>(<span class="tok-num">31</span>, <span class="tok-num">100</span>);
+    <span class="tok-fn">put</span>(<span class="tok-num">44</span>, <span class="tok-num">440</span>);
+    <span class="tok-fn">put</span>(<span class="tok-num">70</span>, <span class="tok-num">700</span>);
+    <span class="tok-fn">put</span>(<span class="tok-num">12</span>, <span class="tok-num">120</span>);
+    <span class="tok-fn">put</span>(<span class="tok-num">31</span>, <span class="tok-num">111</span>);
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;31、44、70 的槽位：%u %u %u\n&quot;</span>, <span class="tok-fn">slot_of</span>(<span class="tok-num">31</span>), <span class="tok-fn">slot_of</span>(<span class="tok-num">44</span>), <span class="tok-fn">slot_of</span>(<span class="tok-num">70</span>));
+    <span class="tok-key">if</span> (<span class="tok-fn">get</span>(<span class="tok-num">31</span>, &amp;v)) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;get(31) = %d\n&quot;</span>, v);
+    }
+    <span class="tok-key">if</span> (<span class="tok-fn">get</span>(<span class="tok-num">44</span>, &amp;v)) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;get(44) = %d\n&quot;</span>, v);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;get(99) %s\n&quot;</span>, <span class="tok-fn">get</span>(<span class="tok-num">99</span>, &amp;v) ? <span class="tok-str">&quot;找到了&quot;</span> : <span class="tok-str">&quot;没找到&quot;</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;删除 44：%s\n&quot;</span>, <span class="tok-fn">remove_key</span>(<span class="tok-num">44</span>) ? <span class="tok-str">&quot;成功&quot;</span> : <span class="tok-str">&quot;不存在&quot;</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;删完再查 44：%s\n&quot;</span>, <span class="tok-fn">get</span>(<span class="tok-num">44</span>, &amp;v) ? <span class="tok-str">&quot;找到了&quot;</span> : <span class="tok-str">&quot;没找到&quot;</span>);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>31、44、70 的槽位：5 5 5
+get(31) = 111
+get(44) = 440
+get(99) 没找到
+删除 44：成功
+删完再查 44：没找到</pre></div><p>31、44、70 都落在 5 号槽，链表长度是 3。查 44 要先比 31、再比 44，两次比较。这就是拉链法的代价：<strong>同槽的元素越多，链越长，查找越慢</strong>。</p><p>三个细节：</p><p><code>put</code> 里的第一段循环负责「key 已存在就覆盖」。少了它，同一个 key 会插两次，<code>get</code> 拿到的可能是旧值。哈希表语义上不允许重复 key，这跟 map 一样。</p><p><code>put</code> 用头插，新结点直接挂到链首，O(1) 搞定。缺点是同槽元素的遍历顺序和插入顺序相反，反正哈希表本来就不保证顺序。</p><p><code>remove_key</code> 那两行用了二级指针 <code>Node **pp</code>，把「前驱结点的 next 指针」当成一个变量来改，省掉了单独判空头的分支。不习惯的话写成 <code>prev</code> 也行，多几行而已。指针这块要是发虚，回去翻 <a href="../c/rumen/ch06.html">C 语言 指针</a>，二级指针是那章最后一个大坎。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p><code>buckets</code> 是全局数组，默认全 0，可以直接用。把它改成局部变量却不初始化，里面全是垃圾指针，<code>put</code> 一挂链就崩。</p></div></div><h2 id="sec-5">9.5 负载因子：什么时候该扩容<i class="anchor">#</i></h2><p>固定 13 个桶，插 100 个元素，平均每条链 7 个结点，查找退化成链表。所以桶的数量不能写死，得跟着元素数涨。</p><p>规矩是：<strong>元素个数达到 <code>cap * 0.75</code> 就把桶翻倍</strong>。翻倍之后要把所有元素重新算一遍槽位，这一步叫 rehash。注意不能直接把旧桶照搬过去，因为取模的除数变了，<code>key % 13</code> 和 <code>key % 26</code> 完全是两回事。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> key;
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *next;
+} Node;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> {
+    Node **buckets;
+    <span class="tok-type">int</span> cap;
+    <span class="tok-type">int</span> size;
+} Table;
+
+Table *<span class="tok-fn">table_new</span>(<span class="tok-type">int</span> cap) {
+    Table *t = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Table));
+    t-&gt;cap = cap;
+    t-&gt;size = <span class="tok-num">0</span>;
+    t-&gt;buckets = <span class="tok-fn">calloc</span>((<span class="tok-type">size_t</span>)cap, <span class="tok-key">sizeof</span>(Node *));
+    <span class="tok-key">return</span> t;
+}
+
+<span class="tok-type">unsigned</span> <span class="tok-type">int</span> <span class="tok-fn">slot_of</span>(Table *t, <span class="tok-type">int</span> key) {
+    <span class="tok-key">return</span> (<span class="tok-type">unsigned</span> <span class="tok-type">int</span>)key % (<span class="tok-type">unsigned</span> <span class="tok-type">int</span>)t-&gt;cap;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">grow</span>(Table *t) {
+    <span class="tok-type">int</span> new_cap = t-&gt;cap * <span class="tok-num">2</span>;
+    Node **fresh = <span class="tok-fn">calloc</span>((<span class="tok-type">size_t</span>)new_cap, <span class="tok-key">sizeof</span>(Node *));
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; t-&gt;cap; i++) {
+        Node *p = t-&gt;buckets[i];
+        <span class="tok-key">while</span> (p != NULL) {
+            Node *next = p-&gt;next;
+            <span class="tok-type">unsigned</span> <span class="tok-type">int</span> j = (<span class="tok-type">unsigned</span> <span class="tok-type">int</span>)p-&gt;key % (<span class="tok-type">unsigned</span> <span class="tok-type">int</span>)new_cap;
+            p-&gt;next = fresh[j];
+            fresh[j] = p;
+            p = next;
+        }
+    }
+
+    <span class="tok-fn">free</span>(t-&gt;buckets);
+    t-&gt;buckets = fresh;
+    t-&gt;cap = new_cap;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">put</span>(Table *t, <span class="tok-type">int</span> key, <span class="tok-type">int</span> value) {
+    <span class="tok-type">unsigned</span> <span class="tok-type">int</span> i = <span class="tok-fn">slot_of</span>(t, key);
+    <span class="tok-key">for</span> (Node *p = t-&gt;buckets[i]; p != NULL; p = p-&gt;next) {
+        <span class="tok-key">if</span> (p-&gt;key == key) {
+            p-&gt;value = value;
+            <span class="tok-key">return</span>;
+        }
+    }
+
+    Node *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    p-&gt;key = key;
+    p-&gt;value = value;
+    p-&gt;next = t-&gt;buckets[i];
+    t-&gt;buckets[i] = p;
+    t-&gt;size++;
+
+    <span class="tok-key">if</span> (t-&gt;size * <span class="tok-num">4</span> &gt;= t-&gt;cap * <span class="tok-num">3</span>) {
+        <span class="tok-fn">grow</span>(t);
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">max_chain</span>(Table *t) {
+    <span class="tok-type">int</span> best = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; t-&gt;cap; i++) {
+        <span class="tok-type">int</span> len = <span class="tok-num">0</span>;
+        <span class="tok-key">for</span> (Node *p = t-&gt;buckets[i]; p != NULL; p = p-&gt;next) {
+            len++;
+        }
+        <span class="tok-key">if</span> (len &gt; best) {
+            best = len;
+        }
+    }
+    <span class="tok-key">return</span> best;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    Table *t = <span class="tok-fn">table_new</span>(<span class="tok-num">4</span>);
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">20</span>; i++) {
+        <span class="tok-type">int</span> old = t-&gt;cap;
+        <span class="tok-fn">put</span>(t, i * <span class="tok-num">4</span>, i);
+        <span class="tok-key">if</span> (t-&gt;cap != old) {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;插到第 %2d 个时扩容：cap %d -&gt; %d\n&quot;</span>, t-&gt;size, old, t-&gt;cap);
+        }
+    }
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;最终 cap %d，元素 %d 个，最长链 %d\n&quot;</span>, t-&gt;cap, t-&gt;size, <span class="tok-fn">max_chain</span>(t));
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>插到第  3 个时扩容：cap 4 -&gt; 8
+插到第  6 个时扩容：cap 8 -&gt; 16
+插到第 12 个时扩容：cap 16 -&gt; 32
+最终 cap 32，元素 20 个，最长链 3</pre></div><p>三次扩容分别发生在 3、6、12 个元素时，负载因子每次都刚好摸到 0.75 那条线。</p><p>请注意最后一个数字：20 个元素，最长链只有 3。这批 key 全是 4 的倍数，如果桶数一直是 4，它们会全部落在 0 号桶，退化成一条 20 节的链表。<strong>扩容器的作用就是把链长按在一个常数附近</strong>，这样「O(1)」才不是嘴上说说。</p><p>扩容那一次是 O(n)，因为要把所有结点搬一遍。但每插入一个元素才扩容一次、而扩容后容量翻倍，所以把总代价摊到每次插入上，仍然是 O(1)。这就是第 2 课动态数组讲过的那套均摊分析，思路一模一样。</p><h2 id="sec-6">9.6 开放寻址：撞了就往后挪<i class="anchor">#</i></h2><p>拉链法用链表解决冲突。开放寻址的思路是：一个桶只放一个元素，撞了就去数组里的下一个空位，还撞就再下一个，走到末尾绕回开头。</p><p>这叫线性探测。它省掉了所有指针和 <code>malloc</code>，整张表就是两个数组，对 CPU 缓存极其友好，实测通常比拉链法快。代价有三个：</p><ul><li>表满了就真的没地方放了，α 必须小于 1</li><li>撞车会「传染」：连续被占的位置越排越长，叫一次聚集</li><li>删除不能用置空，得打墓碑</li></ul><p>第三条最反直觉，一定要看代码。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-pre">#define</span> CAP <span class="tok-num">13</span>
+<span class="tok-pre">#define</span> EMPTY <span class="tok-num">0</span>
+<span class="tok-pre">#define</span> USED <span class="tok-num">1</span>
+<span class="tok-pre">#define</span> DELETED <span class="tok-num">2</span>
+
+<span class="tok-type">int</span> keys[CAP];
+<span class="tok-type">int</span> values[CAP];
+<span class="tok-type">int</span> state[CAP];
+
+<span class="tok-type">unsigned</span> <span class="tok-type">int</span> <span class="tok-fn">slot_of</span>(<span class="tok-type">int</span> key) {
+    <span class="tok-key">return</span> (<span class="tok-type">unsigned</span> <span class="tok-type">int</span>)key % CAP;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">put</span>(<span class="tok-type">int</span> key, <span class="tok-type">int</span> value) {
+    <span class="tok-type">unsigned</span> <span class="tok-type">int</span> start = <span class="tok-fn">slot_of</span>(key);
+    <span class="tok-type">int</span> reuse = -<span class="tok-num">1</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-type">unsigned</span> <span class="tok-type">int</span> step = <span class="tok-num">0</span>; step &lt; CAP; step++) {
+        <span class="tok-type">unsigned</span> <span class="tok-type">int</span> i = (start + step) % CAP;
+        <span class="tok-key">if</span> (state[i] == USED &amp;&amp; keys[i] == key) {
+            values[i] = value;
+            <span class="tok-key">return</span> <span class="tok-num">1</span>;
+        }
+        <span class="tok-key">if</span> (state[i] == DELETED &amp;&amp; reuse == -<span class="tok-num">1</span>) {
+            reuse = (<span class="tok-type">int</span>)i;
+        }
+        <span class="tok-key">if</span> (state[i] == EMPTY) {
+            <span class="tok-key">if</span> (reuse != -<span class="tok-num">1</span>) {
+                i = (<span class="tok-type">unsigned</span> <span class="tok-type">int</span>)reuse;
+            }
+            keys[i] = key;
+            values[i] = value;
+            state[i] = USED;
+            <span class="tok-key">return</span> <span class="tok-num">1</span>;
+        }
+    }
+
+    <span class="tok-key">if</span> (reuse != -<span class="tok-num">1</span>) {
+        keys[reuse] = key;
+        values[reuse] = value;
+        state[reuse] = USED;
+        <span class="tok-key">return</span> <span class="tok-num">1</span>;
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">find</span>(<span class="tok-type">int</span> key, <span class="tok-type">int</span> *out, <span class="tok-type">int</span> *probes) {
+    <span class="tok-type">unsigned</span> <span class="tok-type">int</span> start = <span class="tok-fn">slot_of</span>(key);
+    <span class="tok-key">for</span> (<span class="tok-type">unsigned</span> <span class="tok-type">int</span> step = <span class="tok-num">0</span>; step &lt; CAP; step++) {
+        <span class="tok-type">unsigned</span> <span class="tok-type">int</span> i = (start + step) % CAP;
+        (*probes)++;
+        <span class="tok-key">if</span> (state[i] == EMPTY) {
+            <span class="tok-key">return</span> <span class="tok-num">0</span>;
+        }
+        <span class="tok-key">if</span> (state[i] == USED &amp;&amp; keys[i] == key) {
+            *out = values[i];
+            <span class="tok-key">return</span> <span class="tok-num">1</span>;
+        }
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">erase</span>(<span class="tok-type">int</span> key) {
+    <span class="tok-type">unsigned</span> <span class="tok-type">int</span> start = <span class="tok-fn">slot_of</span>(key);
+    <span class="tok-key">for</span> (<span class="tok-type">unsigned</span> <span class="tok-type">int</span> step = <span class="tok-num">0</span>; step &lt; CAP; step++) {
+        <span class="tok-type">unsigned</span> <span class="tok-type">int</span> i = (start + step) % CAP;
+        <span class="tok-key">if</span> (state[i] == EMPTY) {
+            <span class="tok-key">return</span> <span class="tok-num">0</span>;
+        }
+        <span class="tok-key">if</span> (state[i] == USED &amp;&amp; keys[i] == key) {
+            state[i] = DELETED;
+            <span class="tok-key">return</span> <span class="tok-num">1</span>;
+        }
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> v;
+    <span class="tok-type">int</span> probes = <span class="tok-num">0</span>;
+
+    <span class="tok-type">int</span> add[] = {<span class="tok-num">3</span>, <span class="tok-num">16</span>, <span class="tok-num">29</span>};
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">3</span>; i++) {
+        <span class="tok-fn">put</span>(add[i], add[i] * <span class="tok-num">10</span>);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;插入 %d：槽位从 %u 开始\n&quot;</span>, add[i], <span class="tok-fn">slot_of</span>(add[i]));
+    }
+
+    <span class="tok-type">int</span> ok;
+
+    probes = <span class="tok-num">0</span>;
+    ok = <span class="tok-fn">find</span>(<span class="tok-num">29</span>, &amp;v, &amp;probes);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;查 29：%s，探测 %d 次\n&quot;</span>, ok ? <span class="tok-str">&quot;找到&quot;</span> : <span class="tok-str">&quot;没找到&quot;</span>, probes);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;删除 16：%s\n&quot;</span>, <span class="tok-fn">erase</span>(<span class="tok-num">16</span>) ? <span class="tok-str">&quot;成功&quot;</span> : <span class="tok-str">&quot;不存在&quot;</span>);
+
+    probes = <span class="tok-num">0</span>;
+    ok = <span class="tok-fn">find</span>(<span class="tok-num">16</span>, &amp;v, &amp;probes);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;删完查 16：%s，探测 %d 次\n&quot;</span>, ok ? <span class="tok-str">&quot;找到&quot;</span> : <span class="tok-str">&quot;没找到&quot;</span>, probes);
+    probes = <span class="tok-num">0</span>;
+    ok = <span class="tok-fn">find</span>(<span class="tok-num">29</span>, &amp;v, &amp;probes);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;删完查 29：%s，探测 %d 次\n&quot;</span>, ok ? <span class="tok-str">&quot;找到&quot;</span> : <span class="tok-str">&quot;没找到&quot;</span>, probes);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>插入 3：槽位从 3 开始
+插入 16：槽位从 3 开始
+插入 29：槽位从 3 开始
+查 29：找到，探测 3 次
+删除 16：成功
+删完查 16：没找到，探测 4 次
+删完查 29：找到，探测 3 次</pre></div><p>三个 key 都从下标 3 出发，插进去实际占了 3、4、5。查 29 的时候要依次看 3、4、5，探测 3 次，这就是一次聚集的代价。</p><p>现在看删除。16 在下标 4。如果直接把它设成 <code>EMPTY</code>，5 号位的 29 就再也找不到了：查 29 从 3 出发，看到下标 4 是空的，程序会立刻判断「不存在」，直接返回。明明 29 还在 5 号位，你却找不到。这就是 <code>DELETED</code> 墓碑存在的全部理由：它告诉查找「这里原来有东西，别停，继续往后看」。</p><p>所以你看到「删完查 16」探测了 4 次：3 号（key 是 3）、4 号（墓碑）、5 号（key 是 29）、6 号（空的），才敢下结论。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>记忆点</span></div><div class="callout-body"><p>开放寻址的查找靠「遇到空位就停」来收尾，所以删除时不能真的留空。墓碑是把「删」变成「标记删」，代价是表会慢慢变脏，需要定期重建。</p></div></div><p>线性探测的聚集问题有解：二次探测按 <code>+1, +4, +9</code> 的步长跳，双哈希用第二个哈希函数决定步长。再往上还有 Robin Hood、布谷鸟哈希这些，都属于「把冲突处理做到极致」的方向，这一课不展开。</p><h2 id="sec-7">9.7 什么时候别用哈希表<i class="anchor">#</i></h2><p>哈希表好用，但下面这几种情况它会坑你：</p><p>要顺序。哈希表的遍历顺序是按桶号来的，和 key 的大小无关。想按学号输出，必须把 key 取出来再排一次，等于多付一次 O(n log n)。</p><p>要范围。找 [30, 60] 之间的所有 key，哈希表没有任何办法跳过无关的桶，只能把整张表扫一遍。这种活 BST 一次中序就能剪枝。</p><p>怕最坏情况。如果所有 key 都撞进一个桶，哈希表退化成一条链表，O(1) 变成 O(n)。更糟的是，攻击者可以故意构造大量同槽的 key，把你的服务器拖死，这叫哈希洪水。所以生产环境的哈希函数通常带一个随机种子，每次启动都不一样，让攻击者算不出来。</p><p>key 会变。C 里用 <code>char *</code> 当 key，存进去的是指针。如果你后面改了字符串内容，或者那块内存被 <code>free</code> 了，哈希值就变了，key 再也找不回来。正确做法是把自己那份字符串复制出来（<code>strdup</code>），并且保证存进去之后不再修改。</p><p>一句话选型：<strong>只要「按 key 精确存取」，用哈希；只要「按大小顺序做事」，用树；两样都要，就两张表各存一份。</strong></p><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>把 9.4 的拉链法改成 <code>char *</code> 作 key，用 <code>strcmp</code> 比较，把 key 复制一份存起来。测一下用同一个字符串内容但不同地址去查，能不能查到。</li><li>给 9.5 的表加一个 <code>get</code> 和一个统计函数，输出「查找一次平均要比几个结点」。在 1000 个元素、不同初始容量下各测一次，看看负载因子的影响。</li><li>9.6 的线性探测换成二次探测：步长改成 <code>+1, +4, +9, ...</code>，也就是 <code>(start + step*step) % CAP</code>。同样的测试数据，探测次数变多了还是变少了？</li><li>用哈希表统计一段文本里每个单词出现的次数（单词用空格和标点分隔），按次数从多到少输出前 5 个。提示：哈希表只负责存，排序还得另外做。</li></ol></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>哈希表用「算位置」代替「比较」，理想 O(1)，代价是丢掉顺序</li><li>冲突必然存在，拉链法挂链表，开放寻址往后找空位</li><li>负载因子到 0.75 就扩容，扩容要重算槽位，均摊下来仍是 O(1)</li><li>开放寻址删除要打墓碑；要顺序、要范围查询、key 会变，就绕开哈希表</li><li>下一课 <a href="10-graph.html">第 10 课 图与遍历</a>：结点之间可以任意连边，甚至绕回自己</li></ul></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="ds-09-hash"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../ds/08-heap.html"><span>上一章</span><b>第 8 课 堆与优先队列</b></a><a class="pager-item next" href="../ds/10-graph.html"><span>下一章</span><b>第 10 课 图与遍历</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">9.1 用顺序换速度</a><a class="toc-link level-2" href="#sec-2">9.2 哈希函数：把任意 key 压成一个下标</a><a class="toc-link level-2" href="#sec-3">9.3 冲突是必然，不是意外</a><a class="toc-link level-2" href="#sec-4">9.4 手写拉链法哈希表</a><a class="toc-link level-2" href="#sec-5">9.5 负载因子：什么时候该扩容</a><a class="toc-link level-2" href="#sec-6">9.6 开放寻址：撞了就往后挪</a><a class="toc-link level-2" href="#sec-7">9.7 什么时候别用哈希表</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

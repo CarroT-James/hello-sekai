@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 13 课 STL 算法与迭代器：装进去之后，怎么处理 · Hello Sekai</title>
+<meta name="description" content="容器负责装数据，算法负责处理，迭代器连着两头。这一课把 sort、find、accumulate 的套路走一遍。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="cpp-13-stl-algorithms" data-track="cpp" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link is-active" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">C++</span><a class="sidebar-back" href="../cpp/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../cpp/01-first-program.html" data-id="cpp-01-first-program"><span class="side-num">01</span><span class="side-text">第 1 课 第一个 C++ 程序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/02-reference-const.html" data-id="cpp-02-reference-const"><span class="side-num">02</span><span class="side-text">第 2 课 引用与 const</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/03-overload-default.html" data-id="cpp-03-overload-default"><span class="side-num">03</span><span class="side-text">第 3 课 函数重载与默认参数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/04-class-basic.html" data-id="cpp-04-class-basic"><span class="side-num">04</span><span class="side-text">第 4 课 类与对象：把数据和操作捆在一起</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/05-destructor-raii.html" data-id="cpp-05-destructor-raii"><span class="side-num">05</span><span class="side-text">第 5 课 构造、析构与 RAII</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/06-vector-string.html" data-id="cpp-06-vector-string"><span class="side-num">06</span><span class="side-text">第 6 课 vector 与 string</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/07-stl-map.html" data-id="cpp-07-stl-map"><span class="side-num">07</span><span class="side-text">第 7 课 map、set 与 pair</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/08-modern-cpp.html" data-id="cpp-08-modern-cpp"><span class="side-num">08</span><span class="side-text">第 8 课 auto、nullptr 与范围 for</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/09-inheritance.html" data-id="cpp-09-inheritance"><span class="side-num">09</span><span class="side-text">第 9 课 继承与多态：让不同的东西说同一种话</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/10-operator-overload.html" data-id="cpp-10-operator-overload"><span class="side-num">10</span><span class="side-text">第 10 课 运算符重载与友元：让自定义类型也用上 + 号</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/11-template.html" data-id="cpp-11-template"><span class="side-num">11</span><span class="side-text">第 11 课 模板与泛型：写一遍，适配所有类型</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/12-exception.html" data-id="cpp-12-exception"><span class="side-num">12</span><span class="side-text">第 12 课 异常处理：把「出错了」和「算完了」分开</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../cpp/13-stl-algorithms.html" data-id="cpp-13-stl-algorithms"><span class="side-num">13</span><span class="side-text">第 13 课 STL 算法与迭代器：装进去之后，怎么处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/14-smart-pointer.html" data-id="cpp-14-smart-pointer"><span class="side-num">14</span><span class="side-text">第 14 课 智能指针与移动语义：让「谁负责释放」写进类型</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/15-class-design.html" data-id="cpp-15-class-design"><span class="side-num">15</span><span class="side-text">第 15 课 类设计实战：手写一个 MyString</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/16-project.html" data-id="cpp-16-project"><span class="side-num">16</span><span class="side-text">第 16 课 项目组织与调试：把代码拆成多个文件</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../cpp/index.html">← 返回C++</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../cpp/index.html">C++</a> <span class="sep">/</span> <span>第 13 课 STL 算法与迭代器：装进去之后，怎么处理</span></div><h1 class="doc-title">第 13 课 STL 算法与迭代器：装进去之后，怎么处理</h1><div class="doc-meta"><span>预计 30 分钟</span><span class="dot">·</span><span>约 6,994 字</span><span class="dot">·</span><span>C++</span></div><article class="prose" id="article"><p><a href="06-vector-string.html">第 6 课 vector 与 string</a> 和<a href="07-stl-map.html">第 7 课 map、set 与 pair</a> 里，你把数据装进了 <code>vector</code> 和 <code>map</code>。这一课处理另一个问题：装进去之后怎么操作。手写 for 循环不是错，但排序、查找、累加这几件事，标准库已经写了几十年，比你我写得好，也比你我写得快。</p><p>标准库的算法有个统一的设计：它们不直接接收容器，而是接收一对「位置」。这一对位置叫迭代器。</p><h2 id="sec-1">13.1 迭代器：容器里的「位置」<i class="anchor">#</i></h2><p><code>begin()</code> 指向第一个元素，<code>end()</code> 指向最后一个元素的再后面一个位置。记住 <code>end()</code> 不是最后一个元素，这是新手最容易差一的地方。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">vector</span>&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt; v = {<span class="tok-num">10</span>, <span class="tok-num">20</span>, <span class="tok-num">30</span>};
+
+    <span class="tok-key">for</span> (<span class="tok-key">auto</span> it = v.<span class="tok-fn">begin</span>(); it != v.<span class="tok-fn">end</span>(); ++it) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; *it &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+    <span class="tok-key">auto</span> it = v.<span class="tok-fn">begin</span>();
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; *it &lt;&lt; <span class="tok-str">&quot; &quot;</span> &lt;&lt; *(it + <span class="tok-num">1</span>) &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; (v.<span class="tok-fn">end</span>() - v.<span class="tok-fn">begin</span>()) &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>10
+20
+30
+10 20
+3</pre></div><p><code>*it</code> 是「取出 it 指着的那个元素」，<code>++it</code> 是「往后挪一格」，<code>it != end()</code> 是「还没走完」。这套用法和指针很像：指针（<a href="09-inheritance.html">第 9 课 继承与多态：让不同的东西说同一种话</a> 讲过）存的是内存地址，迭代器存的是容器里的位置，你可以先把它当成「更通用的指针」。</p><p><code>begin()</code> 和 <code>end()</code> 构成一个左闭右开的区间 <code>[begin, end)</code>，循环条件习惯写 <code>it != end()</code>。<code>it &lt; end()</code> 在 vector 上也能用，换个容器就未必了。空容器里 <code>begin() == end()</code>，循环一次都不跑，这个设计正是为了让你不用特判空容器。</p><p><code>end()</code> 不能解引用。<code>*v.end()</code> 是未定义行为，因为它后面根本没有元素。</p><p>迭代器也分档。vector 的迭代器支持 <code>it + n</code>、<code>it2 - it1</code> 和 <code>&lt;</code>；<code>std::list</code> 的迭代器只能 <code>++</code> 和 <code>--</code>，不能 <code>+ n</code>；map 的迭代器是双向的。所以写通用代码时习惯用 <code>!=</code> 而不是 <code>&lt;</code>，用 <code>++</code> 而不是 <code>+= 1</code>，换个容器也能跑。范围 for（<code>for (int x : v)</code>）本质上就是这套 begin/end 的语法糖。</p><p>算法只认迭代器、不认容器，带来一个好处：同一份代码既能处理 vector，也能处理普通数组。数组的「开始」就是数组名，「结束」写作「数组名 + 长度」，传给 <code>std::sort</code> 照样能排。C++11 起还可以直接用 <code>std::begin(a)</code>、<code>std::end(a)</code>，省得自己算。</p><h2 id="sec-2">13.2 <code>sort</code> 与 lambda 比较器<i class="anchor">#</i></h2><p><code>std::sort</code> 默认从小到大排。要改顺序，就传第三个参数：一个返回 bool 的比较器。C++11 之后最方便的写法是 lambda（就地写的小函数）。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;algorithm&gt;
+<span class="tok-pre">#include</span> &lt;cstddef&gt;
+<span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">vector</span>&gt;
+
+<span class="tok-key">struct</span> Student {
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> name;
+    <span class="tok-type">int</span> score;
+};
+
+<span class="tok-type">void</span> <span class="tok-fn">printInts</span>(<span class="tok-key">const</span> <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt;&amp; v) {
+    <span class="tok-key">for</span> (<span class="tok-type">std</span>::<span class="tok-type">size_t</span> i = <span class="tok-num">0</span>; i &lt; v.<span class="tok-fn">size</span>(); ++i) {
+        <span class="tok-key">if</span> (i != <span class="tok-num">0</span>) {
+            <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot; &quot;</span>;
+        }
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; v[i];
+    }
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt; nums = {<span class="tok-num">5</span>, <span class="tok-num">2</span>, <span class="tok-num">9</span>, <span class="tok-num">1</span>};
+    <span class="tok-type">std</span>::<span class="tok-fn">sort</span>(nums.<span class="tok-fn">begin</span>(), nums.<span class="tok-fn">end</span>());
+    <span class="tok-fn">printInts</span>(nums);
+
+    <span class="tok-type">std</span>::<span class="tok-fn">sort</span>(nums.<span class="tok-fn">begin</span>(), nums.<span class="tok-fn">end</span>(), [](<span class="tok-type">int</span> a, <span class="tok-type">int</span> b) {
+        <span class="tok-key">return</span> a &gt; b;
+    });
+    <span class="tok-fn">printInts</span>(nums);
+
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;Student&gt; students = {
+        {<span class="tok-str">&quot;小明&quot;</span>, <span class="tok-num">80</span>}, {<span class="tok-str">&quot;小红&quot;</span>, <span class="tok-num">95</span>}, {<span class="tok-str">&quot;小刚&quot;</span>, <span class="tok-num">88</span>}
+    };
+    <span class="tok-type">std</span>::<span class="tok-fn">sort</span>(students.<span class="tok-fn">begin</span>(), students.<span class="tok-fn">end</span>(),
+              [](<span class="tok-key">const</span> Student&amp; a, <span class="tok-key">const</span> Student&amp; b) {
+                  <span class="tok-key">return</span> a.score &gt; b.score;
+              });
+
+    <span class="tok-key">for</span> (<span class="tok-key">const</span> <span class="tok-key">auto</span>&amp; s : students) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; s.name &lt;&lt; <span class="tok-str">&quot; &quot;</span> &lt;&lt; s.score &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>1 2 5 9
+9 5 2 1
+小红 95
+小刚 88
+小明 80</pre></div><p><code>struct</code> 在这里就是把几个字段打包成一个新类型，它和 <code>class</code> 几乎一样，区别只是默认成员是公开的。<code>students</code> 里每个元素是一个 <code>Student</code>，用 <code>.</code> 访问字段。</p><p>lambda 的写法是 <code>[捕获列表](参数) { 函数体 }</code>。捕获列表为空，说明它不用外面的变量；参数是两个待比较的元素；返回值是 bool，表示「a 应不应该排在 b 前面」。</p><p>比较器必须满足严格弱序，说人话就是：两个元素相等的时候必须返回 false。用 <code>a &lt; b</code> 或 <code>a &gt; b</code> 都对，用 <code>a &lt;= b</code> 就错了。<code>std::sort</code> 内部假设「比较器说 a 不小于 b、b 也不小于 a」时两者等价，你写 <code>&lt;=</code> 会让它把相等元素判成「a 在 b 前面」，排序过程可能越界，直接崩。这个错误编译器不查，运行时才炸。</p><p><code>std::sort</code> 不保证稳定：两个分数相同的学生，谁排在前面是不确定的。要保留原始顺序，用 <code>std::stable_sort</code>，代价是稍微慢一点、多占一点内存。</p><p><code>sort</code> 也只接受随机访问迭代器，<code>std::list</code> 用不了——链表节点不连续，跳到中间要一步步走。<code>list</code> 有自己的 <code>sort</code> 成员函数，别拿通用算法硬套。</p><h2 id="sec-3">13.3 <code>find</code>、<code>find_if</code> 与 <code>count</code><i class="anchor">#</i></h2><p>查找是另一个高频操作。<code>std::find</code> 找值，<code>std::find_if</code> 找第一个满足条件的元素，<code>count</code> 和 <code>count_if</code> 负责数数。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;algorithm&gt;
+<span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">vector</span>&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt; v = {<span class="tok-num">3</span>, <span class="tok-num">7</span>, <span class="tok-num">7</span>, <span class="tok-num">2</span>, <span class="tok-num">9</span>};
+
+    <span class="tok-key">auto</span> it = <span class="tok-type">std</span>::<span class="tok-fn">find</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), <span class="tok-num">7</span>);
+    <span class="tok-key">if</span> (it != v.<span class="tok-fn">end</span>()) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;找到 7，下标 &quot;</span> &lt;&lt; (it - v.<span class="tok-fn">begin</span>()) &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+    <span class="tok-key">auto</span> even = <span class="tok-type">std</span>::<span class="tok-fn">find_if</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), [](<span class="tok-type">int</span> x) {
+        <span class="tok-key">return</span> x % <span class="tok-num">2</span> == <span class="tok-num">0</span>;
+    });
+    <span class="tok-key">if</span> (even != v.<span class="tok-fn">end</span>()) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;第一个偶数 &quot;</span> &lt;&lt; *even &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-type">std</span>::<span class="tok-fn">count</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), <span class="tok-num">7</span>) &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-type">std</span>::<span class="tok-fn">count_if</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), [](<span class="tok-type">int</span> x) {
+        <span class="tok-key">return</span> x &gt; <span class="tok-num">5</span>;
+    }) &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>找到 7，下标 1
+第一个偶数 2
+2
+3</pre></div><p><code>find</code> 找不到时返回 <code>end()</code>，所以每次都要和 <code>end()</code> 比一下再用。忘了比较、直接 <code>*it</code>，在空容器上就是未定义行为。</p><p><code>it - v.begin()</code> 能算出下标，但只有随机访问迭代器支持减法。换成 <code>list</code> 或 <code>map</code>，要用 <code>std::distance(v.begin(), it)</code>，它对所有迭代器都能算，只是对非随机访问的容器是线性时间。</p><p><code>find</code> 是线性查找，数据量大会慢。数据已经排好序时，用 <code>std::binary_search</code> 或 <code>lower_bound</code>，快得多。<code>map</code> 和 <code>set</code> 有自己的 <code>find</code> 成员函数，走的是平衡树，也别对 map 用 <code>std::find</code>，那会退化成从头扫一遍。</p><p><code>count</code> 返回的类型是 <code>std::ptrdiff_t</code>，不是 int。直接输出或者和 0 比较问题不大，要把结果存下来时用 <code>auto</code> 最省心。</p><h2 id="sec-4">13.4 <code>accumulate</code> 与 <code>for_each</code><i class="anchor">#</i></h2><p>求和用 <code>std::accumulate</code>，它在 <code>&lt;numeric&gt;</code> 里，不在 <code>&lt;algorithm&gt;</code>。这个头文件很多人第一次找不到。下面这段同时用了 <code>accumulate</code> 和 <code>for_each</code>，所以两个头文件都要有。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;algorithm&gt;
+<span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;numeric&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">vector</span>&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt; v = {<span class="tok-num">1</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>, <span class="tok-num">4</span>};
+
+    <span class="tok-type">int</span> sum = <span class="tok-type">std</span>::<span class="tok-fn">accumulate</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), <span class="tok-num">0</span>);
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; sum &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+
+    <span class="tok-type">double</span> avg = <span class="tok-type">std</span>::<span class="tok-fn">accumulate</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), <span class="tok-num">0.0</span>) / v.<span class="tok-fn">size</span>();
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; avg &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+
+    <span class="tok-type">int</span> even = <span class="tok-num">0</span>;
+    <span class="tok-type">std</span>::<span class="tok-fn">for_each</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), [&amp;even](<span class="tok-type">int</span> x) {
+        <span class="tok-key">if</span> (x % <span class="tok-num">2</span> == <span class="tok-num">0</span>) {
+            ++even;
+        }
+    });
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; even &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>10
+2.5
+2</pre></div><p><code>accumulate</code> 的第三个参数是初始值，它的类型决定了整个累加过程的类型。传 <code>0</code>，累加在 int 里进行；传 <code>0.0</code>，才是 double。如果你对 <code>vector&lt;double&gt;</code> 传 <code>0</code>，每个元素会先被截成整数再加，<code>{1.5, 2.5}</code> 会得到 3 而不是 4。这个 bug 很隐蔽，因为结果看起来「差不多对」。</p><p><code>for_each</code> 对每个元素调用一次函数。这里的 lambda 用了 <code>[&amp;even]</code>，按引用捕获外面的变量，所以能改它。捕获列表写 <code>[=]</code> 是按值捕获所有用到的变量，改的是副本，外面的 even 不会变——和范围 for 里写 <code>auto x</code> 的坑一模一样。</p><p>说句实话，<code>for_each</code> 能做的事，范围 for 基本都能做，而且后者更好读。<code>for_each</code> 真正的价值在于它能作为算法链的一环，或者你想把「对每个元素做什么」抽成一个函数参数。日常代码里不必为了「用上 STL」而硬套。</p><p><code>accumulate</code> 还能接第四个参数，自定义「怎么加」。比如把一串字符串用逗号拼起来，或者累乘。写这个 lambda 时注意参数顺序：第一个是当前的累计值，第二个是当前元素，返回值是新的累计值。</p><h2 id="sec-5">13.5 把算法串起来：筛选、变换、删除<i class="anchor">#</i></h2><p>真正好用的地方，是把几个算法串起来处理一条数据流。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;algorithm&gt;
+<span class="tok-pre">#include</span> &lt;cstddef&gt;
+<span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;iterator&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">vector</span>&gt;
+
+<span class="tok-type">void</span> <span class="tok-fn">print</span>(<span class="tok-key">const</span> <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt;&amp; v) {
+    <span class="tok-key">for</span> (<span class="tok-type">std</span>::<span class="tok-type">size_t</span> i = <span class="tok-num">0</span>; i &lt; v.<span class="tok-fn">size</span>(); ++i) {
+        <span class="tok-key">if</span> (i != <span class="tok-num">0</span>) {
+            <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot; &quot;</span>;
+        }
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; v[i];
+    }
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt; v = {<span class="tok-num">1</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>, <span class="tok-num">4</span>, <span class="tok-num">5</span>, <span class="tok-num">6</span>};
+
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt; evens;
+    <span class="tok-type">std</span>::<span class="tok-fn">copy_if</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), <span class="tok-type">std</span>::<span class="tok-fn">back_inserter</span>(evens), [](<span class="tok-type">int</span> x) {
+        <span class="tok-key">return</span> x % <span class="tok-num">2</span> == <span class="tok-num">0</span>;
+    });
+
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt; doubled;
+    <span class="tok-type">std</span>::<span class="tok-fn">transform</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), <span class="tok-type">std</span>::<span class="tok-fn">back_inserter</span>(doubled), [](<span class="tok-type">int</span> x) {
+        <span class="tok-key">return</span> x * <span class="tok-num">2</span>;
+    });
+
+    v.<span class="tok-fn">erase</span>(<span class="tok-type">std</span>::<span class="tok-fn">remove_if</span>(v.<span class="tok-fn">begin</span>(), v.<span class="tok-fn">end</span>(), [](<span class="tok-type">int</span> x) {
+        <span class="tok-key">return</span> x &lt; <span class="tok-num">3</span>;
+    }), v.<span class="tok-fn">end</span>());
+
+    <span class="tok-fn">print</span>(evens);
+    <span class="tok-fn">print</span>(doubled);
+    <span class="tok-fn">print</span>(v);
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>2 4 6
+2 4 6 8 10 12
+3 4 5 6</pre></div><p><code>std::back_inserter</code> 返回一个插入迭代器，赋值给它就等于对容器 <code>push_back</code>。它定义在 <code>&lt;iterator&gt;</code> 里，作用是让「往空容器里写」的算法不用提前 resize。它每次插入都可能触发扩容，元素多时效率不高；大概知道规模的话，先 <code>reserve</code> 预留，能省掉反复分配和搬移。</p><p><code>remove_if</code> 是最容易误会的一个。它不删除元素，也不改变容器大小，只是把保留下来的元素往前挪，返回新的逻辑结尾，后面的元素内容是未指定的。所以必须再调一次 <code>erase</code>，把 <code>[newEnd, v.end())</code> 这一段真正删掉。这个组合叫 erase-remove 惯用法，C++ 里用了二十年。C++20 有了 <code>std::erase_if</code>，一行就能搞定，但我们这套 GCC 4.9 用不上，老老实实写两行。</p><p><code>remove_if</code> 挪动元素时用的是移动赋值，对 <code>std::string</code> 这类类型比逐个拷贝便宜。代价是它要求元素可移动或可拷贝。</p><h2 id="sec-6">13.6 迭代器失效与算法选择<i class="anchor">#</i></h2><p>用算法和迭代器时，最危险的不是写错参数，而是容器变了、迭代器还指着老位置。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">vector</span>&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">int</span>&gt; v = {<span class="tok-num">1</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>, <span class="tok-num">4</span>, <span class="tok-num">5</span>, <span class="tok-num">6</span>};
+
+    <span class="tok-key">for</span> (<span class="tok-key">auto</span> it = v.<span class="tok-fn">begin</span>(); it != v.<span class="tok-fn">end</span>(); ) {
+        <span class="tok-key">if</span> (*it % <span class="tok-num">2</span> == <span class="tok-num">0</span>) {
+            it = v.<span class="tok-fn">erase</span>(it);
+        } <span class="tok-key">else</span> {
+            ++it;
+        }
+    }
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> x : v) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; x &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>1
+3
+5</pre></div><p><code>erase</code> 会让被删位置及其后面的迭代器失效，但它会返回下一个有效位置。所以正确写法是 <code>it = v.erase(it)</code>，并且不要再 <code>++it</code>，否则会跳过一个元素。如果先 <code>++it</code> 再 erase，或者 erase 完还拿着旧迭代器，都是未定义行为。</p><p><code>push_back</code> 可能触发扩容，一旦扩容，所有指向旧内存的迭代器、指针、引用全部失效。范围 for 里增删元素是重灾区，<a href="08-modern-cpp.html">第 8 课 auto、nullptr 与范围 for</a> 提过一次，这里再强调一遍：循环里别改容器大小。<code>reserve</code> 能减少扩容次数，但不能让迭代器永远有效——容量一变，位置就变了，这是 vector 连续存储的代价。</p><p>选算法的标准很简单：先看数据有没有序。有序就用二分（<code>binary_search</code>、<code>lower_bound</code>），无序就线性扫（<code>find</code>、<code>count</code>）。要排序就用 <code>sort</code>，需要稳定用 <code>stable_sort</code>。求和、求积、拼接用 <code>accumulate</code>。带条件的筛选和变换用 <code>copy_if</code>、<code>transform</code>、<code>remove_if</code>。</p><div class="table-wrap"><table><thead><tr><th>算法</th><th>典型用途</th><th>复杂度</th></tr></thead><tbody><tr><td><code>sort</code></td><td>排序</td><td>O(n log n)</td></tr><tr><td><code>find</code></td><td>查找某个值</td><td>O(n)</td></tr><tr><td><code>binary_search</code></td><td>有序区间查找</td><td>O(log n)</td></tr><tr><td><code>count</code></td><td>统计出现次数</td><td>O(n)</td></tr><tr><td><code>accumulate</code></td><td>累加、累乘</td><td>O(n)</td></tr><tr><td><code>for_each</code></td><td>对每个元素执行操作</td><td>O(n)</td></tr></tbody></table></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>迭代器是容器里的位置：<code>*it</code> 取值，<code>++it</code> 前进，区间是 <code>[begin, end)</code></li><li><code>sort</code> 的比较器必须严格弱序，相等时返回 false；要稳定排序用 <code>stable_sort</code></li><li><code>find</code> 找不到返回 <code>end()</code>；有序数据用 <code>binary_search</code>，<code>map</code> 用自己的 <code>find</code></li><li><code>accumulate</code> 的初始值类型决定累加类型，求平均值记得写 <code>0.0</code></li><li><code>remove_if</code> 只挪不删，必须配 <code>erase</code>；<code>erase</code> 之后要用它返回的新迭代器</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>用 <code>std::sort</code> 和 lambda 把 <code>vector&lt;Student&gt;</code> 按分数降序排列；分数相同时按姓名升序。提示：比较器里先比分数，相等再比姓名。</li><li>用 <code>find_if</code> 找出 <code>vector&lt;string&gt;</code> 里第一个长度大于 3 的字符串，找不到时输出提示；再用 <code>count_if</code> 统计以 <code>a</code> 开头的单词个数。</li><li>用 <code>accumulate</code> 求 <code>vector&lt;double&gt;</code> 的平均值。然后把初始值从 <code>0.0</code> 改成 <code>0</code>，运行并解释结果为什么不对。</li><li>用 <code>remove_if</code> 加 <code>erase</code> 删除 <code>vector&lt;int&gt;</code> 里所有负数，再用迭代器打印剩余元素。解释为什么 erase 之后不能继续使用旧的迭代器。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="cpp-13-stl-algorithms"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../cpp/12-exception.html"><span>上一章</span><b>第 12 课 异常处理：把「出错了」和「算完了」分开</b></a><a class="pager-item next" href="../cpp/14-smart-pointer.html"><span>下一章</span><b>第 14 课 智能指针与移动语义：让「谁负责释放」写进类型</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">13.1 迭代器：容器里的「位置」</a><a class="toc-link level-2" href="#sec-2">13.2 <code>sort</code> 与 lambda 比较器</a><a class="toc-link level-2" href="#sec-3">13.3 <code>find</code>、<code>find_if</code> 与 <code>count</code></a><a class="toc-link level-2" href="#sec-4">13.4 <code>accumulate</code> 与 <code>for_each</code></a><a class="toc-link level-2" href="#sec-5">13.5 把算法串起来：筛选、变换、删除</a><a class="toc-link level-2" href="#sec-6">13.6 迭代器失效与算法选择</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

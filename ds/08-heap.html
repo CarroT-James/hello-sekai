@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 8 课 堆与优先队列 · Hello Sekai</title>
+<meta name="description" content="只要堆顶是老大，别的顺序一概不管。这一课用数组装完全二叉树，写上浮下沉，再做堆排序和 top-k。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="ds-08-heap" data-track="ds" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link is-active" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">数据结构</span><a class="sidebar-back" href="../ds/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../ds/01-complexity.html" data-id="ds-01-complexity"><span class="side-num">01</span><span class="side-text">第 1 课 复杂度与算法思维</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/02-arraylist.html" data-id="ds-02-arraylist"><span class="side-num">02</span><span class="side-text">第 2 课 线性表与动态数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/03-linked-list.html" data-id="ds-03-linked-list"><span class="side-num">03</span><span class="side-text">第 3 课 链表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/04-stack.html" data-id="ds-04-stack"><span class="side-num">04</span><span class="side-text">第 4 课 栈</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/05-queue.html" data-id="ds-05-queue"><span class="side-num">05</span><span class="side-text">第 5 课 队列与双端队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/06-tree.html" data-id="ds-06-tree"><span class="side-num">06</span><span class="side-text">第 6 课 树与二叉树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/07-bst.html" data-id="ds-07-bst"><span class="side-num">07</span><span class="side-text">第 7 课 二叉搜索树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../ds/08-heap.html" data-id="ds-08-heap"><span class="side-num">08</span><span class="side-text">第 8 课 堆与优先队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/09-hash.html" data-id="ds-09-hash"><span class="side-num">09</span><span class="side-text">第 9 课 哈希表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/10-graph.html" data-id="ds-10-graph"><span class="side-num">10</span><span class="side-text">第 10 课 图与遍历</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/11-sorting.html" data-id="ds-11-sorting"><span class="side-num">11</span><span class="side-text">第 11 课 排序算法总览</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/12-dp.html" data-id="ds-12-dp"><span class="side-num">12</span><span class="side-text">第 12 课 递归、分治与动态规划入门</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../ds/index.html">← 返回数据结构</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../ds/index.html">数据结构</a> <span class="sep">/</span> <span>第 8 课 堆与优先队列</span></div><h1 class="doc-title">第 8 课 堆与优先队列</h1><div class="doc-meta"><span>预计 35 分钟</span><span class="dot">·</span><span>约 7,241 字</span><span class="dot">·</span><span>数据结构</span></div><article class="prose" id="article"><p>上一课 <a href="07-bst.html">第 7 课 二叉搜索树</a> 里的 BST 对顺序很讲究：左小右大，一点都不能乱。这一课要讲的堆正相反，它对顺序极其马虎，兄弟之间谁大谁小完全不关心，只守一条：<strong>每个结点都不小于它的两个孩子</strong>。</p><p>听起来像偷懒，但这条偷懒的规矩换来了一样 BST 给不了的东西：随时能拿到最大值，而且拿走的代价只有 O(log n)。</p><p>医院急诊分诊就是堆的逻辑。病人来了不排队，按病情插进去；医生永远先看最重的那一个。你不关心第二个和第三个谁更重，你只关心「现在最该看谁」。</p><h2 id="sec-1">8.1 堆只保证一件事：根是最大的<i class="anchor">#</i></h2><p>大根堆的规矩有两条：</p><ul><li>每个结点的值都不小于它的两个孩子</li><li>整棵树是<strong>完全二叉树</strong>，除了最后一层，别的层都填满，最后一层靠左挨着排</li></ul><p>第一条保证根是全场最大。第二条看着像排版要求，其实是为了存储：完全二叉树没有空洞，可以直接压进一个数组，一个字节都不浪费。</p><p>注意堆不保证「左孩子比右孩子大」，也不保证「第二层比第三层都大」。它是一条条从根到叶的链上递减，不是一层层递减。这一点新手最容易想错。</p><div class="table-wrap"><table><thead><tr><th>你想要</th><th>该用什么</th></tr></thead><tbody><tr><td>随时取最大/最小，还要能插入</td><td>堆，O(log n)</td></tr><tr><td>全部排好序，能按顺序遍历</td><td>BST 或排序，O(log n) 或 O(n log n)</td></tr><tr><td>按 key 查值</td><td>哈希表，O(1)</td></tr></tbody></table></div><h2 id="sec-2">8.2 用数组装一棵完全二叉树<i class="anchor">#</i></h2><p>完全二叉树没有空洞，所以从 0 开始给结点编号，父子关系能直接用下标算出来：</p><ul><li><code>i</code> 的父结点是 <code>(i - 1) / 2</code></li><li><code>i</code> 的左孩子是 <code>2 * i + 1</code>，右孩子是 <code>2 * i + 2</code></li></ul><p>这组公式是整课的钥匙，最好背下来。它意味着你不需要任何指针，一个 <code>int</code> 数组就是一棵树。数组下标和地址的关系在 <a href="../c/rumen/ch05.html">C 语言 数组</a> 里讲过，不熟的话回去扫一眼。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> a[] = {<span class="tok-num">90</span>, <span class="tok-num">70</span>, <span class="tok-num">80</span>, <span class="tok-num">40</span>, <span class="tok-num">60</span>, <span class="tok-num">50</span>, <span class="tok-num">30</span>};
+    <span class="tok-type">int</span> n = <span class="tok-num">7</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; n; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;a[%d] = %2d&quot;</span>, i, a[i]);
+        <span class="tok-key">if</span> (i &gt; <span class="tok-num">0</span>) {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;，父 %d&quot;</span>, a[(i - <span class="tok-num">1</span>) / <span class="tok-num">2</span>]);
+        }
+        <span class="tok-key">if</span> (<span class="tok-num">2</span> * i + <span class="tok-num">1</span> &lt; n) {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;，左 %d&quot;</span>, a[<span class="tok-num">2</span> * i + <span class="tok-num">1</span>]);
+        }
+        <span class="tok-key">if</span> (<span class="tok-num">2</span> * i + <span class="tok-num">2</span> &lt; n) {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;，右 %d&quot;</span>, a[<span class="tok-num">2</span> * i + <span class="tok-num">2</span>]);
+        }
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>a[0] = 90，左 70，右 80
+a[1] = 70，父 90，左 40，右 60
+a[2] = 80，父 90，左 50，右 30
+a[3] = 40，父 70
+a[4] = 60，父 70
+a[5] = 50，父 80
+a[6] = 30，父 80</pre></div><p>第 0 个元素没有父结点，代码里用 <code>i &gt; 0</code> 挡掉了，否则 <code>(0 - 1) / 2</code> 在整数除法下是 0，程序会拿根结点当它自己的爸爸，不崩但很荒唐。</p><p>下标 3 到 6 都没有孩子，因为 <code>2 * 3 + 1 = 7</code> 已经越界。<strong>下标大于等于 <code>n / 2</code> 的结点全是叶子</strong>，这句话在 8.5 建堆时会再用一次。</p><p>再检查一下这棵树是不是大根堆：90 的两个孩子 70、80 都比它小；70 的孩子 40、60 也比它小；80 的孩子 50、30 更小。三条链 90-70-60、90-70-40、90-80-50，都是递减的，符合规矩。</p><h2 id="sec-3">8.3 插入：先放到最后，再往上顶<i class="anchor">#</i></h2><p>往堆里加一个元素，分两步：</p><ol><li>放到数组末尾，也就是完全二叉树的最后一个空位</li><li>和父结点比，比父结点大就交换，一直换到不用换为止</li></ol><p>这叫上浮。它只沿着一条从叶到根的路径走，最多 log2(n) 步。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-pre">#define</span> MAXN <span class="tok-num">100</span>
+
+<span class="tok-type">int</span> heap[MAXN];
+<span class="tok-type">int</span> n = <span class="tok-num">0</span>;
+
+<span class="tok-type">void</span> <span class="tok-fn">push</span>(<span class="tok-type">int</span> v) {
+    <span class="tok-type">int</span> i = n;
+    n++;
+    heap[i] = v;
+
+    <span class="tok-key">while</span> (i &gt; <span class="tok-num">0</span>) {
+        <span class="tok-type">int</span> parent = (i - <span class="tok-num">1</span>) / <span class="tok-num">2</span>;
+        <span class="tok-key">if</span> (heap[parent] &gt;= heap[i]) {
+            <span class="tok-key">break</span>;
+        }
+        <span class="tok-type">int</span> t = heap[parent];
+        heap[parent] = heap[i];
+        heap[i] = t;
+        i = parent;
+    }
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">show</span>(<span class="tok-type">void</span>) {
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;[&quot;</span>);
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; n; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d%s&quot;</span>, heap[i], i + <span class="tok-num">1</span> &lt; n ? <span class="tok-str">&quot; &quot;</span> : <span class="tok-str">&quot;&quot;</span>);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;]\n&quot;</span>);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> values[] = {<span class="tok-num">50</span>, <span class="tok-num">30</span>, <span class="tok-num">80</span>, <span class="tok-num">20</span>, <span class="tok-num">90</span>, <span class="tok-num">70</span>};
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">6</span>; i++) {
+        <span class="tok-fn">push</span>(values[i]);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;push %d 后：&quot;</span>, values[i]);
+        <span class="tok-fn">show</span>();
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>push 50 后：[50]
+push 30 后：[50 30]
+push 80 后：[80 30 50]
+push 20 后：[80 30 50 20]
+push 90 后：[90 80 50 20 30]
+push 70 后：[90 80 70 20 30 50]</pre></div><p>盯着最后一步看：70 放进下标 6，父结点是下标 2 的 50，70 更大，交换，数组变成 <code>[90 80 70 20 30 50]</code>。再看父结点下标 0 的 90，90 更大，停。整个上浮只走了两层。</p><p><code>if (heap[parent] &gt;= heap[i]) break;</code> 这一句不能漏。少了它，循环会一路换到根，把本来对的顺序又换坏。</p><h2 id="sec-4">8.4 弹出堆顶：这就是优先队列的出队<i class="anchor">#</i></h2><p>取最大值很简单，<code>heap[0]</code>。难的是取完之后怎么补位。</p><p>能直接让左孩子顶上来吗？不行，右孩子可能更大。标准做法有点反直觉：<strong>把最后一个元素搬到根上，然后让它往下沉</strong>。</p><p>下沉的规则：和两个孩子里较大的那个比，自己小了就交换，一直换到不用换或者到底为止。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-pre">#define</span> MAXN <span class="tok-num">100</span>
+
+<span class="tok-type">int</span> heap[MAXN];
+<span class="tok-type">int</span> n = <span class="tok-num">0</span>;
+
+<span class="tok-type">void</span> <span class="tok-fn">push</span>(<span class="tok-type">int</span> v) {
+    <span class="tok-type">int</span> i = n;
+    n++;
+    heap[i] = v;
+    <span class="tok-key">while</span> (i &gt; <span class="tok-num">0</span>) {
+        <span class="tok-type">int</span> parent = (i - <span class="tok-num">1</span>) / <span class="tok-num">2</span>;
+        <span class="tok-key">if</span> (heap[parent] &gt;= heap[i]) {
+            <span class="tok-key">break</span>;
+        }
+        <span class="tok-type">int</span> t = heap[parent];
+        heap[parent] = heap[i];
+        heap[i] = t;
+        i = parent;
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">pop</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> top = heap[<span class="tok-num">0</span>];
+    n--;
+    heap[<span class="tok-num">0</span>] = heap[n];
+
+    <span class="tok-type">int</span> i = <span class="tok-num">0</span>;
+    <span class="tok-key">while</span> (<span class="tok-num">1</span>) {
+        <span class="tok-type">int</span> left = <span class="tok-num">2</span> * i + <span class="tok-num">1</span>;
+        <span class="tok-type">int</span> right = <span class="tok-num">2</span> * i + <span class="tok-num">2</span>;
+        <span class="tok-type">int</span> big = i;
+        <span class="tok-key">if</span> (left &lt; n &amp;&amp; heap[left] &gt; heap[big]) {
+            big = left;
+        }
+        <span class="tok-key">if</span> (right &lt; n &amp;&amp; heap[right] &gt; heap[big]) {
+            big = right;
+        }
+        <span class="tok-key">if</span> (big == i) {
+            <span class="tok-key">break</span>;
+        }
+        <span class="tok-type">int</span> t = heap[i];
+        heap[i] = heap[big];
+        heap[big] = t;
+        i = big;
+    }
+    <span class="tok-key">return</span> top;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> values[] = {<span class="tok-num">50</span>, <span class="tok-num">30</span>, <span class="tok-num">80</span>, <span class="tok-num">20</span>, <span class="tok-num">90</span>, <span class="tok-num">70</span>};
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">6</span>; i++) {
+        <span class="tok-fn">push</span>(values[i]);
+    }
+
+    <span class="tok-key">while</span> (n &gt; <span class="tok-num">0</span>) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, <span class="tok-fn">pop</span>());
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>90 80 70 50 30 20</pre></div><p>输出是降序，这很符合直觉：每次拿走的都是当前最大的。</p><p><code>heap[0] = heap[n];</code> 这一行把最后一个元素搬到了根，所以 <code>n--</code> 必须在它前面，否则搬的是已经被扔掉的自己。这种「先减长度再取元素」的小顺序，写反了不报错，只是偶尔少一个数。</p><p><code>big</code> 的写法值得学：先假设自己最大，再依次和左、右孩子比，全程只维护一个下标。比写一堆 <code>if-else</code> 分支清楚得多。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>记忆点</span></div><div class="callout-body"><p>上浮是和父亲比，下沉是和两个孩子里大的那个比。上浮用于插入，下沉用于删除。两者的循环次数都不超过树高。</p></div></div><p><strong>这里就是优先队列</strong>。所谓优先队列，不是一种新结构，而是「每次取出的都是当前优先级最高的元素」这个接口。堆是实现它最常用的方式，入队 = <code>push</code>，出队 = <code>pop</code>，取队头 = <code>heap[0]</code>，三个操作全是 O(log n) 或 O(1)。急诊分诊、任务调度、Dijkstra 最短路，用的都是它。</p><p>C 标准库没有堆，<code>&lt;stdlib.h&gt;</code> 里只有 <code>qsort</code>，所以你得自己写这几行。C++ 的 <code>std::priority_queue</code> 和 Python 的 <code>heapq</code> 就是现成的，接口一模一样。</p><h2 id="sec-5">8.5 建堆：为什么它只要 O(n)<i class="anchor">#</i></h2><p>如果手上已经有一整个数组，要把它变成堆，笨办法是挨个 <code>push</code>，那是 O(n log n)。</p><p>聪明办法是从最后一个非叶结点开始，倒着对每个结点做一次下沉：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">long</span> swaps = <span class="tok-num">0</span>;
+
+<span class="tok-type">void</span> <span class="tok-fn">sift_down</span>(<span class="tok-type">int</span> *a, <span class="tok-type">int</span> n, <span class="tok-type">int</span> i) {
+    <span class="tok-key">while</span> (<span class="tok-num">1</span>) {
+        <span class="tok-type">int</span> left = <span class="tok-num">2</span> * i + <span class="tok-num">1</span>;
+        <span class="tok-type">int</span> right = <span class="tok-num">2</span> * i + <span class="tok-num">2</span>;
+        <span class="tok-type">int</span> big = i;
+        <span class="tok-key">if</span> (left &lt; n &amp;&amp; a[left] &gt; a[big]) {
+            big = left;
+        }
+        <span class="tok-key">if</span> (right &lt; n &amp;&amp; a[right] &gt; a[big]) {
+            big = right;
+        }
+        <span class="tok-key">if</span> (big == i) {
+            <span class="tok-key">return</span>;
+        }
+        <span class="tok-type">int</span> t = a[i];
+        a[i] = a[big];
+        a[big] = t;
+        swaps++;
+        i = big;
+    }
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">push</span>(<span class="tok-type">int</span> *a, <span class="tok-type">int</span> *n, <span class="tok-type">int</span> v) {
+    <span class="tok-type">int</span> i = *n;
+    (*n)++;
+    a[i] = v;
+    <span class="tok-key">while</span> (i &gt; <span class="tok-num">0</span>) {
+        <span class="tok-type">int</span> parent = (i - <span class="tok-num">1</span>) / <span class="tok-num">2</span>;
+        <span class="tok-key">if</span> (a[parent] &gt;= a[i]) {
+            <span class="tok-key">break</span>;
+        }
+        <span class="tok-type">int</span> t = a[parent];
+        a[parent] = a[i];
+        a[i] = t;
+        swaps++;
+        i = parent;
+    }
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">heapify</span>(<span class="tok-type">int</span> *a, <span class="tok-type">int</span> n) {
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = n / <span class="tok-num">2</span> - <span class="tok-num">1</span>; i &gt;= <span class="tok-num">0</span>; i--) {
+        <span class="tok-fn">sift_down</span>(a, n, i);
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> a[<span class="tok-num">15</span>];
+    <span class="tok-type">int</span> b[<span class="tok-num">15</span>];
+    <span class="tok-type">int</span> na = <span class="tok-num">0</span>;
+    <span class="tok-type">int</span> nb = <span class="tok-num">15</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">15</span>; i++) {
+        a[i] = i + <span class="tok-num">1</span>;
+        b[i] = i + <span class="tok-num">1</span>;
+    }
+
+    swaps = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">15</span>; i++) {
+        <span class="tok-fn">push</span>(a, &amp;na, b[i]);
+    }
+    <span class="tok-type">long</span> push_swaps = swaps;
+
+    swaps = <span class="tok-num">0</span>;
+    <span class="tok-fn">heapify</span>(b, nb);
+    <span class="tok-type">long</span> heapify_swaps = swaps;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;逐个 push 建堆：%ld 次交换\n&quot;</span>, push_swaps);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;heapify 建堆：%ld 次交换\n&quot;</span>, heapify_swaps);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;堆顶：%d\n&quot;</span>, b[<span class="tok-num">0</span>]);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>逐个 push 建堆：34 次交换
+heapify 建堆：11 次交换
+堆顶：15</pre></div><p>同样 15 个数据，<code>push</code> 花了 34 次交换，<code>heapify</code> 只花 11 次。数据越多，差距越明显。</p><p>为什么 <code>heapify</code> 是 O(n)？因为大部分结点都在树的底部，它们下沉的距离很短。准确地说，高度为 h 的结点大约有 n/2^(h+1) 个，总代价是 Σ(n/2^(h+1) · h)，这个级数收敛到 n，不是 n log n。<strong>绝大多数结点根本不需要动</strong>，这就是省下来的部分。</p><p>循环从 <code>n / 2 - 1</code> 开始，因为下标大于等于 <code>n / 2</code> 的全是叶子，叶子没有孩子，下沉一次就立刻返回，纯属浪费。</p><p><code>push</code> 里我改成了传 <code>int *n</code>，因为要修改长度。如果这里写成 <code>int n</code>，函数里的 <code>(*n)++</code> 就改不到外面，主函数里的 <code>na</code> 永远是 0。</p><h2 id="sec-6">8.6 堆排序<i class="anchor">#</i></h2><p>有了 <code>heapify</code> 和 <code>sift_down</code>，排序几乎不用写新代码：</p><ol><li>先把数组 <code>heapify</code> 成一个大根堆，此时 <code>a[0]</code> 最大</li><li>把 <code>a[0]</code> 和 <code>a[n-1]</code> 交换，最大值就落到了最终位置</li><li>把堆的有效长度减一，对新的根做一次下沉</li><li>重复 2、3，直到只剩一个元素</li></ol><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">void</span> <span class="tok-fn">sift_down</span>(<span class="tok-type">int</span> *a, <span class="tok-type">int</span> n, <span class="tok-type">int</span> i) {
+    <span class="tok-key">while</span> (<span class="tok-num">1</span>) {
+        <span class="tok-type">int</span> left = <span class="tok-num">2</span> * i + <span class="tok-num">1</span>;
+        <span class="tok-type">int</span> right = <span class="tok-num">2</span> * i + <span class="tok-num">2</span>;
+        <span class="tok-type">int</span> big = i;
+        <span class="tok-key">if</span> (left &lt; n &amp;&amp; a[left] &gt; a[big]) {
+            big = left;
+        }
+        <span class="tok-key">if</span> (right &lt; n &amp;&amp; a[right] &gt; a[big]) {
+            big = right;
+        }
+        <span class="tok-key">if</span> (big == i) {
+            <span class="tok-key">return</span>;
+        }
+        <span class="tok-type">int</span> t = a[i];
+        a[i] = a[big];
+        a[big] = t;
+        i = big;
+    }
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">heapsort</span>(<span class="tok-type">int</span> *a, <span class="tok-type">int</span> n) {
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = n / <span class="tok-num">2</span> - <span class="tok-num">1</span>; i &gt;= <span class="tok-num">0</span>; i--) {
+        <span class="tok-fn">sift_down</span>(a, n, i);
+    }
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> end = n - <span class="tok-num">1</span>; end &gt; <span class="tok-num">0</span>; end--) {
+        <span class="tok-type">int</span> t = a[<span class="tok-num">0</span>];
+        a[<span class="tok-num">0</span>] = a[end];
+        a[end] = t;
+        <span class="tok-fn">sift_down</span>(a, end, <span class="tok-num">0</span>);
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> a[] = {<span class="tok-num">5</span>, <span class="tok-num">2</span>, <span class="tok-num">9</span>, <span class="tok-num">1</span>, <span class="tok-num">7</span>, <span class="tok-num">6</span>, <span class="tok-num">3</span>};
+    <span class="tok-type">int</span> n = <span class="tok-num">7</span>;
+
+    <span class="tok-fn">heapsort</span>(a, n);
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; n; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, a[i]);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>1 2 3 5 6 7 9</pre></div><p>注意第二次循环里传的是 <code>end</code> 而不是 <code>n</code>。<code>end</code> 就是当前堆的有效长度，已经把排好的那部分排除掉了。这个「有效长度」的概念是堆排序的关键，写错成 <code>n</code> 的话，最大的元素又被换回堆里，结果会乱。</p><p>堆排序的时间是 O(n log n)，空间 O(1)，原地完成，看起来完美。但它有一个缺点：<strong>不稳定</strong>。两个相等的元素，排序后谁在前谁在后没有保证，因为交换是跨越大段距离的。这一点下一课讲排序时会展开。</p><h2 id="sec-7">8.7 top-k：只留 k 个，别的都扔掉<i class="anchor">#</i></h2><p>面试里最爱问的一道题：从 100 万个数里找最大的 10 个。</p><p>把 100 万个数全排序是 O(n log n)，还要额外内存。用堆只要 O(n log k)：维护一个大小为 k 的堆，新元素进来跟堆顶比一下，比堆顶「更有资格」就替换掉堆顶。</p><p>有意思的是方向：<strong>找前 k 小，要用大根堆</strong>。堆顶是这 k 个里最大的那个，也就是最没资格留下的那个。新来的只要比它小，就该把它挤掉。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">void</span> <span class="tok-fn">sift_down</span>(<span class="tok-type">int</span> *a, <span class="tok-type">int</span> n, <span class="tok-type">int</span> i) {
+    <span class="tok-key">while</span> (<span class="tok-num">1</span>) {
+        <span class="tok-type">int</span> left = <span class="tok-num">2</span> * i + <span class="tok-num">1</span>;
+        <span class="tok-type">int</span> right = <span class="tok-num">2</span> * i + <span class="tok-num">2</span>;
+        <span class="tok-type">int</span> big = i;
+        <span class="tok-key">if</span> (left &lt; n &amp;&amp; a[left] &gt; a[big]) {
+            big = left;
+        }
+        <span class="tok-key">if</span> (right &lt; n &amp;&amp; a[right] &gt; a[big]) {
+            big = right;
+        }
+        <span class="tok-key">if</span> (big == i) {
+            <span class="tok-key">return</span>;
+        }
+        <span class="tok-type">int</span> t = a[i];
+        a[i] = a[big];
+        a[big] = t;
+        i = big;
+    }
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">heapify</span>(<span class="tok-type">int</span> *a, <span class="tok-type">int</span> n) {
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = n / <span class="tok-num">2</span> - <span class="tok-num">1</span>; i &gt;= <span class="tok-num">0</span>; i--) {
+        <span class="tok-fn">sift_down</span>(a, n, i);
+    }
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">heapsort</span>(<span class="tok-type">int</span> *a, <span class="tok-type">int</span> n) {
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = n / <span class="tok-num">2</span> - <span class="tok-num">1</span>; i &gt;= <span class="tok-num">0</span>; i--) {
+        <span class="tok-fn">sift_down</span>(a, n, i);
+    }
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> end = n - <span class="tok-num">1</span>; end &gt; <span class="tok-num">0</span>; end--) {
+        <span class="tok-type">int</span> t = a[<span class="tok-num">0</span>];
+        a[<span class="tok-num">0</span>] = a[end];
+        a[end] = t;
+        <span class="tok-fn">sift_down</span>(a, end, <span class="tok-num">0</span>);
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> data[] = {<span class="tok-num">7</span>, <span class="tok-num">1</span>, <span class="tok-num">9</span>, <span class="tok-num">3</span>, <span class="tok-num">8</span>, <span class="tok-num">2</span>, <span class="tok-num">6</span>, <span class="tok-num">4</span>, <span class="tok-num">5</span>};
+    <span class="tok-type">int</span> total = <span class="tok-num">9</span>;
+    <span class="tok-type">int</span> k = <span class="tok-num">4</span>;
+    <span class="tok-type">int</span> top[<span class="tok-num">4</span>];
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; k; i++) {
+        top[i] = data[i];
+    }
+    <span class="tok-fn">heapify</span>(top, k);
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = k; i &lt; total; i++) {
+        <span class="tok-key">if</span> (data[i] &lt; top[<span class="tok-num">0</span>]) {
+            top[<span class="tok-num">0</span>] = data[i];
+            <span class="tok-fn">sift_down</span>(top, k, <span class="tok-num">0</span>);
+        }
+    }
+
+    <span class="tok-fn">heapsort</span>(top, k);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;前 %d 小：&quot;</span>, k);
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; k; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, top[i]);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>前 4 小：1 2 3 4</pre></div><p><code>top</code> 只有 4 个格子，输入有 9 个数，内存占用和总数无关。这就是 top-k 的妙处：<strong>n 可以大到装不进内存，k 小到随便放</strong>。</p><p>把 <code>data[i] &lt; top[0]</code> 改成 <code>data[i] &gt; top[0]</code>，再把 <code>sift_down</code> 换成「小根堆」的版本，就是「前 k 大」。方向一反过来，整个逻辑都要跟着翻，这里最容易写混，建议两种都手写一遍。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>用大根堆找前 k 大，然后再从堆里取 k 次——那要先把 100 万个数全建成堆，O(n) 内存全占了，等于没用 top-k 的思路。找前 k 大必须用小根堆，堆里始终只放 k 个。</p></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>把本课的堆改成小根堆（最小堆），用同一组数据测试 <code>push</code>、<code>pop</code>，输出应该是升序。</li><li>给堆加一个 <code>change(int i, int v)</code>，把下标 <code>i</code> 的元素改成 <code>v</code>，仍然保持堆性质。提示：变大就上浮，变小就下沉。</li><li>用堆合并 k 个有序数组：把每个数组的第一个元素放进小根堆，每次弹出最小的，再把那个数组的下一个元素压进去。写出完整程序。</li><li>有一组任务，每个任务有截止时间和收益，写一个程序用堆在 O(n log n) 内选出能按时完成的收益最大的任务集合。</li></ol></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>堆只看上下、不看左右，是完全二叉树，用数组存，父子下标靠 <code>2i+1</code> 和 <code>(i-1)/2</code> 算</li><li>插入是放末尾再上浮，删堆顶是搬末尾再下沉，都是 O(log n)；优先队列就是这套接口</li><li>批量建堆从 <code>n/2-1</code> 倒着下沉，只要 O(n)，比逐个插入快一倍以上</li><li>堆排序 O(n log n)、原地、不稳定；top-k 用大小为 k 的堆，方向别搞反</li><li>下一课 <a href="09-hash.html">第 9 课 哈希表</a>：不比较大小，直接算位置，查找 O(1) 的代价是丢掉顺序</li></ul></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="ds-08-heap"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../ds/07-bst.html"><span>上一章</span><b>第 7 课 二叉搜索树</b></a><a class="pager-item next" href="../ds/09-hash.html"><span>下一章</span><b>第 9 课 哈希表</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">8.1 堆只保证一件事：根是最大的</a><a class="toc-link level-2" href="#sec-2">8.2 用数组装一棵完全二叉树</a><a class="toc-link level-2" href="#sec-3">8.3 插入：先放到最后，再往上顶</a><a class="toc-link level-2" href="#sec-4">8.4 弹出堆顶：这就是优先队列的出队</a><a class="toc-link level-2" href="#sec-5">8.5 建堆：为什么它只要 O(n)</a><a class="toc-link level-2" href="#sec-6">8.6 堆排序</a><a class="toc-link level-2" href="#sec-7">8.7 top-k：只留 k 个，别的都扔掉</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

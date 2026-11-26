@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 7 课 二叉搜索树 · Hello Sekai</title>
+<meta name="description" content="给二叉树加一条「左边都比根小」的规矩，查找就能一路砍半。这一课写插入、删除，也看看它退化成链表时的样子。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="ds-07-bst" data-track="ds" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link is-active" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">数据结构</span><a class="sidebar-back" href="../ds/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../ds/01-complexity.html" data-id="ds-01-complexity"><span class="side-num">01</span><span class="side-text">第 1 课 复杂度与算法思维</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/02-arraylist.html" data-id="ds-02-arraylist"><span class="side-num">02</span><span class="side-text">第 2 课 线性表与动态数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/03-linked-list.html" data-id="ds-03-linked-list"><span class="side-num">03</span><span class="side-text">第 3 课 链表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/04-stack.html" data-id="ds-04-stack"><span class="side-num">04</span><span class="side-text">第 4 课 栈</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/05-queue.html" data-id="ds-05-queue"><span class="side-num">05</span><span class="side-text">第 5 课 队列与双端队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/06-tree.html" data-id="ds-06-tree"><span class="side-num">06</span><span class="side-text">第 6 课 树与二叉树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../ds/07-bst.html" data-id="ds-07-bst"><span class="side-num">07</span><span class="side-text">第 7 课 二叉搜索树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/08-heap.html" data-id="ds-08-heap"><span class="side-num">08</span><span class="side-text">第 8 课 堆与优先队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/09-hash.html" data-id="ds-09-hash"><span class="side-num">09</span><span class="side-text">第 9 课 哈希表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/10-graph.html" data-id="ds-10-graph"><span class="side-num">10</span><span class="side-text">第 10 课 图与遍历</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/11-sorting.html" data-id="ds-11-sorting"><span class="side-num">11</span><span class="side-text">第 11 课 排序算法总览</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/12-dp.html" data-id="ds-12-dp"><span class="side-num">12</span><span class="side-text">第 12 课 递归、分治与动态规划入门</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../ds/index.html">← 返回数据结构</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../ds/index.html">数据结构</a> <span class="sep">/</span> <span>第 7 课 二叉搜索树</span></div><h1 class="doc-title">第 7 课 二叉搜索树</h1><div class="doc-meta"><span>预计 35 分钟</span><span class="dot">·</span><span>约 8,553 字</span><span class="dot">·</span><span>数据结构</span></div><article class="prose" id="article"><p><a href="06-tree.html">第 6 课 树与二叉树</a> 里，你把三种遍历写顺了。那时候树只是「有左右两个孩子」的结点堆在一起，谁大谁小无所谓。现在给它加一条规矩：<strong>左子树里所有的值都比根小，右子树里所有的值都比根大</strong>。这条规矩一加，树就从「能遍历」变成了「能查找」，名字也跟着变：二叉搜索树，英文缩写 BST。</p><p>它的好用之处很像查纸质字典。你不会从第一页翻到最后一页去找一个词，而是翻到中间，看目标在前面还是后面，然后只管剩下的那一半。BST 的每一次比较都在做这件事。</p><p>但它有个致命的弱点，这一课的最后会看到：这棵树可能长成一条链，那时它连链表都不如。</p><h2 id="sec-1">7.1 一条规矩，换来一半<i class="anchor">#</i></h2><p>先不谈插入和删除，手工搭一棵树，看看这条规矩在代码里长什么样。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *left;
+    <span class="tok-key">struct</span> Node *right;
+} Node;
+
+Node *<span class="tok-fn">new_node</span>(<span class="tok-type">int</span> value) {
+    Node *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+    p-&gt;value = value;
+    p-&gt;left = NULL;
+    p-&gt;right = NULL;
+    <span class="tok-key">return</span> p;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">inorder</span>(Node *root) {
+    <span class="tok-key">if</span> (root == NULL) {
+        <span class="tok-key">return</span>;
+    }
+    <span class="tok-fn">inorder</span>(root-&gt;left);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, root-&gt;value);
+    <span class="tok-fn">inorder</span>(root-&gt;right);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    Node *root = <span class="tok-fn">new_node</span>(<span class="tok-num">5</span>);
+    root-&gt;left = <span class="tok-fn">new_node</span>(<span class="tok-num">3</span>);
+    root-&gt;right = <span class="tok-fn">new_node</span>(<span class="tok-num">8</span>);
+    root-&gt;left-&gt;left = <span class="tok-fn">new_node</span>(<span class="tok-num">2</span>);
+    root-&gt;left-&gt;right = <span class="tok-fn">new_node</span>(<span class="tok-num">4</span>);
+    root-&gt;right-&gt;left = <span class="tok-fn">new_node</span>(<span class="tok-num">7</span>);
+
+    <span class="tok-fn">inorder</span>(root);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>2 3 4 5 7 8</pre></div><p>结点还是第 6 课那个结构体，只在里面加了个 <code>value</code>。真实项目里 <code>malloc</code> 之后要判 <code>NULL</code>，这一课为了让代码短省掉了这个检查，但心里要有这根弦。<code>new_node</code> 里把 <code>left</code> 和 <code>right</code> 置成 <code>NULL</code> 是必须的：<code>malloc</code> 拿到的内存是脏的，你不初始化，里面就是野指针，<code>inorder</code> 走到那里直接崩。</p><p>中序跑出来是 2 3 4 5 7 8，正好从小到大。这不是运气。中序的次序是「左、根、右」，而规矩保证了左边都小、右边都大，所以中序必然是升序。<strong>这条性质是后面一切操作的地基</strong>，连判一棵树是不是 BST，都是中序跑一遍看递增，比写一堆递归条件不容易错。</p><p>你可以试试把 3 和 8 的值对调：中序会变成 2 8 4 5 7 3，一眼就知道规矩破了。</p><h2 id="sec-2">7.2 查找：每一步砍掉一半<i class="anchor">#</i></h2><p>查找的逻辑很直白：从根开始，比当前结点小就往左，大就往右，相等就返回。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *left;
+    <span class="tok-key">struct</span> Node *right;
+} Node;
+
+Node *<span class="tok-fn">insert</span>(Node *root, <span class="tok-type">int</span> v) {
+    <span class="tok-key">if</span> (root == NULL) {
+        Node *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+        p-&gt;value = v;
+        p-&gt;left = NULL;
+        p-&gt;right = NULL;
+        <span class="tok-key">return</span> p;
+    }
+    <span class="tok-key">if</span> (v &lt; root-&gt;value) {
+        root-&gt;left = <span class="tok-fn">insert</span>(root-&gt;left, v);
+    } <span class="tok-key">else</span> <span class="tok-key">if</span> (v &gt; root-&gt;value) {
+        root-&gt;right = <span class="tok-fn">insert</span>(root-&gt;right, v);
+    }
+    <span class="tok-key">return</span> root;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">contains</span>(Node *root, <span class="tok-type">int</span> v) {
+    <span class="tok-key">while</span> (root != NULL) {
+        <span class="tok-key">if</span> (v == root-&gt;value) {
+            <span class="tok-key">return</span> <span class="tok-num">1</span>;
+        }
+        <span class="tok-key">if</span> (v &lt; root-&gt;value) {
+            root = root-&gt;left;
+        } <span class="tok-key">else</span> {
+            root = root-&gt;right;
+        }
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> keys[] = {<span class="tok-num">5</span>, <span class="tok-num">3</span>, <span class="tok-num">8</span>, <span class="tok-num">2</span>, <span class="tok-num">4</span>, <span class="tok-num">7</span>, <span class="tok-num">9</span>};
+    Node *root = NULL;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">7</span>; i++) {
+        root = <span class="tok-fn">insert</span>(root, keys[i]);
+    }
+
+    <span class="tok-type">int</span> query[] = {<span class="tok-num">4</span>, <span class="tok-num">6</span>, <span class="tok-num">9</span>};
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">3</span>; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;找 %d：%s\n&quot;</span>, query[i], <span class="tok-fn">contains</span>(root, query[i]) ? <span class="tok-str">&quot;找到&quot;</span> : <span class="tok-str">&quot;没有&quot;</span>);
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>找 4：找到
+找 6：没有
+找 9：找到</pre></div><p><code>contains</code> 写成了迭代版：一个 while 循环，不相等就往下走一层，走到 <code>NULL</code> 说明树里没有。它没用到栈，也不需要递归，比递归版省内存。</p><p>为什么快？每次比较之后，目标只可能落在剩下的一棵子树里，另一棵整片被排除。树是「矮胖」的时候，n 个结点的高度大约是 log2(n)，查 100 万个结点最多比 20 次左右。这就是「砍一半」的威力。</p><p>但注意「矮胖」这个前提。树要是长成一条链，高度就是 n，查找退化成 O(n)，和链表没区别。这也不是什么极端情况：往一棵空树里按顺序插 1、2、3、4，一定得到链。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>记忆点</span></div><div class="callout-body"><p>BST 的复杂度从来不是 O(log n)，而是 O(h)，h 是树的高度。O(log n) 只是 h 的期望值。</p></div></div><p>想亲眼看到这句话的后果，把 <code>keys</code> 改成 <code>{1, 2, 3, 4, 5, 6, 7}</code> 再跑一遍。程序不会报错，结果也全对，只是慢。</p><h2 id="sec-3">7.3 插入：新值一定落在空位<i class="anchor">#</i></h2><p>插入不用发明新算法：按查找的路走，走到 <code>NULL</code> 就在那儿挂一个新结点。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *left;
+    <span class="tok-key">struct</span> Node *right;
+} Node;
+
+Node *<span class="tok-fn">insert</span>(Node *root, <span class="tok-type">int</span> v) {
+    <span class="tok-key">if</span> (root == NULL) {
+        Node *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+        p-&gt;value = v;
+        p-&gt;left = NULL;
+        p-&gt;right = NULL;
+        <span class="tok-key">return</span> p;
+    }
+    <span class="tok-key">if</span> (v &lt; root-&gt;value) {
+        root-&gt;left = <span class="tok-fn">insert</span>(root-&gt;left, v);
+    } <span class="tok-key">else</span> <span class="tok-key">if</span> (v &gt; root-&gt;value) {
+        root-&gt;right = <span class="tok-fn">insert</span>(root-&gt;right, v);
+    }
+    <span class="tok-key">return</span> root;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">height</span>(Node *root) {
+    <span class="tok-key">if</span> (root == NULL) {
+        <span class="tok-key">return</span> <span class="tok-num">0</span>;
+    }
+    <span class="tok-type">int</span> l = <span class="tok-fn">height</span>(root-&gt;left);
+    <span class="tok-type">int</span> r = <span class="tok-fn">height</span>(root-&gt;right);
+    <span class="tok-key">return</span> (l &gt; r ? l : r) + <span class="tok-num">1</span>;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">inorder</span>(Node *root) {
+    <span class="tok-key">if</span> (root == NULL) {
+        <span class="tok-key">return</span>;
+    }
+    <span class="tok-fn">inorder</span>(root-&gt;left);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, root-&gt;value);
+    <span class="tok-fn">inorder</span>(root-&gt;right);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> values[] = {<span class="tok-num">50</span>, <span class="tok-num">30</span>, <span class="tok-num">70</span>, <span class="tok-num">20</span>, <span class="tok-num">40</span>, <span class="tok-num">60</span>, <span class="tok-num">80</span>};
+    Node *root = NULL;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">7</span>; i++) {
+        root = <span class="tok-fn">insert</span>(root, values[i]);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;插入 %d 后，高度 %d\n&quot;</span>, values[i], <span class="tok-fn">height</span>(root));
+    }
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;中序：&quot;</span>);
+    <span class="tok-fn">inorder</span>(root);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>插入 50 后，高度 1
+插入 30 后，高度 2
+插入 70 后，高度 2
+插入 20 后，高度 3
+插入 40 后，高度 3
+插入 60 后，高度 3
+插入 80 后，高度 3
+中序：20 30 40 50 60 70 80</pre></div><p>重点看这一行：<code>root-&gt;left = insert(root-&gt;left, v);</code>。为什么非得把返回值赋回去？</p><p>因为 C 的函数是值传递。<code>insert(root-&gt;left, v)</code> 传进去的是指针的值，是那个地址的一份拷贝，不是「<code>root-&gt;left</code> 这个字段本身」。子调用新建了结点以后，只能通过返回值把新指针交回来，父结点负责挂上去。</p><p>新手常写 <code>insert(root-&gt;left, v);</code> 把返回值丢掉，然后发现树里什么都没有。这种 bug 不报错、不崩溃，只是数据静默消失，比段错误难查得多。</p><p><code>main</code> 里写的是 <code>root = insert(root, v);</code>，因为空树插第一个值时根结点本身会变。同一个道理，只是发生在根上。</p><p>真不想用返回值，就得传二级指针 <code>Node **</code>，那是 <a href="../c/rumen/ch06.html">C 语言 指针</a> 里的东西。这里用返回值清楚得多。</p><p>再看高度：前两个插入高度在涨，之后稳定在 3。高度为 h 的树最多装 2^h - 1 个结点，7 个正好塞满三层，这就是「满」的状态。</p><p>重复的值呢？上面 <code>v == root-&gt;value</code> 时什么都没做，等于丢掉。也可以给结点加一个 <code>count</code> 字段，重复就加一。但别让树里出现两个相同的值，否则删除时你都不知道该删哪一个。</p><h2 id="sec-4">7.4 删除：三种情况，一种比一种麻烦<i class="anchor">#</i></h2><p>这是全课最容易写错的一段，我当年在这上面画了半本草稿纸。先分类，别急着写代码。</p><ul><li>要删的是叶子：直接 <code>free</code>，让父结点指向 <code>NULL</code>。</li><li>要删的只有一个孩子：把孩子交给父结点，自己 <code>free</code>。</li><li>要删的有两个孩子：不能直接删，得找个替身。</li></ul><p>替身是右子树里最小的那个结点，叫后继。为什么是它？因为它比被删结点大，又比右子树里其他所有结点都小，把它放到被删的位置，规矩仍然成立。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *left;
+    <span class="tok-key">struct</span> Node *right;
+} Node;
+
+Node *<span class="tok-fn">insert</span>(Node *root, <span class="tok-type">int</span> v) {
+    <span class="tok-key">if</span> (root == NULL) {
+        Node *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+        p-&gt;value = v;
+        p-&gt;left = NULL;
+        p-&gt;right = NULL;
+        <span class="tok-key">return</span> p;
+    }
+    <span class="tok-key">if</span> (v &lt; root-&gt;value) {
+        root-&gt;left = <span class="tok-fn">insert</span>(root-&gt;left, v);
+    } <span class="tok-key">else</span> <span class="tok-key">if</span> (v &gt; root-&gt;value) {
+        root-&gt;right = <span class="tok-fn">insert</span>(root-&gt;right, v);
+    }
+    <span class="tok-key">return</span> root;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">inorder</span>(Node *root) {
+    <span class="tok-key">if</span> (root == NULL) {
+        <span class="tok-key">return</span>;
+    }
+    <span class="tok-fn">inorder</span>(root-&gt;left);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, root-&gt;value);
+    <span class="tok-fn">inorder</span>(root-&gt;right);
+}
+
+Node *<span class="tok-fn">min_node</span>(Node *root) {
+    <span class="tok-key">while</span> (root-&gt;left != NULL) {
+        root = root-&gt;left;
+    }
+    <span class="tok-key">return</span> root;
+}
+
+Node *<span class="tok-fn">remove_node</span>(Node *root, <span class="tok-type">int</span> v) {
+    <span class="tok-key">if</span> (root == NULL) {
+        <span class="tok-key">return</span> NULL;
+    }
+    <span class="tok-key">if</span> (v &lt; root-&gt;value) {
+        root-&gt;left = <span class="tok-fn">remove_node</span>(root-&gt;left, v);
+        <span class="tok-key">return</span> root;
+    }
+    <span class="tok-key">if</span> (v &gt; root-&gt;value) {
+        root-&gt;right = <span class="tok-fn">remove_node</span>(root-&gt;right, v);
+        <span class="tok-key">return</span> root;
+    }
+
+    <span class="tok-key">if</span> (root-&gt;left == NULL) {
+        Node *r = root-&gt;right;
+        <span class="tok-fn">free</span>(root);
+        <span class="tok-key">return</span> r;
+    }
+    <span class="tok-key">if</span> (root-&gt;right == NULL) {
+        Node *l = root-&gt;left;
+        <span class="tok-fn">free</span>(root);
+        <span class="tok-key">return</span> l;
+    }
+
+    Node *s = <span class="tok-fn">min_node</span>(root-&gt;right);
+    root-&gt;value = s-&gt;value;
+    root-&gt;right = <span class="tok-fn">remove_node</span>(root-&gt;right, s-&gt;value);
+    <span class="tok-key">return</span> root;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> values[] = {<span class="tok-num">50</span>, <span class="tok-num">30</span>, <span class="tok-num">70</span>, <span class="tok-num">20</span>, <span class="tok-num">40</span>, <span class="tok-num">60</span>, <span class="tok-num">80</span>};
+    Node *root = NULL;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">7</span>; i++) {
+        root = <span class="tok-fn">insert</span>(root, values[i]);
+    }
+
+    <span class="tok-type">int</span> drop[] = {<span class="tok-num">20</span>, <span class="tok-num">30</span>, <span class="tok-num">50</span>};
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">3</span>; i++) {
+        root = <span class="tok-fn">remove_node</span>(root, drop[i]);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;删掉 %d 后：&quot;</span>, drop[i]);
+        <span class="tok-fn">inorder</span>(root);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>删掉 20 后：30 40 50 60 70 80
+删掉 30 后：40 50 60 70 80
+删掉 50 后：40 60 70 80</pre></div><p><code>min_node</code> 一路往左走到底，就是最小值。<code>remove_node</code> 的骨架和 <code>insert</code> 一样：先比较、往下找，找到后再分情况。</p><p>两个孩子那种情况只有两行关键代码：先把后继的值抄到自己身上，再去右子树里把那个后继删掉。后继是右子树的最小值，一定没有左孩子，所以这个递归最多再走一层就落到前两种情况。<strong>用递归把难题变回已经解决的简单题</strong>，这个套路在树里到处都是。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>第三种情况里直接 <code>free(root)</code> 再把后继返回上去，会把整片左子树丢掉。正确做法是先替换值，再删后继，原结点留着。</p></div></div><p>删完 20（叶子）、30（两个孩子）、50（根，有两个孩子），中序始终递增，说明规矩没破。注意删 50 之后 60 顶了上来，而不是 40，因为后继取的是右子树最小值。</p><h2 id="sec-5">7.5 它最难看的样子：退化成链<i class="anchor">#</i></h2><p>做个实验：同一批数字，按升序插和按打乱顺序插，比较高度和查找步数。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *left;
+    <span class="tok-key">struct</span> Node *right;
+} Node;
+
+Node *<span class="tok-fn">insert</span>(Node *root, <span class="tok-type">int</span> v) {
+    <span class="tok-key">if</span> (root == NULL) {
+        Node *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+        p-&gt;value = v;
+        p-&gt;left = NULL;
+        p-&gt;right = NULL;
+        <span class="tok-key">return</span> p;
+    }
+    <span class="tok-key">if</span> (v &lt; root-&gt;value) {
+        root-&gt;left = <span class="tok-fn">insert</span>(root-&gt;left, v);
+    } <span class="tok-key">else</span> <span class="tok-key">if</span> (v &gt; root-&gt;value) {
+        root-&gt;right = <span class="tok-fn">insert</span>(root-&gt;right, v);
+    }
+    <span class="tok-key">return</span> root;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">height</span>(Node *root) {
+    <span class="tok-key">if</span> (root == NULL) {
+        <span class="tok-key">return</span> <span class="tok-num">0</span>;
+    }
+    <span class="tok-type">int</span> l = <span class="tok-fn">height</span>(root-&gt;left);
+    <span class="tok-type">int</span> r = <span class="tok-fn">height</span>(root-&gt;right);
+    <span class="tok-key">return</span> (l &gt; r ? l : r) + <span class="tok-num">1</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">search_steps</span>(Node *root, <span class="tok-type">int</span> v) {
+    <span class="tok-type">int</span> steps = <span class="tok-num">0</span>;
+    <span class="tok-key">while</span> (root != NULL) {
+        steps++;
+        <span class="tok-key">if</span> (v == root-&gt;value) {
+            <span class="tok-key">break</span>;
+        }
+        root = (v &lt; root-&gt;value) ? root-&gt;left : root-&gt;right;
+    }
+    <span class="tok-key">return</span> steps;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> sorted[] = {<span class="tok-num">10</span>, <span class="tok-num">20</span>, <span class="tok-num">30</span>, <span class="tok-num">40</span>, <span class="tok-num">50</span>, <span class="tok-num">60</span>, <span class="tok-num">70</span>};
+    <span class="tok-type">int</span> mixed[] = {<span class="tok-num">40</span>, <span class="tok-num">20</span>, <span class="tok-num">60</span>, <span class="tok-num">10</span>, <span class="tok-num">30</span>, <span class="tok-num">50</span>, <span class="tok-num">70</span>};
+    Node *a = NULL;
+    Node *b = NULL;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">7</span>; i++) {
+        a = <span class="tok-fn">insert</span>(a, sorted[i]);
+        b = <span class="tok-fn">insert</span>(b, mixed[i]);
+    }
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;顺序插入：高度 %d，找 70 用 %d 步\n&quot;</span>, <span class="tok-fn">height</span>(a), <span class="tok-fn">search_steps</span>(a, <span class="tok-num">70</span>));
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;打乱插入：高度 %d，找 70 用 %d 步\n&quot;</span>, <span class="tok-fn">height</span>(b), <span class="tok-fn">search_steps</span>(b, <span class="tok-num">70</span>));
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>顺序插入：高度 7，找 70 用 7 步
+打乱插入：高度 3，找 70 用 3 步</pre></div><p>第一棵树里每个结点都只有右孩子，形状和单链表一模一样。找 70 要从 10 一路走到 70，比 7 次。要是数据是 100 万条已经排好序的记录，这棵树会变成 100 万层的「链表」，查找 O(n)，还白搭了一堆指针的内存。</p><p>这不是你代码写错了，是 BST 太老实：它完全按你的插入顺序长。<strong>有序的输入是 BST 的天敌</strong>。实际项目里通常这么对付：</p><ul><li>插之前把数据打乱，或者至少别保证有序</li><li>用平衡树（AVL、红黑树），插入时自动旋转，把高度压回 O(log n)</li><li>干脆不用树，换哈希表</li></ul><p>第二条就是 C++ 里 <code>std::map</code> 底层是红黑树的原因。旋转要把左左、左右、右左、右右四种情况分开处理，比这一课的 <code>insert</code> 长得多，所以这里不写，知道有这回事就够了。</p><h2 id="sec-6">7.6 有序这件事，哈希表给不了<i class="anchor">#</i></h2><p>哈希表查找是 O(1)，比 BST 快。那 BST 还有什么存在的价值？</p><p>因为 BST 存的是顺序，哈希表存的是位置。所有「按大小找」的需求，哈希表都答不上来。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Node {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> Node *left;
+    <span class="tok-key">struct</span> Node *right;
+} Node;
+
+Node *<span class="tok-fn">insert</span>(Node *root, <span class="tok-type">int</span> v) {
+    <span class="tok-key">if</span> (root == NULL) {
+        Node *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Node));
+        p-&gt;value = v;
+        p-&gt;left = NULL;
+        p-&gt;right = NULL;
+        <span class="tok-key">return</span> p;
+    }
+    <span class="tok-key">if</span> (v &lt; root-&gt;value) {
+        root-&gt;left = <span class="tok-fn">insert</span>(root-&gt;left, v);
+    } <span class="tok-key">else</span> <span class="tok-key">if</span> (v &gt; root-&gt;value) {
+        root-&gt;right = <span class="tok-fn">insert</span>(root-&gt;right, v);
+    }
+    <span class="tok-key">return</span> root;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">kth_smallest</span>(Node *root, <span class="tok-type">int</span> k, <span class="tok-type">int</span> *visited) {
+    <span class="tok-key">if</span> (root == NULL) {
+        <span class="tok-key">return</span> -<span class="tok-num">1</span>;
+    }
+    <span class="tok-type">int</span> found = <span class="tok-fn">kth_smallest</span>(root-&gt;left, k, visited);
+    <span class="tok-key">if</span> (found != -<span class="tok-num">1</span>) {
+        <span class="tok-key">return</span> found;
+    }
+    (*visited)++;
+    <span class="tok-key">if</span> (*visited == k) {
+        <span class="tok-key">return</span> root-&gt;value;
+    }
+    <span class="tok-key">return</span> <span class="tok-fn">kth_smallest</span>(root-&gt;right, k, visited);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> values[] = {<span class="tok-num">50</span>, <span class="tok-num">30</span>, <span class="tok-num">70</span>, <span class="tok-num">20</span>, <span class="tok-num">40</span>, <span class="tok-num">60</span>, <span class="tok-num">80</span>};
+    Node *root = NULL;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">7</span>; i++) {
+        root = <span class="tok-fn">insert</span>(root, values[i]);
+    }
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> k = <span class="tok-num">1</span>; k &lt;= <span class="tok-num">7</span>; k += <span class="tok-num">3</span>) {
+        <span class="tok-type">int</span> visited = <span class="tok-num">0</span>;
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;第 %d 小：%d\n&quot;</span>, k, <span class="tok-fn">kth_smallest</span>(root, k, &amp;visited));
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>第 1 小：20
+第 4 小：50
+第 7 小：80</pre></div><p>找第 k 小，靠的还是中序有序：边走边数，数到第 k 个就停。它只用了 O(h) 的递归栈，不需要把整棵树读进数组再排序。<code>visited</code> 用指针传，是因为递归的每一层都要共享同一个计数器。这和 7.3 里讨论的是同一个问题：怎样让函数改动外面的变量。那里用返回值，这里用指针。</p><p>同样的思路还能做范围查询：找出所有在 [30, 60] 之间的值，中序遍历时加两个判断就能剪掉整片不可能的分支，不用访问全部结点。这种活哈希表只能把所有 key 捞出来逐个比。</p><p>所以选型很清楚。只按 key 查值，用哈希；还要按大小范围取、要顺序遍历、要第 k 小，用 BST，真在乎性能就上平衡树。</p><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>写 <code>int is_bst(Node *root)</code>，用中序遍历判断一棵二叉树是不是二叉搜索树。提示：记住上一次访问的值，看它是不是一直变大。</li><li>给结点加一个 <code>int count</code> 字段，让 <code>insert</code> 支持重复值（重复只加计数），<code>remove_node</code> 减计数，减到 0 才真正删结点。</li><li>写一个用「左子树最大值」替换的删除版本，跑本课同样的测试，输出应该完全一样。</li><li>写 <code>int count_less(Node *root, int x)</code>，统计比 x 小的结点个数。要求不能遍历全部结点，得利用「左子树全小」这条性质剪枝。</li></ol></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>BST 的规矩是左小右大，中序遍历一定升序，这是一切操作的地基</li><li>查找和插入都只走一条从根到叶的路径，复杂度是 O(h)，不是 O(log n)</li><li>删除分三种情况，有两个孩子时用右子树最小值替换，再递归删掉它</li><li>按有序数据插入会退化成链表；要范围查询、要第 k 小，哈希表替不了它</li><li>下一课 <a href="08-heap.html">第 8 课 堆</a>：也是一棵二叉树，但不按大小排左右，只保证根是最值</li></ul></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="ds-07-bst"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../ds/06-tree.html"><span>上一章</span><b>第 6 课 树与二叉树</b></a><a class="pager-item next" href="../ds/08-heap.html"><span>下一章</span><b>第 8 课 堆与优先队列</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">7.1 一条规矩，换来一半</a><a class="toc-link level-2" href="#sec-2">7.2 查找：每一步砍掉一半</a><a class="toc-link level-2" href="#sec-3">7.3 插入：新值一定落在空位</a><a class="toc-link level-2" href="#sec-4">7.4 删除：三种情况，一种比一种麻烦</a><a class="toc-link level-2" href="#sec-5">7.5 它最难看的样子：退化成链</a><a class="toc-link level-2" href="#sec-6">7.6 有序这件事，哈希表给不了</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

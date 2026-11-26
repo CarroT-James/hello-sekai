@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 2 课 一个程序是怎么跑起来的 · Hello Sekai</title>
+<meta name="description" content="你按下编译运行，黑窗口一闪就出了结果。中间那几步——预处理、编译、汇编、链接、加载——这一课全部拆开给你看。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="fund-02-how-program-runs" data-track="fund" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link is-active" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">计算机基础</span><a class="sidebar-back" href="../fund/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../fund/01-binary.html" data-id="fund-01-binary"><span class="side-num">01</span><span class="side-text">第 1 课 进制与编码</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../fund/02-how-program-runs.html" data-id="fund-02-how-program-runs"><span class="side-num">02</span><span class="side-text">第 2 课 一个程序是怎么跑起来的</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/03-os-process.html" data-id="fund-03-os-process"><span class="side-num">03</span><span class="side-text">第 3 课 操作系统与进程</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/04-cli-linux.html" data-id="fund-04-cli-linux"><span class="side-num">04</span><span class="side-text">第 4 课 命令行与 Linux 基础</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/05-git.html" data-id="fund-05-git"><span class="side-num">05</span><span class="side-text">第 5 课 Git 与版本管理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/06-debug.html" data-id="fund-06-debug"><span class="side-num">06</span><span class="side-text">第 6 课 开发环境与调试</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/07-network.html" data-id="fund-07-network"><span class="side-num">07</span><span class="side-text">第 7 课 计算机网络入门</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/08-markdown.html" data-id="fund-08-markdown"><span class="side-num">08</span><span class="side-text">第 8 课 用 Markdown 与 LaTeX 写作业</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../fund/index.html">← 返回计算机基础</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../fund/index.html">计算机基础</a> <span class="sep">/</span> <span>第 2 课 一个程序是怎么跑起来的</span></div><h1 class="doc-title">第 2 课 一个程序是怎么跑起来的</h1><div class="doc-meta"><span>预计 30 分钟</span><span class="dot">·</span><span>约 5,115 字</span><span class="dot">·</span><span>计算机基础</span></div><article class="prose" id="article"><p>你在 Dev-C++ 里按一下 F11，黑窗口闪一下，Hello World 就出来了。看起来是一步，其实是四步：<strong>预处理、编译、汇编、链接</strong>。跑起来还要再加一步：<strong>加载到内存</strong>。</p><p>菜谱写好不代表菜能上桌。中间得有人备料、有人下锅、有人装盘，最后还要有人把盘子端到桌上。这一课把这五个环节一个个拆开。</p><h2 id="sec-1">2.1 四步走：源码到可执行文件<i class="anchor">#</i></h2><p>先写一个最小的程序，故意带上一个全局变量和一个函数调用，让后面每一步都有东西可看。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> counter = <span class="tok-num">0</span>;
+
+<span class="tok-type">int</span> <span class="tok-fn">add</span>(<span class="tok-type">int</span> a, <span class="tok-type">int</span> b) {
+    <span class="tok-key">return</span> a + b;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    counter = <span class="tok-fn">add</span>(<span class="tok-num">2</span>, <span class="tok-num">3</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;counter = %d\n&quot;</span>, counter);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><p>编译它其实只要一条命令：<code>gcc hello.c -o hello</code>。但这条命令背后替你做了四件事。把每一步单独跑一遍，你就能看见中间产物：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>gcc -E hello.c -o hello.i     # 1. 预处理：展开 #include 和 #define
+gcc -S hello.i -o hello.s     # 2. 编译：C 代码翻译成汇编
+gcc -c hello.s -o hello.o     # 3. 汇编：汇编翻译成机器码（目标文件）
+gcc hello.o -o hello          # 4. 链接：把用到的库拼进来
+
+ls -l hello.i hello.s hello.o hello</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>-rw-r--r-- 1 user user   1721 hello.i
+-rw-r--r-- 1 user user    512 hello.s
+-rw-r--r-- 1 user user   1568 hello.o
+-rw-r--r-- 1 user user  16024 hello</pre></div><p>体积能说明问题。<code>hello.i</code> 比源文件大得多，因为 <code>#include &lt;stdio.h&gt;</code> 被原地展开了——那个头文件几千行，全贴进来了。<code>hello.s</code> 是汇编，短了。<code>hello.o</code> 是机器码，更短。最后的 <code>hello</code> 突然变回 16 KB，因为链接器把 <code>printf</code> 的实现从 C 库搬了进来。</p><p>第 1 步只是文本替换，不检查语法。所以你忘写分号，<code>gcc -E</code> 一点意见都没有，到第 2 步才骂你。</p><p>第 2 步的产物长这样，是给 CPU 看的「文本版」机器指令：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">TEXT</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>    .globl  main
+main:
+    pushq   %rbp
+    movq    %rsp, %rbp
+    movl    $2, %edi
+    movl    $3, %esi
+    call    add
+    movl    %eax, counter(%rip)
+    ...
+    call    printf</code></pre></div><p><code>pushq</code>、<code>movl</code>、<code>call</code> 这些叫<strong>指令</strong>，<code>%rbp</code>、<code>%eax</code> 叫<strong>寄存器</strong>——CPU 里面几个极小的存储格子，比内存快得多。你写的 <code>int a, b</code> 在运行时就住在这种格子里，或者住在栈上，编译器替你安排。</p><p>这些指令在文件里最终是一串 0 和 1，怎么读它们，<a href="01-binary.html">第 1 课 进制与编码</a> 讲过。</p><div class="callout callout-tip"><div class="callout-head"><span class="callout-glyph">★</span><span>为什么要分四步</span></div><div class="callout-body"><p>分开是有好处的。<code>-c</code> 让你可以只编译改过的那个文件，其他 <code>.o</code> 直接复用，大型项目因此才编得动。<code>-E</code> 让你查宏到底展开成了什么。<code>-S</code> 让你看编译器有没有把你的循环优化掉。这些开关平时不用写，但出问题时它们是唯一的窗口。</p></div></div><h2 id="sec-2">2.2 编译器在抱怨什么<i class="anchor">#</i></h2><p>改一行，把第 11 行的分号删掉，再加 <code>-Wall</code> 重新编：<code>gcc -Wall -Wextra hello.c -o hello</code>。</p><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>hello.c: In function &#x27;main&#x27;:
+hello.c:11:23: error: expected &#x27;;&#x27; before &#x27;}&#x27; token
+   11 |     counter = add(2, 3)
+      |                       ^
+      |                       ;</pre></div><p>读报错的顺序是从上往下、只看第一个 <code>error</code>。后面一连串报错经常是第一个的连锁反应——少一个分号，编译器会把下一行当成上一行的延续，于是整段都「错」了。修完第一个再编一次，往往一半的报错自己就消失了。</p><p>报错的格式是固定的三段：<strong>文件:行:列</strong>、<strong>错误类型</strong>、<strong>原文和箭头</strong>。箭头 <code>^</code> 指的那个位置就是编译器卡住的地方，注意它经常比真正出错的位置晚一个符号。</p><p><code>-Wall -Wextra</code> 打开警告。警告不是错误，程序照样能生成，但九成的警告背后是货真价实的 bug。养成带 <code>-Wall</code> 编译的习惯，比事后调试省力得多。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p><code>error: expected declaration or statement at end of input</code> 这种报错指向文件末尾，八成是前面某个 <code>{</code> 没配对。编译器一路读到结尾才发现括号不够，它没法告诉你缺在哪，只能告诉你「读到结尾了还没结束」。这时候从后往前数括号比盯着末尾看有用。</p></div></div><h2 id="sec-3">2.3 链接器：拼图少了一块<i class="anchor">#</i></h2><p>编译是「一个文件一个文件」做的。每个 <code>.c</code> 单独变成一个 <code>.o</code>，这时候它不知道别的文件里有什么函数——只知道「有个叫 <code>add</code> 的函数，参数是两个 int，返回值是 int」，这信息来自声明。</p><p>把调用和定义拆到两个文件里：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-com">/* ---------- math_util.c ---------- */</span>
+<span class="tok-type">int</span> <span class="tok-fn">add</span>(<span class="tok-type">int</span> a, <span class="tok-type">int</span> b) {
+    <span class="tok-key">return</span> a + b;
+}
+
+<span class="tok-com">/* ---------- main.c ---------- */</span>
+<span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">add</span>(<span class="tok-type">int</span> a, <span class="tok-type">int</span> b);   <span class="tok-com">/* 声明：告诉编译器有这么个函数 */</span>
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d\n&quot;</span>, <span class="tok-fn">add</span>(<span class="tok-num">2</span>, <span class="tok-num">3</span>));
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><p>声明只需要写函数长什么样，定义才写函数干什么。编译器看到声明就放行，具体地址留空，等链接器来填。</p><p>现在故意只编 <code>main.c</code>，看链接器怎么抗议：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>gcc -c main.c -o main.o
+gcc main.o -o main</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>main.o:main.c:(.text+0x15): undefined reference to `add&#x27;
+collect2: error: ld returned 1 exit status</pre></div><p><code>undefined reference</code> 是链接错误，不是编译错误。含义很明确：<strong>有人用了一个符号，但没人提供它</strong>。修法是把定义所在的文件一起编，<code>gcc main.c math_util.c -o main</code>，跑出来是 <code>5</code>。</p><p>这两个错误的区别值得记牢。编译错误说「你这句话不合语法」，链接错误说「这句话语法没问题，但它要的东西不存在」。看到 <code>undefined reference</code> 就别再盯语法了，去查三件事：文件有没有加进编译命令、函数名拼错没有（包括大小写）、有没有在 C++ 里忘了 <code>extern &quot;C&quot;</code>。</p><h2 id="sec-4">2.4 可执行文件里装了什么<i class="anchor">#</i></h2><p>生成的 <code>hello</code> 不是纯机器码，它是一个有格式的容器。Linux 上叫 ELF，Windows 上叫 PE（就是 <code>.exe</code>）。</p><p>用 <code>size</code> 能看到它内部的几块地：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>size hello</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>   text    data     bss     dec     hex filename
+   1520     600       8    2128     850 hello</pre></div><ul><li><code>text</code> 是代码段，你的指令都在这儿，只读</li><li><code>data</code> 是已初始化的全局变量和静态变量，初始值要原样存在文件里</li><li><code>bss</code> 是「值等于 0」的全局变量，不占文件体积，程序启动时统一清零</li></ul><p>注意 <code>int counter = 0;</code> 这种写法会被归进 <code>bss</code> 而不是 <code>data</code>——值本来就是 0，没必要在文件里存一遍。所以上面 <code>bss</code> 只有 8 字节、<code>data</code> 却有 600 字节，那 600 字节大部分来自启动代码和链接进来的库，不是你写的变量。感兴趣可以用 <code>objdump -d hello</code> 把反汇编打出来，能看到 <code>main</code> 和你写的代码一一对应，只是全变成了十六进制。</p><h2 id="sec-5">2.5 加载进内存：四块地<i class="anchor">#</i></h2><p>双击程序，操作系统先给它划一块内存，把文件里的内容搬进去，然后跳到入口开始执行。这块内存被分成几段，位置是固定的：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">TEXT</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>高地址
+┌──────────────────┐
+│   内核空间        │  用户程序碰不到
+├──────────────────┤
+│   栈 stack       │  局部变量、函数参数、返回地址，向低地址生长
+│       ↓          │
+│                  │
+│       ↑          │
+│   堆 heap        │  malloc 出来的东西，向高地址生长
+├──────────────────┤
+│   bss            │  未初始化的全局变量
+├──────────────────┤
+│   data           │  已初始化的全局变量
+├──────────────────┤
+│   text           │  机器指令，只读
+└──────────────────┘
+低地址</code></pre></div><p>栈和堆是相向生长的。栈从高地址往低处压，堆从低处往高处要，中间那片空白就是它们共用的空间。两个撞上了，就是栈溢出或者内存耗尽。</p><p>写个程序把各类变量的地址打出来看看：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> inited = <span class="tok-num">10</span>;
+<span class="tok-type">int</span> uninited;
+<span class="tok-key">static</span> <span class="tok-type">int</span> static_var = <span class="tok-num">20</span>;
+
+<span class="tok-type">void</span> <span class="tok-fn">show</span>(<span class="tok-key">const</span> <span class="tok-type">char</span> *name, <span class="tok-type">void</span> *addr) {
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%s：%p\n&quot;</span>, name, addr);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">int</span> local = <span class="tok-num">1</span>;
+    <span class="tok-fn">show</span>(<span class="tok-str">&quot;main 函数&quot;</span>, (<span class="tok-type">void</span> *)main);
+    <span class="tok-fn">show</span>(<span class="tok-str">&quot;已初始化全局&quot;</span>, (<span class="tok-type">void</span> *)&amp;inited);
+    <span class="tok-fn">show</span>(<span class="tok-str">&quot;未初始化全局&quot;</span>, (<span class="tok-type">void</span> *)&amp;uninited);
+    <span class="tok-fn">show</span>(<span class="tok-str">&quot;静态变量&quot;</span>, (<span class="tok-type">void</span> *)&amp;static_var);
+    <span class="tok-fn">show</span>(<span class="tok-str">&quot;局部变量&quot;</span>, (<span class="tok-type">void</span> *)&amp;local);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>main 函数：0000000000401550
+已初始化全局：0000000000403010
+未初始化全局：0000000000403018
+静态变量：0000000000403014
+局部变量：000000000061FE1C</pre></div><p>地址是示意，每次运行都可能不一样，但<strong>相对次序</strong>是稳定的：代码段最低，全局变量在中间，栈最高。你看到局部变量那个 <code>61FE1C</code> 明显比其他的 <code>40xxxx</code> 大一大截，那就是栈在高地址区。</p><p>再调用一个函数，它里面的局部变量地址会比 <code>main</code> 的更小。这就验证了栈是往下长的。</p><h2 id="sec-6">2.6 程序跑起来那一刻<i class="anchor">#</i></h2><p>还有一件事容易误会：<code>main</code> 不是第一个被执行的函数。</p><p>真正第一个跑的是启动代码（Linux 上叫 <code>_start</code>，来自 C 运行库）。它干三件事：准备好栈和全局变量、把命令行参数整理好、然后调用 <code>main</code>。<code>main</code> 返回之后，控制权还会回到启动代码，由它调用 <code>exit</code> 把资源收拾干净。所以你 <code>return 0</code> 之后程序还能正常退出，不是魔法。</p><p>CPU 执行的时候，只做三件事，循环往复：</p><ul><li>取指：按程序计数器（PC）里的地址，从代码段读一条指令</li><li>译码：看懂这条指令要干什么，操作数是哪几个寄存器</li><li>执行：算，然后把 PC 指向下一条</li></ul><p><code>call</code> 指令会做一件额外的事：把「下一条指令的地址」压进栈，然后跳到函数入口。函数执行完遇到 <code>ret</code>，就从栈里弹出那个地址跳回去。这就是<strong>调用栈</strong>，也是你能在调试器里看到 <code>main → add → ...</code> 这条调用链的原因。</p><p>如果一个函数里再调用自己，栈就会一层层往上叠（其实是往下压）。叠得太深，栈空间用完，程序崩溃——这就是递归写错时那句 <code>stack overflow</code> 的来历。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>从源码到程序是四步：预处理展开宏和头文件、编译出汇编、汇编出目标文件、链接把符号拼齐</li><li><code>undefined reference</code> 是链接错误，说明符号有声明没定义，跟语法无关</li><li>可执行文件分代码段、数据段、bss 段；<code>bss</code> 不占文件体积，启动时清零</li><li>进程内存里，代码段在低地址，栈在高地址并向下生长，堆从低往高长</li><li><code>main</code> 不是第一个执行的函数，启动代码准备好环境才调它；CPU 只做取指、译码、执行，<code>call</code> 把返回地址压栈</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>对第 2.1 节的 <code>hello.c</code> 分别跑 <code>gcc -E</code>、<code>-S</code>、<code>-c</code>、链接四步，用 <code>wc -l</code> 统计每个中间文件的行数，解释为什么 <code>.i</code> 特别长。</li><li>故意在 <code>main.c</code> 里把 <code>add</code> 拼成 <code>Add</code>，分别用 <code>gcc -c</code> 和完整链接各编一次，记录哪个阶段报错、报错原文是什么。</li><li>写一个程序，打印 <code>main</code> 里一个局部变量和它调用的函数里一个局部变量的地址，验证栈是向下生长的。</li><li>用 <code>size</code> 看一个带 1000 个已初始化数组和 1000 个未初始化数组的程序，比较 <code>data</code> 和 <code>bss</code> 的变化，解释原因。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="fund-02-how-program-runs"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../fund/01-binary.html"><span>上一章</span><b>第 1 课 进制与编码</b></a><a class="pager-item next" href="../fund/03-os-process.html"><span>下一章</span><b>第 3 课 操作系统与进程</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">2.1 四步走：源码到可执行文件</a><a class="toc-link level-2" href="#sec-2">2.2 编译器在抱怨什么</a><a class="toc-link level-2" href="#sec-3">2.3 链接器：拼图少了一块</a><a class="toc-link level-2" href="#sec-4">2.4 可执行文件里装了什么</a><a class="toc-link level-2" href="#sec-5">2.5 加载进内存：四块地</a><a class="toc-link level-2" href="#sec-6">2.6 程序跑起来那一刻</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

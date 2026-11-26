@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 1 课 进制与编码 · Hello Sekai</title>
+<meta name="description" content="电脑只认 0 和 1，那负数、中文、小数是怎么塞进去的？这一课从「十根一捆」讲到补码、UTF-8 和乱码的来历。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="fund-01-binary" data-track="fund" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link is-active" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">计算机基础</span><a class="sidebar-back" href="../fund/index.html">总览</a></div><nav class="side-nav"><a class="side-link is-active" href="../fund/01-binary.html" data-id="fund-01-binary"><span class="side-num">01</span><span class="side-text">第 1 课 进制与编码</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/02-how-program-runs.html" data-id="fund-02-how-program-runs"><span class="side-num">02</span><span class="side-text">第 2 课 一个程序是怎么跑起来的</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/03-os-process.html" data-id="fund-03-os-process"><span class="side-num">03</span><span class="side-text">第 3 课 操作系统与进程</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/04-cli-linux.html" data-id="fund-04-cli-linux"><span class="side-num">04</span><span class="side-text">第 4 课 命令行与 Linux 基础</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/05-git.html" data-id="fund-05-git"><span class="side-num">05</span><span class="side-text">第 5 课 Git 与版本管理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/06-debug.html" data-id="fund-06-debug"><span class="side-num">06</span><span class="side-text">第 6 课 开发环境与调试</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/07-network.html" data-id="fund-07-network"><span class="side-num">07</span><span class="side-text">第 7 课 计算机网络入门</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../fund/08-markdown.html" data-id="fund-08-markdown"><span class="side-num">08</span><span class="side-text">第 8 课 用 Markdown 与 LaTeX 写作业</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../fund/index.html">← 返回计算机基础</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../fund/index.html">计算机基础</a> <span class="sep">/</span> <span>第 1 课 进制与编码</span></div><h1 class="doc-title">第 1 课 进制与编码</h1><div class="doc-meta"><span>预计 30 分钟</span><span class="dot">·</span><span>约 5,707 字</span><span class="dot">·</span><span>计算机基础</span></div><article class="prose" id="article"><p>数小棒的时候，数到十你就捆成一捆，于是有了个位和十位。这就是进位制：<strong>满一个数就往上进一位</strong>。</p><p>电脑没有十根手指，它只有两种状态——通电和断电。所以它只能两根一捆。二进制不是电脑的怪癖，是它唯一拿得出手的计数方式。这一课要把「0 和 1 怎么变成你屏幕上的中文」这件事彻底说通。</p><h2 id="sec-1">1.1 二进制只是两根一捆<i class="anchor">#</i></h2><p>十进制里，<code>123</code> 的意思是 <code>1×100 + 2×10 + 3×1</code>。每个位置的价值叫<strong>位权</strong>，从右往左依次是 1、10、100。</p><p>二进制把 10 换成 2，位权就变成 1、2、4、8、16、32……所以 <code>1011</code> 是 <code>1×8 + 0×4 + 1×2 + 1×1 = 11</code>。看到一串 0 和 1，你只要从右往左标上 1、2、4、8，把是 1 的那几位加起来就行。</p><p>十六进制是给人类用的省事写法。原因很简单：<strong>4 个二进制位刚好对应 1 个十六进制位</strong>，16 种组合对应 0 到 9 加 A 到 F。<code>11111111</code> 太长了，写成 <code>FF</code> 一眼就能记住。C 语言里用 <code>0x</code> 开头表示十六进制，用 <code>0</code> 开头表示八进制。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">int</span> n = <span class="tok-num">45</span>;   <span class="tok-com">/* 二进制 101101，十六进制 0x2D */</span>
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;十进制：%d\n&quot;</span>, n);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;八进制：%o\n&quot;</span>, n);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;十六进制：%x\n&quot;</span>, n);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;十六进制大写：%X\n&quot;</span>, n);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;直接写十六进制常量：%d\n&quot;</span>, <span class="tok-num">0x2D</span>);
+
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>十进制：45
+八进制：55
+十六进制：2d
+十六进制大写：2D
+直接写十六进制常量：45</pre></div><p><code>%o</code> 和 <code>%x</code> 只是换了个显示的进制，变量里存的还是那 45。最后一行是关键：<code>0x2D</code> 和 <code>45</code> 在编译器眼里是同一个数，写法不同而已。</p><p>想让程序把十进制打印成二进制，得自己写循环。C 没有 <code>%b</code>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">void</span> <span class="tok-fn">print_binary</span>(<span class="tok-type">unsigned</span> <span class="tok-type">int</span> n) {
+    <span class="tok-type">int</span> i;
+    <span class="tok-type">int</span> started = <span class="tok-num">0</span>;
+
+    <span class="tok-key">for</span> (i = <span class="tok-num">31</span>; i &gt;= <span class="tok-num">0</span>; i--) {
+        <span class="tok-type">int</span> bit = (n &gt;&gt; i) &amp; <span class="tok-num">1</span>;
+        <span class="tok-key">if</span> (bit) {
+            started = <span class="tok-num">1</span>;
+        }
+        <span class="tok-key">if</span> (started) {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d&quot;</span>, bit);
+        }
+    }
+    <span class="tok-key">if</span> (!started) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;0&quot;</span>);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-fn">print_binary</span>(<span class="tok-num">45</span>);
+    <span class="tok-fn">print_binary</span>(<span class="tok-num">0</span>);
+    <span class="tok-fn">print_binary</span>(<span class="tok-num">1024</span>);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>101101
+0
+10000000000</pre></div><p>两个运算符要认一下：<code>&gt;&gt;</code> 是右移，把整个二进制往右推 i 位；<code>&amp; 1</code> 是取出最低位。<code>(n &gt;&gt; i) &amp; 1</code> 的意思就是「第 i 位是 0 还是 1」。</p><p><code>started</code> 这个标志是为了跳过前面的前导零。不加它，打印 45 会变成 26 个 0 再接 <code>101101</code>。而 0 本身如果没有这个兜底，会一位都不打印。</p><p>手算的办法更土但更快：除 2 取余，写完从下往上读。<code>45 ÷ 2 = 22 余 1</code>，<code>22 ÷ 2 = 11 余 0</code>，一直除到 0，把余数倒着念就是 <code>101101</code>。</p><h2 id="sec-2">1.2 一个字节装 256 个数<i class="anchor">#</i></h2><p>8 个二进制位叫 1 个<strong>字节</strong>（byte）。8 位能表示 <code>2^8 = 256</code> 种组合，编号从 0 到 255。</p><p>那负数怎么办？这里要请出<strong>补码</strong>，它是新手第一个真正抽象的概念。</p><p>思路是：不新增符号位，而是让「加上某个数」等于「减去某个数」。<code>-1</code> 定义成 <code>11111111</code>，因为 <code>11111111 + 00000001</code> 进位溢出正好变成 <code>00000000</code>，也就是 0。于是减法不用单独做电路，加法器顺手就干了。当年我盯着这个转换看了半小时才想明白它为什么合理。</p><p>算一个数的补码：按位取反，再加 1。<code>1</code> 是 <code>00000001</code>，取反得 <code>11111110</code>，加 1 得 <code>11111111</code>。所以 <code>-1</code> 的字节是 <code>FF</code>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">signed</span> <span class="tok-type">char</span> a = -<span class="tok-num">1</span>;
+    <span class="tok-type">unsigned</span> <span class="tok-type">char</span> b = <span class="tok-num">255</span>;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;-1 的字节：%02X\n&quot;</span>, (<span class="tok-type">unsigned</span> <span class="tok-type">char</span>)a);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;255 的字节：%02X\n&quot;</span>, b);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;-1 + 1 = %d\n&quot;</span>, a + <span class="tok-num">1</span>);
+
+    <span class="tok-type">unsigned</span> <span class="tok-type">char</span> c = <span class="tok-num">250</span>;
+    c = c + <span class="tok-num">10</span>;
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;250 加 10 存进 unsigned char：%d\n&quot;</span>, c);
+
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>-1 的字节：FF
+255 的字节：FF
+-1 + 1 = 0
+250 加 10 存进 unsigned char：4</pre></div><p>同一个字节 <code>FF</code>，看成 <code>signed char</code> 是 -1，看成 <code>unsigned char</code> 是 255。字节本身没有正负，正负是你给它的解释。</p><p>最后一行是溢出：<code>250 + 10 = 260</code>，一个字节装不下，从 256 开始重新数，落回 4。无符号整数的溢出是明确的「取模」，有符号整数的溢出在 C 标准里是未定义行为——它不一定回绕，编译器有权按「不会溢出」来优化。这是 <a href="../c/rumen/ch00.html">C 语言 第 0 章</a> 里提过但很容易忘的细节。</p><p>各类型的字节数也顺手记一下，<code>sizeof</code> 能直接查：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;char %zu\n&quot;</span>, <span class="tok-key">sizeof</span>(<span class="tok-type">char</span>));
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;short %zu\n&quot;</span>, <span class="tok-key">sizeof</span>(<span class="tok-type">short</span>));
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;int %zu\n&quot;</span>, <span class="tok-key">sizeof</span>(<span class="tok-type">int</span>));
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;long %zu\n&quot;</span>, <span class="tok-key">sizeof</span>(<span class="tok-type">long</span>));
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;double %zu\n&quot;</span>, <span class="tok-key">sizeof</span>(<span class="tok-type">double</span>));
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>char 1
+short 2
+int 4
+long 4
+double 8</pre></div><p>注意 <code>int</code> 是 4 字节、<code>long</code> 是 4 字节，这是 Windows 上的结果。换到 Linux，<code>long</code> 会变成 8 字节。同一份代码在不同系统上 <code>sizeof(long)</code> 不一样，这就是为什么可移植的代码里更爱用 <code>int</code> 和 <code>long long</code>。</p><h2 id="sec-3">1.3 ASCII：字符其实是编号<i class="anchor">#</i></h2><p>计算机里没有字母，只有数字。<code>&#x27;A&#x27;</code> 在内存里就是 65。</p><p>1963 年定下的 ASCII 表用 7 位给 128 个字符编了号：控制字符（换行、响铃）占前 32 个，数字 <code>0</code> 到 <code>9</code> 是 48 到 57，大写字母 <code>A</code> 到 <code>Z</code> 是 65 到 90，小写字母 <code>a</code> 到 <code>z</code> 是 97 到 122。</p><p>这几个数值得背下来：<code>&#x27;0&#x27;</code> 是 48，<code>&#x27;A&#x27;</code> 是 65，<code>&#x27;a&#x27;</code> 是 97。大小写差 32，正好是二进制里第 6 位（值 32）的差别。所以「转小写」可以写成加 32。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">char</span> c = <span class="tok-str">&#x27;A&#x27;</span>;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%c 的编号是 %d\n&quot;</span>, c, c);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;加 32 变成 %c\n&quot;</span>, c + <span class="tok-num">32</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;&#x27;0&#x27; 的编号是 %d\n&quot;</span>, <span class="tok-str">&#x27;0&#x27;</span>);
+
+    <span class="tok-type">int</span> d = <span class="tok-str">&#x27;7&#x27;</span> - <span class="tok-str">&#x27;0&#x27;</span>;
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;字符 &#x27;7&#x27; 减 &#x27;0&#x27; 得到整数 %d\n&quot;</span>, d);
+
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>A 的编号是 65
+加 32 变成 a
+&#x27;0&#x27; 的编号是 48
+字符 &#x27;7&#x27; 减 &#x27;0&#x27; 得到整数 7</pre></div><p><code>&#x27;7&#x27; - &#x27;0&#x27;</code> 这一招在解析数字时天天用。你从文件里读到的是一位一位的字符，想要真正的整数，就得减去 <code>&#x27;0&#x27;</code> 的编号 48。直接写 <code>- 48</code> 也行，但写 <code>- &#x27;0&#x27;</code> 别人一看就知道你想干什么。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>把 <code>&#x27;0&#x27;</code> 和 <code>0</code> 混为一谈。<code>&#x27;0&#x27;</code> 的值是 48，不是 0。判空字符要用 <code>&#x27;\0&#x27;</code>（值 0），判数字零要用 <code>&#x27;0&#x27;</code>。少写一对引号，<code>if (c == 0)</code> 就从「判断是不是字符零」变成了「判断是不是字符串结束」。</p></div></div><h2 id="sec-4">1.4 Unicode：给全世界每个字符编号<i class="anchor">#</i></h2><p>ASCII 只有 128 个位置，英文够用，中文完全不够。汉字有好几万个，日文假名、阿拉伯文、emoji 也都得占位置。</p><p>Unicode 的做法是<strong>只编号，不管怎么存</strong>。它给全世界每个字符分配一个叫<strong>码点</strong>的数字，写成 <code>U+XXXX</code> 的形式。<code>A</code> 是 <code>U+0041</code>（就是 65），<code>中</code> 是 <code>U+4E2D</code>，<code>你</code> 是 <code>U+4F60</code>。</p><p>问题是：码点最大到 <code>U+10FFFF</code>，需要 21 个二进制位才装得下。如果统一用 4 个字节存每个字符，一篇纯英文文章的体积会翻四倍。于是有了<strong>编码方式</strong>——把码点翻译成字节的规则。</p><p>UTF-8 是最流行的那个。它的规则是变长：</p><div class="table-wrap"><table><thead><tr><th>码点范围</th><th>占用字节</th><th>首字节特征</th></tr></thead><tbody><tr><td>U+0000 ~ U+007F</td><td>1</td><td><code>0xxxxxxx</code></td></tr><tr><td>U+0080 ~ U+07FF</td><td>2</td><td><code>110xxxxx</code></td></tr><tr><td>U+0800 ~ U+FFFF</td><td>3</td><td><code>1110xxxx</code></td></tr><tr><td>U+10000 ~ U+10FFFF</td><td>4</td><td><code>11110xxx</code></td></tr></tbody></table></div><p>好处有两个。第一，英文还是 1 个字节，和 ASCII 完全兼容，老程序读新文件不会炸。第二，看首字节就知道这个字符有几个字节，程序不用猜。</p><p><code>中</code> 落在第三行，占 3 个字节。这 3 个字节是 <code>E4 B8 AD</code>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">char</span> s[] = <span class="tok-str">&quot;\xE4\xB8\xAD&quot;</span>;   <span class="tok-com">/* 「中」的 UTF-8 编码 */</span>
+    <span class="tok-type">int</span> i;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;字节数：%d\n&quot;</span>, (<span class="tok-type">int</span>)<span class="tok-fn">strlen</span>(s));
+    <span class="tok-key">for</span> (i = <span class="tok-num">0</span>; i &lt; (<span class="tok-type">int</span>)<span class="tok-fn">strlen</span>(s); i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%02X &quot;</span>, (<span class="tok-type">unsigned</span> <span class="tok-type">char</span>)s[i]);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;数组本身占 %d 个字节\n&quot;</span>, (<span class="tok-type">int</span>)<span class="tok-key">sizeof</span>(s));
+
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>字节数：3
+E4 B8 AD
+数组本身占 4 个字节</pre></div><p>这里有个很实用的结论：<strong><code>strlen</code> 数的是字节，不是字</strong>。<code>strlen(&quot;中&quot;)</code> 是 3，<code>strlen(&quot;中文&quot;)</code> 是 6。你在 C 里想按「字数」截断中文，直接用 <code>strlen</code> 会截出半个字符，屏幕上就是一个问号或方块。</p><p>数组比字符串多 1 个字节，是末尾的 <code>&#x27;\0&#x27;</code>。前面说的 <code>&#x27;0&#x27;</code> 是 48，<code>&#x27;\0&#x27;</code> 是 0，两个东西，别混。</p><div class="callout callout-tip"><div class="callout-head"><span class="callout-glyph">★</span><span>中文占几个字节</span></div><div class="callout-body"><p>GBK 里一个汉字固定 2 字节，UTF-8 里常用汉字大多 3 字节，生僻字和 emoji 要 4 字节。所以「这个文件多大」和「这段文字多少字」没有固定倍数关系，得看编码。同一个「中」，GBK 是 <code>D6 D0</code>，UTF-8 是 <code>E4 B8 AD</code>，都对，只是规则不同。</p></div></div><h2 id="sec-5">1.5 乱码到底怎么产生的<i class="anchor">#</i></h2><p>乱码只有一个原因：<strong>存的时候用一套规则，读的时候用了另一套</strong>。</p><p>比如一个 UTF-8 的文件里存着 <code>中</code>，字节是 <code>E4 B8 AD</code>。你用一个以为是 GBK 的编辑器打开它，编辑器会把 <code>E4 B8</code> 当成一个 GBK 汉字，<code>AD</code> 再和下一个字节凑成另一个字。屏幕上就出现一对毫不相干的怪字。字节一个没丢，是翻译错了。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">TEXT</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>「中」这个字
+UTF-8 编码：E4 B8 AD   （3 个字节）
+GBK   编码：D6 D0      （2 个字节）
+
+用 GBK 去读 UTF-8 的字节：E4 B8 | AD ...
+     E4 B8 在 GBK 里是另一个字，AD 被拆去和下一个字节凑对
+     所以后面的字全部错位，整段花掉</code></pre></div><p>第二种乱码是<strong>截断</strong>。程序只取了前 2 个字节去显示一个 3 字节的字，最后那个字节被扔掉，解码器发现字节数不对，就吐出一个 <code>？</code> 或者一个黑菱形。</p><p>第三种是<strong>根本没法解释</strong>。某些字节序列在任何编码里都不合法，解码器只能给一个替换字符。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>看到乱码就去改字体，改了半小时没用。乱码是编码问题，跟字体一点关系都没有。正确做法是先确认这份数据是谁用什么编码存的，再用同一种编码去读。Python 里 <code>open(..., encoding=&quot;utf-8&quot;)</code>，浏览器里看 <code>Content-Type</code> 的 <code>charset</code>。硬猜不算办法。</p></div></div><p>讲到这里，顺便解释一个很多人见过的怪现象：在 VC++ 里调试，屏幕上会出现一串「烫烫烫」。原因是调试版的编译器把没初始化的栈内存填成 <code>0xCC</code>，两个 <code>0xCC</code> 拼在一起是 <code>0xCCCC</code>，这个编号在 GBK 里正好是「烫」字。所以你看到「烫」就说明那个字符串压根没赋过值。现在你知道它不是玄学了。</p><h2 id="sec-6">1.6 这些知识什么时候用得上<i class="anchor">#</i></h2><p>写业务代码的时候，你可能一整年都不用自己转进制。但下面这些场景天天遇到：</p><ul><li>报文和协议里的字段是十六进制，抓包看到的是 <code>0x0A 0x0D</code>，你得知道那是换行符</li><li>位运算压状态：一个 <code>int</code> 存 32 个开关，比 32 个 <code>bool</code> 省地方</li><li>处理文本时判断「这个字节是不是 UTF-8 的首字节」，看最高位是 0、110、1110 还是 11110</li><li>排查乱码、大小端、文件头（PNG 开头是 <code>89 50 4E 47</code>）</li></ul><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>进制就是「满几进一」：二进制满 2 进 1，十六进制满 16 进 1，4 个二进制位换 1 个十六进制位</li><li>1 个字节 8 位，能装 256 个编号；同一个字节 <code>FF</code>，按有符号读是 -1，按无符号读是 255</li><li>负数用补码表示：取反加一，这样减法就能用加法器做</li><li>字符就是编号：<code>&#x27;0&#x27;</code> 是 48、<code>&#x27;A&#x27;</code> 是 65、<code>&#x27;a&#x27;</code> 是 97；Unicode 只编号，UTF-8 把编号变成 1 到 4 个字节，一个汉字通常 3 字节，<code>strlen</code> 数的是字节</li><li>乱码只有一个原因：存和读用了不同的编码</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>手算 <code>0b110101</code>、<code>0x3F</code>、<code>255</code> 的十进制值，再用 <code>print_binary</code> 验证，写一张三种进制对照表（至少 8 行）。</li><li>写一个函数 <code>int count_one(unsigned int n)</code>，用位运算数出一个无符号整数里有多少个 1。提示：<code>n &amp; (n - 1)</code> 能消掉最低位的 1。</li><li>用 <code>strlen</code> 分别测 <code>&quot;hello&quot;</code>、<code>&quot;中&quot;</code>、<code>&quot;中文abc&quot;</code> 的字节数，再算一算每个字符串的「字符数」，解释两者的差。</li><li>把一个 <code>.txt</code> 文件分别另存为 UTF-8 和 GBK，用 C 程序按字节打印前 16 个十六进制值，对比两份输出，说出哪几个字节变了。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="fund-01-binary"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><span class="pager-item is-empty"><span>上一章</span><b>已经是第一篇</b></span><a class="pager-item next" href="../fund/02-how-program-runs.html"><span>下一章</span><b>第 2 课 一个程序是怎么跑起来的</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">1.1 二进制只是两根一捆</a><a class="toc-link level-2" href="#sec-2">1.2 一个字节装 256 个数</a><a class="toc-link level-2" href="#sec-3">1.3 ASCII：字符其实是编号</a><a class="toc-link level-2" href="#sec-4">1.4 Unicode：给全世界每个字符编号</a><a class="toc-link level-2" href="#sec-5">1.5 乱码到底怎么产生的</a><a class="toc-link level-2" href="#sec-6">1.6 这些知识什么时候用得上</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

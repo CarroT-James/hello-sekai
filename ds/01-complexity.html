@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 1 课 复杂度与算法思维 · Hello Sekai</title>
+<meta name="description" content="这一课用几个能跑的小实验，把大 O、最坏情况和空间换时间讲清楚，顺便回答「为什么有人写出来就超时」。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="ds-01-complexity" data-track="ds" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link is-active" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">数据结构</span><a class="sidebar-back" href="../ds/index.html">总览</a></div><nav class="side-nav"><a class="side-link is-active" href="../ds/01-complexity.html" data-id="ds-01-complexity"><span class="side-num">01</span><span class="side-text">第 1 课 复杂度与算法思维</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/02-arraylist.html" data-id="ds-02-arraylist"><span class="side-num">02</span><span class="side-text">第 2 课 线性表与动态数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/03-linked-list.html" data-id="ds-03-linked-list"><span class="side-num">03</span><span class="side-text">第 3 课 链表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/04-stack.html" data-id="ds-04-stack"><span class="side-num">04</span><span class="side-text">第 4 课 栈</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/05-queue.html" data-id="ds-05-queue"><span class="side-num">05</span><span class="side-text">第 5 课 队列与双端队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/06-tree.html" data-id="ds-06-tree"><span class="side-num">06</span><span class="side-text">第 6 课 树与二叉树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/07-bst.html" data-id="ds-07-bst"><span class="side-num">07</span><span class="side-text">第 7 课 二叉搜索树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/08-heap.html" data-id="ds-08-heap"><span class="side-num">08</span><span class="side-text">第 8 课 堆与优先队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/09-hash.html" data-id="ds-09-hash"><span class="side-num">09</span><span class="side-text">第 9 课 哈希表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/10-graph.html" data-id="ds-10-graph"><span class="side-num">10</span><span class="side-text">第 10 课 图与遍历</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/11-sorting.html" data-id="ds-11-sorting"><span class="side-num">11</span><span class="side-text">第 11 课 排序算法总览</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/12-dp.html" data-id="ds-12-dp"><span class="side-num">12</span><span class="side-text">第 12 课 递归、分治与动态规划入门</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../ds/index.html">← 返回数据结构</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../ds/index.html">数据结构</a> <span class="sep">/</span> <span>第 1 课 复杂度与算法思维</span></div><h1 class="doc-title">第 1 课 复杂度与算法思维</h1><div class="doc-meta"><span>预计 35 分钟</span><span class="dot">·</span><span>约 5,718 字</span><span class="dot">·</span><span>数据结构</span></div><article class="prose" id="article"><p>刚学完数组和循环那阵，我判断一段代码好不好，办法特别土：掐表。同一个题写两版，哪版跑得快就用哪版。这个办法在小数据上从没骗过我，直到有次我把 n 从一万改成一百万，原本「快」的那版跑了十几秒，被我嫌弃的那版还是瞬间出结果。</p><p>后来我才想明白，秒表量的是「这台机器、这个数据量」下的结果，换台电脑、换个 n，结论就可能翻过来。复杂度问的是另一个问题：<strong>数据量翻倍的时候，工作量会翻几倍</strong>。</p><p>大 O 那套符号第一次看确实像天书。我当年盯着 O(n log n) 看了半天，心想这到底是个数还是个函数。这一课不背定义，用五个能跑的小程序把它拆开。复杂度这个词，你在 <a href="../c/rumen/ch08.html">C 语言 第 8 章 数据结构与算法入门</a> 里大概扫到过一眼，当时可能只记住了一个 O(n²)，没往深处想。现在把它捡起来。</p><h2 id="sec-1">1.1 同样的活，两种干法<i class="anchor">#</i></h2><p>先算 1 加到 n。最直白的写法是一个循环，另一个人可能直接甩出求和公式。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> n = <span class="tok-num">100</span>;
+    <span class="tok-type">int</span> sum = <span class="tok-num">0</span>;
+    <span class="tok-type">int</span> steps = <span class="tok-num">0</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">1</span>; i &lt;= n; i++) {
+        sum += i;
+        steps++;
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;循环：sum = %d，做了 %d 次加法\n&quot;</span>, sum, steps);
+
+    sum = n * (n + <span class="tok-num">1</span>) / <span class="tok-num">2</span>;
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;公式：sum = %d，只做了 3 次运算\n&quot;</span>, sum);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>循环：sum = 5050，做了 100 次加法
+公式：sum = 5050，只做了 3 次运算</pre></div><p>两段都算出了 5050。n = 100 时，97 次加减在你电脑上连一毫秒都不到，根本感觉不出来。但把 n 换成 1 亿：第一种老老实实加 1 亿次，第二种还是那 3 次。这时候差距不是「快一点」，而是「能跑」和「跑不完」。</p><p>复杂度就是把这个「次数怎么随 n 涨」写成一句话。它不关心你的 CPU 是 i5 还是 M3，也不关心编译器开没开优化，只关心 n 变大时那条曲线的形状。</p><h2 id="sec-2">1.2 大 O：只留涨得最快的那一项<i class="anchor">#</i></h2><p>看三段循环，每段都数一下执行了多少次。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> n = <span class="tok-num">1000</span>;
+    <span class="tok-type">long</span> <span class="tok-type">long</span> a = <span class="tok-num">0</span>, b = <span class="tok-num">0</span>, c = <span class="tok-num">0</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; n; i++) a++;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; n; i++)
+        <span class="tok-key">for</span> (<span class="tok-type">int</span> j = <span class="tok-num">0</span>; j &lt; n; j++) b++;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">1</span>; i &lt; n; i *= <span class="tok-num">2</span>) c++;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;n = %d\n&quot;</span>, n);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;一层循环   %lld 次\n&quot;</span>, a);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;两层嵌套   %lld 次\n&quot;</span>, b);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;每次乘 2   %lld 次\n&quot;</span>, c);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>n = 1000
+一层循环   1000 次
+两层嵌套   1000000 次
+每次乘 2   10 次</pre></div><p>比例是 1000 : 1000000 : 10。第二段比第一段多了一千倍，第三段反而只要十次。</p><p>真实程序的工作量通常长这样：3n² + 5n + 7。n = 1000 时它是 3005007，其中 3n² 占了 99.8%。n 再大一点，5n + 7 连零头都不算。所以大 O 把系数和低阶项全扔掉，只留 n²，记作 O(n²)。</p><p>扔系数不是耍赖。你只需要关心「n 变大时谁先撑不住」，而这件事由最高阶项决定。严格一点的说法是：如果存在常数 c，使得 n 足够大时步数不超过 c·f(n)，就记作 O(f(n))。你现在只用记住两件事——<strong>看上界，只留最高阶</strong>。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>记忆点</span></div><div class="callout-body"><p>大 O 描述的是增长趋势，不是精确次数。O(n) 的算法完全可能比 O(n²) 的算法慢：n 很小时，或者常数差得离谱时，就是这样。它回答的是「n 大了以后谁先垮」，不是「谁永远更快」。</p></div></div><p>最后一段 <code>i *= 2</code> 值得单独说。i 依次是 1、2、4、8……，跑到 1000 只要 10 步，因为 2^10 = 1024。这类「每轮砍一半」或「每轮翻一倍」的循环，复杂度是 O(log n)。后面的二分查找、平衡树、堆，全靠它吃饭。</p><h2 id="sec-3">1.3 常见的几档，和它们的生活原型<i class="anchor">#</i></h2><div class="table-wrap"><table><thead><tr><th>复杂度</th><th>典型场景</th><th>n = 100 万时的量级</th></tr></thead><tbody><tr><td>O(1)</td><td>数组按下标取值、栈顶进出</td><td>1</td></tr><tr><td>O(log n)</td><td>二分查找、平衡树查找</td><td>20</td></tr><tr><td>O(n)</td><td>遍历一遍数组或链表</td><td>100 万</td></tr><tr><td>O(n log n)</td><td>归并排序、快速排序平均</td><td>2000 万</td></tr><tr><td>O(n²)</td><td>双重循环、冒泡排序</td><td>1 万亿</td></tr><tr><td>O(2^n)</td><td>枚举所有子集</td><td>大到没法跑</td></tr></tbody></table></div><p>表格里 O(n²) 那一行，1 万亿次运算够你的笔记本跑上几个小时。这就是「能跑」和「能过」的区别。</p><p>小区快递柜可以拿来对照。你知道格口编号，直接走过去开，不用从 1 号数起——O(1)。柜子按编号排好，你每次猜中间那个，猜错就砍掉一半——O(log n)。柜子没编号，只能从第一个挨个看——O(n)。要是每个包裹都得和其他所有包裹比一遍才能确定放哪，那就是 O(n²)。</p><p>二分查找是 O(log n) 最干净的样板。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> n = <span class="tok-num">1000000</span>;
+    <span class="tok-type">int</span> lo = <span class="tok-num">1</span>, hi = n, target = <span class="tok-num">999999</span>;
+    <span class="tok-type">int</span> steps = <span class="tok-num">0</span>;
+
+    <span class="tok-key">while</span> (lo &lt;= hi) {
+        <span class="tok-type">int</span> mid = lo + (hi - lo) / <span class="tok-num">2</span>;
+        steps++;
+        <span class="tok-key">if</span> (mid == target) <span class="tok-key">break</span>;
+        <span class="tok-key">if</span> (mid &lt; target) lo = mid + <span class="tok-num">1</span>;
+        <span class="tok-key">else</span> hi = mid - <span class="tok-num">1</span>;
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;在 1 到 %d 里找 %d，比较了 %d 次\n&quot;</span>, n, target, steps);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>在 1 到 1000000 里找 999999，比较了 19 次</pre></div><p>19 次。为什么这么少？每比较一次，候选范围就砍一半。2^19 = 524288，2^20 = 1048576，所以 100 万以内的数，20 次之内必然锁定。你把 n 再乘 1000，比较次数也只多 10 次——这就是 log 的脾气。</p><p>注意 <code>mid = lo + (hi - lo) / 2</code> 这个写法。直接写 <code>(lo + hi) / 2</code> 在教科书里很常见，但当 lo 和 hi 都接近 <code>int</code> 上限时，相加会溢出成负数，然后程序越界崩溃。这个 bug 在真实项目里出过，而且极难查。养成写差值的习惯，不亏。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>二分查找写不对，九成是边界：<code>while (lo &lt;= hi)</code> 还是 <code>&lt;</code>，<code>hi = mid</code> 还是 <code>mid - 1</code>，差一个等号就死循环或者漏掉答案。写完拿 n = 1、n = 2、target 在两端这几种情况各跑一遍，比盯着看十分钟有用。</p></div></div><h2 id="sec-4">1.4 最好、最坏、平均：别拿运气当性能<i class="anchor">#</i></h2><p>同样是线性查找，目标在哪，代价差很多。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">search</span>(<span class="tok-type">int</span> a[], <span class="tok-type">int</span> n, <span class="tok-type">int</span> target, <span class="tok-type">int</span> *cmp) {
+    *cmp = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; n; i++) {
+        (*cmp)++;
+        <span class="tok-key">if</span> (a[i] == target) <span class="tok-key">return</span> i;
+    }
+    <span class="tok-key">return</span> -<span class="tok-num">1</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> a[<span class="tok-num">10</span>] = {<span class="tok-num">3</span>, <span class="tok-num">8</span>, <span class="tok-num">15</span>, <span class="tok-num">22</span>, <span class="tok-num">31</span>, <span class="tok-num">40</span>, <span class="tok-num">55</span>, <span class="tok-num">61</span>, <span class="tok-num">78</span>, <span class="tok-num">90</span>};
+    <span class="tok-type">int</span> cmp, pos;
+
+    pos = <span class="tok-fn">search</span>(a, <span class="tok-num">10</span>, <span class="tok-num">3</span>, &amp;cmp);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;找 3：  下标 %d，比较 %d 次\n&quot;</span>, pos, cmp);
+    pos = <span class="tok-fn">search</span>(a, <span class="tok-num">10</span>, <span class="tok-num">55</span>, &amp;cmp);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;找 55： 下标 %d，比较 %d 次\n&quot;</span>, pos, cmp);
+    pos = <span class="tok-fn">search</span>(a, <span class="tok-num">10</span>, <span class="tok-num">100</span>, &amp;cmp);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;找 100：下标 %d，比较 %d 次\n&quot;</span>, pos, cmp);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>找 3：  下标 0，比较 1 次
+找 55： 下标 6，比较 7 次
+找 100：下标 -1，比较 10 次</pre></div><p>同一个函数，最好 1 次，最坏 10 次，平均大概 5 次。那它的复杂度到底算哪个？</p><p>习惯上说最坏情况。原因很实际：决定你会不会超时、会不会崩的，是最坏那一次，不是运气好的那一次。你写个查找，自己的测试数据里目标恰好在第一个，跑得飞快，交上去被一组「目标不存在」的数据打回来——这种事每年都有人遇上。</p><p>平均情况一般也是 O(n)：平均找 n/2 次，系数 1/2 扔掉还是 n。所以这个查找就叫 O(n)，不管最好那次有多快。</p><div class="callout callout-tip"><div class="callout-head"><span class="callout-glyph">★</span><span>补充说明</span></div><div class="callout-body"><p>有些算法最好和最坏差得非常远。快速排序平均 O(n log n)，最坏 O(n²)；哈希表平均 O(1)，最坏 O(n)。别人问「这个多快」，把平均和最坏都报出来，比只报一个数专业得多。</p></div></div><h2 id="sec-5">1.5 空间换时间：拿内存买速度<i class="anchor">#</i></h2><p>数一下 100 万以内有多少个素数。最直接的办法是每个数都试除，另一个办法是开一个标记数组，把合数一个个划掉，也就是筛法。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-type">long</span> <span class="tok-type">long</span> <span class="tok-fn">count_by_division</span>(<span class="tok-type">int</span> n, <span class="tok-type">int</span> *primes) {
+    <span class="tok-type">long</span> <span class="tok-type">long</span> ops = <span class="tok-num">0</span>;
+    *primes = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> x = <span class="tok-num">2</span>; x &lt;= n; x++) {
+        <span class="tok-type">int</span> is_prime = <span class="tok-num">1</span>;
+        <span class="tok-key">for</span> (<span class="tok-type">int</span> d = <span class="tok-num">2</span>; d * d &lt;= x; d++) {
+            ops++;
+            <span class="tok-key">if</span> (x % d == <span class="tok-num">0</span>) {
+                is_prime = <span class="tok-num">0</span>;
+                <span class="tok-key">break</span>;
+            }
+        }
+        <span class="tok-key">if</span> (is_prime) (*primes)++;
+    }
+    <span class="tok-key">return</span> ops;
+}
+
+<span class="tok-type">long</span> <span class="tok-type">long</span> <span class="tok-fn">count_by_sieve</span>(<span class="tok-type">int</span> n, <span class="tok-type">int</span> *primes) {
+    <span class="tok-type">char</span> *mark = <span class="tok-fn">malloc</span>((<span class="tok-type">size_t</span>)n + <span class="tok-num">1</span>);
+    <span class="tok-key">if</span> (mark == NULL) <span class="tok-key">return</span> -<span class="tok-num">1</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt;= n; i++) mark[i] = <span class="tok-num">0</span>;
+
+    <span class="tok-type">long</span> <span class="tok-type">long</span> ops = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">2</span>; (<span class="tok-type">long</span> <span class="tok-type">long</span>)i * i &lt;= n; i++) {
+        <span class="tok-key">if</span> (mark[i]) <span class="tok-key">continue</span>;
+        <span class="tok-key">for</span> (<span class="tok-type">int</span> j = i * i; j &lt;= n; j += i) {
+            mark[j] = <span class="tok-num">1</span>;
+            ops++;
+        }
+    }
+
+    *primes = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">2</span>; i &lt;= n; i++)
+        <span class="tok-key">if</span> (mark[i] == <span class="tok-num">0</span>) (*primes)++;
+
+    <span class="tok-fn">free</span>(mark);
+    <span class="tok-key">return</span> ops;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> sizes[<span class="tok-num">2</span>] = {<span class="tok-num">100000</span>, <span class="tok-num">1000000</span>};
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> k = <span class="tok-num">0</span>; k &lt; <span class="tok-num">2</span>; k++) {
+        <span class="tok-type">int</span> n = sizes[k];
+        <span class="tok-type">int</span> p1, p2;
+        <span class="tok-type">long</span> <span class="tok-type">long</span> a = <span class="tok-fn">count_by_division</span>(n, &amp;p1);
+        <span class="tok-type">long</span> <span class="tok-type">long</span> b = <span class="tok-fn">count_by_sieve</span>(n, &amp;p2);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;n = %d\n&quot;</span>, n);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;  试除法：%lld 次取余，找到 %d 个素数\n&quot;</span>, a, p1);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;  筛法：  %lld 次标记，找到 %d 个素数\n&quot;</span>, b, p2);
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>n = 100000
+  试除法：2745694 次取余，找到 9592 个素数
+  筛法：  193078 次标记，找到 9592 个素数
+n = 1000000
+  试除法：67740404 次取余，找到 78498 个素数
+  筛法：  2122048 次标记，找到 78498 个素数</pre></div><p>结果一样，代价差 6500 万次运算。多花的那点空间是 1MB（100 万个 <code>char</code>），换来的是一台老笔记本也能瞬间跑完。n 从 10 万涨到 100 万，差距还从 14 倍拉到了 32 倍。</p><p>这就是空间换时间：拿一块额外的内存，记住「已经算过的东西」，让后面的计算不用重来。筛法的表建一次，之后想查多少遍都行。导航软件提前算好路网、游戏提前烘焙光照、数据库给字段建索引，都是同一笔账。</p><p>但这笔账不是永远划算。如果只查一次、查完就扔，或者内存本来就紧张（单片机、嵌入式），那 1MB 的代价可能比省下的时间还大。先算清「表能不能复用」，再决定换不换。</p><h2 id="sec-6">1.6 拿到题，先估一遍再动手<i class="anchor">#</i></h2><p>写代码之前花两分钟做四件事，能省掉后面两小时的重写。</p><ol><li>数循环层数。一层通常是 O(n)，两层嵌套 O(n²)。但别只看层数，要看每层到底跑多少次。</li><li>看边界。<code>for (j = 0; j &lt; i; j++)</code> 里层总共跑 n(n-1)/2 次，还是 n² 那一档；<code>i *= 2</code> 是 log n。</li><li>乘起来，只留最高阶。两个独立的循环是 n + n = O(n)，不是 O(n²)。</li><li>用 n 的上限反推。</li></ol><p>第 4 步有个粗糙但好用的经验值：C 语言一秒大约能做 1 亿次简单运算。照这个估：</p><div class="table-wrap"><table><thead><tr><th>n 的上限</th><th>能过的复杂度</th><th>说明</th></tr></thead><tbody><tr><td>100</td><td>O(n³) 也许行</td><td>100 万次，随便跑</td></tr><tr><td>1000</td><td>O(n²)</td><td>100 万次，稳</td></tr><tr><td>10^5</td><td>O(n log n)</td><td>170 万次，稳</td></tr><tr><td>10^6</td><td>O(n) 或常数小的 O(n log n)</td><td>几千万次，看常数</td></tr><tr><td>10^9</td><td>O(log n)、O(1)</td><td>循环一遍就超时</td></tr></tbody></table></div><p>这张表不是定律，机器有快有慢，常数有大有小。但它能挡住八成「本地跑得欢、交上去超时」的惨案。</p><p>最后回答一个你可能想问的问题：大一为什么要懂这个？因为后面每一课都会用 O(...) 给操作标价：数组按下标取 O(1)，链表找第 k 个 O(n)，栈和队列进出 O(1)，二叉搜索树查找平均 O(log n)。不先建立这套语言，后面听什么都是散的。而且它不只用于考试——你写个脚本处理十万行日志，卡不卡，就看这一眼估算。</p><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>把 1.1 的程序里 n 改成 1 亿。先算 <code>sum</code> 会不会溢出（<code>int</code> 上限约 21 亿），再估时间，最后跑一次验证。跑不动就改成 1000 万，看估算误差多大。</li><li>判断下面三段的复杂度：a) 双层循环，内层 <code>j &lt; i</code>；b) <code>for (i = 1; i &lt; n; i *= 3)</code>；c) 先一个 n 次循环，再一个 n² 次循环。</li><li>把二分查找改成「找不到返回 -1」，并打印每一轮的 lo、hi、mid。n = 100 万、target = 1 时比较几次？先猜再跑。</li><li>把筛法的 <code>char</code> 数组换成 <code>int</code> 数组，用 <code>sizeof</code> 算内存，各跑三次比较耗时；再把上限提到 500 万，看哪个先撑不住。</li></ol></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>复杂度看趋势：n 翻倍，工作量涨几倍，而不是掐表看秒数</li><li>大 O 只留最高阶、扔掉系数，默认说最坏情况</li><li>常备几档：O(1)、O(log n)、O(n)、O(n log n)、O(n²)</li><li>空间换时间的关键是「表能复用」，不是无脑开数组</li><li>下一课 <a href="02-arraylist.html">第 2 课 线性表与动态数组</a>：数组明明定长，<code>push_back</code> 为什么能一直加？</li></ul></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="ds-01-complexity"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><span class="pager-item is-empty"><span>上一章</span><b>已经是第一篇</b></span><a class="pager-item next" href="../ds/02-arraylist.html"><span>下一章</span><b>第 2 课 线性表与动态数组</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">1.1 同样的活，两种干法</a><a class="toc-link level-2" href="#sec-2">1.2 大 O：只留涨得最快的那一项</a><a class="toc-link level-2" href="#sec-3">1.3 常见的几档，和它们的生活原型</a><a class="toc-link level-2" href="#sec-4">1.4 最好、最坏、平均：别拿运气当性能</a><a class="toc-link level-2" href="#sec-5">1.5 空间换时间：拿内存买速度</a><a class="toc-link level-2" href="#sec-6">1.6 拿到题，先估一遍再动手</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

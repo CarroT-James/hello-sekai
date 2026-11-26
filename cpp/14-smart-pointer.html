@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 14 课 智能指针与移动语义：让「谁负责释放」写进类型 · Hello Sekai</title>
+<meta name="description" content="new 出来的对象谁来 delete？unique_ptr、shared_ptr 和移动语义，都在回答「谁拥有它」。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="cpp-14-smart-pointer" data-track="cpp" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link is-active" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">C++</span><a class="sidebar-back" href="../cpp/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../cpp/01-first-program.html" data-id="cpp-01-first-program"><span class="side-num">01</span><span class="side-text">第 1 课 第一个 C++ 程序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/02-reference-const.html" data-id="cpp-02-reference-const"><span class="side-num">02</span><span class="side-text">第 2 课 引用与 const</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/03-overload-default.html" data-id="cpp-03-overload-default"><span class="side-num">03</span><span class="side-text">第 3 课 函数重载与默认参数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/04-class-basic.html" data-id="cpp-04-class-basic"><span class="side-num">04</span><span class="side-text">第 4 课 类与对象：把数据和操作捆在一起</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/05-destructor-raii.html" data-id="cpp-05-destructor-raii"><span class="side-num">05</span><span class="side-text">第 5 课 构造、析构与 RAII</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/06-vector-string.html" data-id="cpp-06-vector-string"><span class="side-num">06</span><span class="side-text">第 6 课 vector 与 string</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/07-stl-map.html" data-id="cpp-07-stl-map"><span class="side-num">07</span><span class="side-text">第 7 课 map、set 与 pair</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/08-modern-cpp.html" data-id="cpp-08-modern-cpp"><span class="side-num">08</span><span class="side-text">第 8 课 auto、nullptr 与范围 for</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/09-inheritance.html" data-id="cpp-09-inheritance"><span class="side-num">09</span><span class="side-text">第 9 课 继承与多态：让不同的东西说同一种话</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/10-operator-overload.html" data-id="cpp-10-operator-overload"><span class="side-num">10</span><span class="side-text">第 10 课 运算符重载与友元：让自定义类型也用上 + 号</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/11-template.html" data-id="cpp-11-template"><span class="side-num">11</span><span class="side-text">第 11 课 模板与泛型：写一遍，适配所有类型</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/12-exception.html" data-id="cpp-12-exception"><span class="side-num">12</span><span class="side-text">第 12 课 异常处理：把「出错了」和「算完了」分开</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/13-stl-algorithms.html" data-id="cpp-13-stl-algorithms"><span class="side-num">13</span><span class="side-text">第 13 课 STL 算法与迭代器：装进去之后，怎么处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../cpp/14-smart-pointer.html" data-id="cpp-14-smart-pointer"><span class="side-num">14</span><span class="side-text">第 14 课 智能指针与移动语义：让「谁负责释放」写进类型</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/15-class-design.html" data-id="cpp-15-class-design"><span class="side-num">15</span><span class="side-text">第 15 课 类设计实战：手写一个 MyString</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/16-project.html" data-id="cpp-16-project"><span class="side-num">16</span><span class="side-text">第 16 课 项目组织与调试：把代码拆成多个文件</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../cpp/index.html">← 返回C++</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../cpp/index.html">C++</a> <span class="sep">/</span> <span>第 14 课 智能指针与移动语义：让「谁负责释放」写进类型</span></div><h1 class="doc-title">第 14 课 智能指针与移动语义：让「谁负责释放」写进类型</h1><div class="doc-meta"><span>预计 32 分钟</span><span class="dot">·</span><span>约 6,783 字</span><span class="dot">·</span><span>C++</span></div><article class="prose" id="article"><p><a href="05-destructor-raii.html">第 5 课 构造、析构与 RAII</a> 留了个尾巴：<code>new</code> 出来的对象，谁来 <code>delete</code>？手写 delete 的问题不是难，是容易漏。智能指针把「谁拥有这块内存」写进类型里，让编译器替你记住。</p><p>这一课还有另一半：移动语义。它和智能指针常常一起出现，因为「把资源从 A 搬到 B」正是智能指针和容器最常做的事。</p><h2 id="sec-1">14.1 裸指针的三个麻烦<i class="anchor">#</i></h2><p>先把三个词说清楚。栈是函数里定义的局部变量住的地方，函数一返回就自动收回。堆是一块公共的大内存，用 <code>new</code> 向它要一块，用 <code>delete</code> 还回去，编译器不会替你记。指针是存地址的变量：<code>int* data = new int[10]</code> 的意思是向堆要 10 个 int 的空间，把第一块的地址存进 data，之后用 <code>data[0]</code>、<code>data[1]</code> 访问每一格。<code>new[]</code> 要用 <code>delete[]</code> 还，<code>new</code> 用 <code>delete</code> 还，两者不能混。</p><p>带着这三个词看下面这段代码，它看起来很规矩。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+
+<span class="tok-type">int</span>* <span class="tok-fn">makeArray</span>(<span class="tok-type">int</span> n) {
+    <span class="tok-key">return</span> <span class="tok-key">new</span> <span class="tok-type">int</span>[n];
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">process</span>(<span class="tok-type">int</span> flag) {
+    <span class="tok-type">int</span>* data = <span class="tok-fn">makeArray</span>(<span class="tok-num">10</span>);
+    <span class="tok-key">if</span> (flag &lt; <span class="tok-num">0</span>) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;参数不对\n&quot;</span>;
+        <span class="tok-key">return</span>;
+    }
+    data[<span class="tok-num">0</span>] = <span class="tok-num">1</span>;
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; data[<span class="tok-num">0</span>] &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    <span class="tok-key">delete</span>[] data;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-fn">process</span>(<span class="tok-num">1</span>);
+    <span class="tok-fn">process</span>(-<span class="tok-num">1</span>);
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>1
+参数不对</pre></div><p>第二次调用 <code>process(-1)</code> 时，return 之前没有 <code>delete[] data</code>，那十个 int 的空间就漏了。每次漏 40 字节，跑一万次就是 400KB。短命的小程序看不出来，长驻的服务器进程里，这就是内存曲线的起点。</p><p>第二个问题是重复释放。如果两个指针指向同一块内存，各自以为自己拥有它，析构时各 delete 一次，程序可能在第二次 delete 时崩，也可能过很久才崩，查起来毫无头绪。第三个问题是所有权不清：函数参数写成 <code>int*</code>，你根本不知道调用方期不期望你释放它。指针本身不携带「这块内存该由谁释放」的信息，全靠人记。</p><p>异常会让第一个问题变得更隐蔽。<code>new</code> 之后、<code>delete</code> 之前的任何一行如果 throw，后面的 delete 就不会执行，而编译器不会提醒你。智能指针解决的核心就是这件事：把 delete 写进析构函数，让栈展开替你调用。</p><h2 id="sec-2">14.2 <code>unique_ptr</code>：这块对象只归我管<i class="anchor">#</i></h2><p><code>std::unique_ptr</code> 表示「这个对象只归我管」。它不能拷贝，只能移动。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;memory&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+<span class="tok-pre">#include</span> &lt;utility&gt;
+
+<span class="tok-key">class</span> Connection {
+<span class="tok-key">public</span>:
+    <span class="tok-key">explicit</span> <span class="tok-fn">Connection</span>(<span class="tok-type">std</span>::<span class="tok-type">string</span> name) : <span class="tok-fn">name_</span>(name) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;连接 &quot;</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+    ~<span class="tok-fn">Connection</span>() {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;断开 &quot;</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+    <span class="tok-type">void</span> <span class="tok-fn">send</span>(<span class="tok-key">const</span> <span class="tok-type">std</span>::<span class="tok-type">string</span>&amp; msg) <span class="tok-key">const</span> {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot; 发送 &quot;</span> &lt;&lt; msg &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+<span class="tok-key">private</span>:
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> name_;
+};
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    {
+        <span class="tok-type">std</span>::<span class="tok-type">unique_ptr</span>&lt;Connection&gt; <span class="tok-fn">conn</span>(<span class="tok-key">new</span> <span class="tok-fn">Connection</span>(<span class="tok-str">&quot;db&quot;</span>));
+        conn-&gt;<span class="tok-fn">send</span>(<span class="tok-str">&quot;hello&quot;</span>);
+
+        <span class="tok-com">// std::unique_ptr&lt;Connection&gt; copy = conn;  // 编译错误：不能拷贝</span>
+
+        <span class="tok-type">std</span>::<span class="tok-type">unique_ptr</span>&lt;Connection&gt; moved = <span class="tok-type">std</span>::<span class="tok-fn">move</span>(conn);
+        <span class="tok-key">if</span> (!conn) {
+            <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;conn 已经空了\n&quot;</span>;
+        }
+        moved-&gt;<span class="tok-fn">send</span>(<span class="tok-str">&quot;world&quot;</span>);
+    }
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;作用域结束\n&quot;</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>连接 db
+db 发送 hello
+conn 已经空了
+db 发送 world
+断开 db
+作用域结束</pre></div><p>离开最内层代码块时，<code>moved</code> 析构，自动调用 <code>~Connection</code>，打印「断开 db」。整个过程没有出现一个 delete。</p><p><code>unique_ptr</code> 不能拷贝，因为拷贝意味着两个指针都以为自己是唯一所有者，析构时就会 delete 两次。要转移所有权，用 <code>std::move</code>，转移后原来的指针变成空。<code>if (!conn)</code> 就是判断它手上还有没有对象。它通常和一个裸指针一样大，没有额外的堆分配，也没有引用计数，开销为零。日常写 C++，只要需要堆上的单个对象，默认就用它。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>版本限制</span></div><div class="callout-body"><p><code>std::make_unique</code> 是 C++14 才进标准库的。Dev-C++ 5.11 自带的 GCC 4.9 按 <code>-std=c++11</code> 编译会报 <code>&#x27;make_unique&#x27; is not a member of &#x27;std&#x27;</code>，所以本课统一写 <code>std::unique_ptr&lt;T&gt;(new T(...))</code>，这个写法 C++11 就有。</p><p>等你的编译器支持 C++14，可以用 <code>make_unique</code>，它不只是短：<code>f(std::unique_ptr&lt;T&gt;(new T), g())</code> 里如果 <code>g()</code> 先执行并抛异常，<code>new T</code> 出来的对象就没人管了；<code>make_unique</code> 把分配和构造包在函数内部，没有这个窗口。</p></div></div><p><code>unique_ptr</code> 还支持自定义删除器：你可以告诉它「不用 delete，收尾时调用这个函数」，比如包装一个打开的文件句柄，让它自动关文件。写法稍微绕，实际项目里更常见的是直接写一个 RAII 包装类，第 5 课的 <code>FileGuard</code> 就是。</p><h2 id="sec-3">14.3 <code>shared_ptr</code>：几个人一起管，最后一个走的关灯<i class="anchor">#</i></h2><p>有些对象确实需要多个地方共同持有，谁最后放手谁负责销毁。这时用 <code>std::shared_ptr</code>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;memory&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+
+<span class="tok-key">class</span> Resource {
+<span class="tok-key">public</span>:
+    <span class="tok-key">explicit</span> <span class="tok-fn">Resource</span>(<span class="tok-type">std</span>::<span class="tok-type">string</span> name) : <span class="tok-fn">name_</span>(name) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;创建 &quot;</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+    ~<span class="tok-fn">Resource</span>() {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;销毁 &quot;</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+<span class="tok-key">private</span>:
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> name_;
+};
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">shared_ptr</span>&lt;Resource&gt; a = <span class="tok-type">std</span>::<span class="tok-type">make_shared</span>&lt;Resource&gt;(<span class="tok-str">&quot;缓存&quot;</span>);
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; a.<span class="tok-fn">use_count</span>() &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+
+    {
+        <span class="tok-type">std</span>::<span class="tok-type">shared_ptr</span>&lt;Resource&gt; b = a;
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; a.<span class="tok-fn">use_count</span>() &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; b.<span class="tok-fn">use_count</span>() &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; a.<span class="tok-fn">use_count</span>() &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    a.<span class="tok-fn">reset</span>();
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;main 结束\n&quot;</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>创建 缓存
+1
+2
+2
+1
+销毁 缓存
+main 结束</pre></div><p><code>shared_ptr</code> 内部有一个控制块，记录当前有多少个 <code>shared_ptr</code> 指向同一个对象。拷贝一个就加一，销毁一个就减一，减到零时删除对象。所以 <code>b</code> 离开代码块后计数从 2 回到 1，<code>a.reset()</code> 之后计数归零，对象立刻销毁。</p><p><code>make_shared</code> 会把对象和控制块分配在同一块内存里，比 <code>shared_ptr&lt;T&gt;(new T)</code> 少一次分配，这是 C++11 就有的，放心用。</p><p>代价也明显：<code>shared_ptr</code> 通常是两个指针大小，引用计数的增减是原子操作，多线程下不会把数字弄乱，但对象本身的读写仍然要你自己加锁。它适合「真的需要共享生命周期」的场景，不是「不知道怎么管就用 shared_ptr」。</p><p>最典型的坑是循环引用。两个对象互相持有对方的 <code>shared_ptr</code>，引用计数永远至少是 1，谁也不会先放手，对象就永远不会销毁。打破环的办法是把其中一边换成 <code>std::weak_ptr</code>：它不增加计数，用之前调 <code>lock()</code> 拿一个临时的 <code>shared_ptr</code>，对象还在就拿到有效指针，不在了就拿到空。</p><p>还有一个必须避免的写法：用同一个裸指针构造两个独立的 <code>shared_ptr</code>。它们各有各的控制块，都以为自己是唯一管理者，最后会 delete 两次。要共享，就从已有的 <code>shared_ptr</code> 拷贝。</p><h2 id="sec-4">14.4 什么时候用哪个<i class="anchor">#</i></h2><div class="table-wrap"><table><thead><tr><th>场景</th><th>用什么</th></tr></thead><tbody><tr><td>栈上放得下的对象</td><td>直接定义，不用指针</td></tr><tr><td>需要堆上的单个对象，独占</td><td><code>std::unique_ptr</code></td></tr><tr><td>多处共享同一个对象</td><td><code>std::shared_ptr</code></td></tr><tr><td>只观察、不拥有</td><td><code>T*</code> 或 <code>T&amp;</code></td></tr><tr><td>一串对象</td><td><code>std::vector</code></td></tr><tr><td>一串字符</td><td><code>std::string</code></td></tr></tbody></table></div><p>多态容器是一个典型场景。基类指针的 vector 能装不同的派生类，但谁来 delete？用 <code>unique_ptr</code> 存，所有权就清楚了。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;memory&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">vector</span>&gt;
+
+<span class="tok-key">class</span> Shape {
+<span class="tok-key">public</span>:
+    <span class="tok-key">virtual</span> ~<span class="tok-fn">Shape</span>() = <span class="tok-key">default</span>;
+    <span class="tok-key">virtual</span> <span class="tok-type">double</span> <span class="tok-fn">area</span>() <span class="tok-key">const</span> = <span class="tok-num">0</span>;
+};
+
+<span class="tok-key">class</span> Circle : <span class="tok-key">public</span> Shape {
+<span class="tok-key">public</span>:
+    <span class="tok-key">explicit</span> <span class="tok-fn">Circle</span>(<span class="tok-type">double</span> r) : <span class="tok-fn">r_</span>(r) {}
+    <span class="tok-type">double</span> <span class="tok-fn">area</span>() <span class="tok-key">const</span> <span class="tok-key">override</span> { <span class="tok-key">return</span> <span class="tok-num">3.14159</span> * r_ * r_; }
+
+<span class="tok-key">private</span>:
+    <span class="tok-type">double</span> r_;
+};
+
+<span class="tok-key">class</span> Rect : <span class="tok-key">public</span> Shape {
+<span class="tok-key">public</span>:
+    <span class="tok-fn">Rect</span>(<span class="tok-type">double</span> w, <span class="tok-type">double</span> h) : <span class="tok-fn">w_</span>(w), <span class="tok-fn">h_</span>(h) {}
+    <span class="tok-type">double</span> <span class="tok-fn">area</span>() <span class="tok-key">const</span> <span class="tok-key">override</span> { <span class="tok-key">return</span> w_ * h_; }
+
+<span class="tok-key">private</span>:
+    <span class="tok-type">double</span> w_, h_;
+};
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">vector</span>&lt;<span class="tok-type">std</span>::<span class="tok-type">unique_ptr</span>&lt;Shape&gt;&gt; shapes;
+    shapes.<span class="tok-fn">push_back</span>(<span class="tok-type">std</span>::<span class="tok-type">unique_ptr</span>&lt;Shape&gt;(<span class="tok-key">new</span> <span class="tok-fn">Circle</span>(<span class="tok-num">1.0</span>)));
+    shapes.<span class="tok-fn">push_back</span>(<span class="tok-type">std</span>::<span class="tok-type">unique_ptr</span>&lt;Shape&gt;(<span class="tok-key">new</span> <span class="tok-fn">Rect</span>(<span class="tok-num">2.0</span>, <span class="tok-num">3.0</span>)));
+
+    <span class="tok-type">double</span> total = <span class="tok-num">0.0</span>;
+    <span class="tok-key">for</span> (<span class="tok-key">const</span> <span class="tok-key">auto</span>&amp; s : shapes) {
+        total += s-&gt;<span class="tok-fn">area</span>();
+    }
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; total &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>9.14159</pre></div><p>容器销毁时，每个 <code>unique_ptr</code> 依次析构，通过基类指针调用虚析构，派生类的资源被正确释放。基类的 <code>virtual ~Shape() = default;</code> 仍然不能省，<a href="09-inheritance.html">第 9 课 继承与多态：让不同的东西说同一种话</a> 讲过原因。</p><p>函数参数也要想清楚所有权。只是用一下对象，就传 <code>const Shape&amp;</code>；要转移所有权，才传 <code>std::unique_ptr&lt;Shape&gt;</code> 并按值接收，调用方必须 <code>std::move</code> 进来。参数类型本身就是文档：看到 <code>unique_ptr</code>，就知道这个函数会把对象拿走。</p><h2 id="sec-5">14.5 移动语义：把资源搬走，而不是复制<i class="anchor">#</i></h2><p>移动构造和拷贝构造长得很像，区别在参数：拷贝构造接收 <code>const T&amp;</code>，移动构造接收 <code>T&amp;&amp;</code>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+<span class="tok-pre">#include</span> &lt;utility&gt;
+
+<span class="tok-key">class</span> Token {
+<span class="tok-key">public</span>:
+    <span class="tok-key">explicit</span> <span class="tok-fn">Token</span>(<span class="tok-type">std</span>::<span class="tok-type">string</span> text) : <span class="tok-fn">text_</span>(text) {}
+
+    <span class="tok-fn">Token</span>(<span class="tok-key">const</span> Token&amp; other) : <span class="tok-fn">text_</span>(other.text_) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;拷贝\n&quot;</span>;
+    }
+
+    <span class="tok-fn">Token</span>(Token&amp;&amp; other) <span class="tok-key">noexcept</span> : <span class="tok-fn">text_</span>(<span class="tok-type">std</span>::<span class="tok-fn">move</span>(other.text_)) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;移动\n&quot;</span>;
+    }
+
+<span class="tok-key">private</span>:
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> text_;
+};
+
+<span class="tok-type">void</span> <span class="tok-fn">take</span>(Token t) {
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;收到\n&quot;</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    Token <span class="tok-fn">a</span>(<span class="tok-str">&quot;hello&quot;</span>);
+    <span class="tok-fn">take</span>(a);
+    <span class="tok-fn">take</span>(<span class="tok-type">std</span>::<span class="tok-fn">move</span>(a));
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>拷贝
+收到
+移动
+收到</pre></div><p><code>take(a)</code> 里 a 有名字、能取地址，叫左值，匹配拷贝构造，复制一份 string。<code>take(std::move(a))</code> 把 a 转成右值引用，匹配移动构造，<code>text_</code> 直接接管 a 里 string 的内部指针，一个字符都不复制。对长字符串来说，这是一次指针赋值加几次置空，和长度无关。</p><p><code>std::move</code> 本身不移动任何东西。它只是一个类型转换，把左值转成右值引用，告诉编译器「这个对象我不要了，你可以搬」。真正干活的是移动构造函数。</p><p>被移动走的对象仍然有效，可以被析构、被重新赋值，但内容是不确定的。标准只保证「有效但未指定」，所以别在 move 之后读它的值。</p><p>移动构造要标 <code>noexcept</code>。<code>std::vector</code> 扩容时要把旧元素搬到新内存，如果移动构造可能抛异常，搬到一半失败就没法恢复原状，vector 为了保证强异常安全，会退回用拷贝。标了 noexcept，它才敢用移动。这一条在性能敏感的地方差别很大。</p><p>这也解释了「五法则」：如果你写了析构、拷贝构造、拷贝赋值、移动构造、移动赋值中的任何一个，通常五个都得写。只写一半，编译器生成的默认版本可能和你的资源管理方式冲突。第 15 课手写 <code>MyString</code> 时会把五个都过一遍。</p><h2 id="sec-6">14.6 别用 <code>auto_ptr</code>，以及一份检查清单<i class="anchor">#</i></h2><p><code>std::auto_ptr</code> 是老标准里的尝试，C++11 标记为废弃，C++17 直接删除。它的拷贝构造函数实际做的是转移所有权，传参、放进容器都会悄悄把源对象置空。你以为是拷贝，其实源已经空了，这种「看起来像值语义、实际是移动」的接口是灾难。见到它，改成 <code>unique_ptr</code>。</p><p>日常检查可以按这几条来：</p><ul><li>能在栈上定义的对象，别用 <code>new</code></li><li>需要堆对象，先想 <code>unique_ptr</code>，确实共享再上 <code>shared_ptr</code></li><li>用 <code>make_shared</code>；<code>make_unique</code> 要 C++14，环境不支持就写 <code>unique_ptr&lt;T&gt;(new T)</code></li><li>数组用 <code>vector</code>，字符串用 <code>string</code>，别用 <code>new[]</code></li><li>函数参数只观察就传 <code>const T&amp;</code>，要接管所有权才传智能指针</li><li>析构函数、移动构造、移动赋值该写就写，移动构造记得 <code>noexcept</code></li><li>看到 <code>delete</code> 先问一句：这个指针是我 new 出来的吗，会不会有别人也在 delete</li></ul><p>智能指针不是让你从此不关心内存，而是把「谁拥有」这件事从注释里搬到类型里。类型编译器会检查，注释不会。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>裸指针的问题是所有权不清：漏 delete、重复 delete、异常路径泄漏</li><li><code>unique_ptr</code> 独占所有权，不能拷贝只能移动，通常和裸指针一样大</li><li><code>shared_ptr</code> 用引用计数共享所有权，循环引用会泄漏，用 <code>weak_ptr</code> 打破</li><li><code>std::move</code> 只是类型转换，真正搬资源的是移动构造；移动后源对象别再读</li><li>移动构造标 <code>noexcept</code>，vector 扩容才会用它；<code>auto_ptr</code> 已被移除，别用</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>用 <code>unique_ptr</code> 重写 14.1 的 <code>process</code>，让提前 return 时数组也能自动释放。把 return 改成 throw，再观察一次。</li><li>写两个类，互相用 <code>shared_ptr</code> 持有对方，打印 <code>use_count()</code>，制造循环引用；然后把其中一边改成 <code>weak_ptr</code>，验证对象能正常销毁。</li><li>给 <code>Token</code> 增加移动赋值运算符，写一个 <code>vector&lt;Token&gt;</code> 反复 <code>push_back</code>，观察拷贝和移动各发生了几次，并解释 <code>noexcept</code> 对结果的影响。</li><li>解释区别：<code>std::shared_ptr&lt;int&gt; p(new int(1)); std::shared_ptr&lt;int&gt; q(p);</code> 与 <code>std::shared_ptr&lt;int&gt; q(p.get());</code> 各自会发生什么；再说明为什么优先用 <code>make_shared</code>。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="cpp-14-smart-pointer"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../cpp/13-stl-algorithms.html"><span>上一章</span><b>第 13 课 STL 算法与迭代器：装进去之后，怎么处理</b></a><a class="pager-item next" href="../cpp/15-class-design.html"><span>下一章</span><b>第 15 课 类设计实战：手写一个 MyString</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">14.1 裸指针的三个麻烦</a><a class="toc-link level-2" href="#sec-2">14.2 <code>unique_ptr</code>：这块对象只归我管</a><a class="toc-link level-2" href="#sec-3">14.3 <code>shared_ptr</code>：几个人一起管，最后一个走的关灯</a><a class="toc-link level-2" href="#sec-4">14.4 什么时候用哪个</a><a class="toc-link level-2" href="#sec-5">14.5 移动语义：把资源搬走，而不是复制</a><a class="toc-link level-2" href="#sec-6">14.6 别用 <code>auto_ptr</code>，以及一份检查清单</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

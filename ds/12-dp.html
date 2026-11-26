@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 12 课 递归、分治与动态规划入门 · Hello Sekai</title>
+<meta name="description" content="从递归三要素起步，把斐波那契写出三个版本，最后用一句话说清动态规划到底在干什么。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="ds-12-dp" data-track="ds" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link is-active" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">数据结构</span><a class="sidebar-back" href="../ds/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../ds/01-complexity.html" data-id="ds-01-complexity"><span class="side-num">01</span><span class="side-text">第 1 课 复杂度与算法思维</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/02-arraylist.html" data-id="ds-02-arraylist"><span class="side-num">02</span><span class="side-text">第 2 课 线性表与动态数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/03-linked-list.html" data-id="ds-03-linked-list"><span class="side-num">03</span><span class="side-text">第 3 课 链表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/04-stack.html" data-id="ds-04-stack"><span class="side-num">04</span><span class="side-text">第 4 课 栈</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/05-queue.html" data-id="ds-05-queue"><span class="side-num">05</span><span class="side-text">第 5 课 队列与双端队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/06-tree.html" data-id="ds-06-tree"><span class="side-num">06</span><span class="side-text">第 6 课 树与二叉树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/07-bst.html" data-id="ds-07-bst"><span class="side-num">07</span><span class="side-text">第 7 课 二叉搜索树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/08-heap.html" data-id="ds-08-heap"><span class="side-num">08</span><span class="side-text">第 8 课 堆与优先队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/09-hash.html" data-id="ds-09-hash"><span class="side-num">09</span><span class="side-text">第 9 课 哈希表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/10-graph.html" data-id="ds-10-graph"><span class="side-num">10</span><span class="side-text">第 10 课 图与遍历</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/11-sorting.html" data-id="ds-11-sorting"><span class="side-num">11</span><span class="side-text">第 11 课 排序算法总览</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../ds/12-dp.html" data-id="ds-12-dp"><span class="side-num">12</span><span class="side-text">第 12 课 递归、分治与动态规划入门</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../ds/index.html">← 返回数据结构</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../ds/index.html">数据结构</a> <span class="sep">/</span> <span>第 12 课 递归、分治与动态规划入门</span></div><h1 class="doc-title">第 12 课 递归、分治与动态规划入门</h1><div class="doc-meta"><span>预计 40 分钟</span><span class="dot">·</span><span>约 6,353 字</span><span class="dot">·</span><span>数据结构</span></div><article class="prose" id="article"><p>递归是这一册里最容易劝退的一节。我第一次写递归时，盯着 <code>return n * fact(n - 1)</code> 看了半个小时，脑子里全是「它怎么知道要停」。</p><p>它当然不知道。是你在外面把终止条件写好了，它才知道。递归不神秘，它只是一次次调用自己，每次把问题变小一点，直到小到不用再算。</p><p>动态规划（DP）更劝退，因为网上很多讲法一上来就是状态、转移、无后效性。这一课换个顺序：先老老实实写递归，再看它在斐波那契上慢成什么样，最后你会发现 DP 只是「别重复算同一个东西」这么一句话。</p><h2 id="sec-1">12.1 递归三要素<i class="anchor">#</i></h2><p>写任何一个递归函数，先回答三个问题：</p><ul><li>终止条件：什么情况下不用再往下调用，直接返回</li><li>缩小规模：这一次和下一次之间，问题的规模怎么变小</li><li>结果拼接：子问题的答案拿回来之后，怎么拼成当前答案</li></ul><p>缺一个都会出事。缺终止条件，栈会一直压下去直到爆掉；缺缩小规模，就是死循环；缺拼接，你算出来的结果扔掉了一半。</p><p>拿阶乘练手。递归函数和普通函数写法没区别，参数、返回值那套 <a href="../c/rumen/ch04.html">C 语言 函数</a> 里都讲过了。<code>5! = 5 × 4 × 3 × 2 × 1</code>，也可以写成 <code>5! = 5 × 4!</code>。这就是缩小规模，而 <code>1! = 1</code> 是终止条件。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">long</span> <span class="tok-type">long</span> <span class="tok-fn">fact</span>(<span class="tok-type">int</span> n) {
+    <span class="tok-key">if</span> (n &lt;= <span class="tok-num">1</span>) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;fact(%d) 到底，返回 1\n&quot;</span>, n);
+        <span class="tok-key">return</span> <span class="tok-num">1</span>;
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;要算 fact(%d)，先算 fact(%d)\n&quot;</span>, n, n - <span class="tok-num">1</span>);
+    <span class="tok-key">return</span> n * <span class="tok-fn">fact</span>(n - <span class="tok-num">1</span>);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">long</span> <span class="tok-type">long</span> r = <span class="tok-fn">fact</span>(<span class="tok-num">5</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;5! = %lld\n&quot;</span>, r);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>要算 fact(5)，先算 fact(4)
+要算 fact(4)，先算 fact(3)
+要算 fact(3)，先算 fact(2)
+要算 fact(2)，先算 fact(1)
+fact(1) 到底，返回 1
+5! = 120</pre></div><p>注意输出顺序：先一路往下压到 1，然后才开始往回乘。打印在递归调用之前的语句，是「进去的时候」执行；放在 <code>return</code> 后面就没机会执行了。</p><p><code>if (n &lt;= 1)</code> 里用的是 <code>&lt;=</code> 不是 <code>==</code>。传个 0 或者负数进来，<code>==</code> 版本会一路往下调到栈溢出；<code>&lt;=</code> 版本稳稳返回 1。这种防御性写法值得养成习惯，尤其是参数来自用户输入的时候。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>记忆点</span></div><div class="callout-body"><p>递归函数写在前面的是「怎么变小」，写在后面的是「怎么拼回去」。找不到这两句，就说明你还没想清楚这个递归怎么写。</p></div></div><h2 id="sec-2">12.2 递归的代价：重复计算<i class="anchor">#</i></h2><p>斐波那契是递归的经典例子：<code>F(0)=0</code>，<code>F(1)=1</code>，<code>F(n)=F(n-1)+F(n-2)</code>。三行就能写完。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">long</span> <span class="tok-type">long</span> calls = <span class="tok-num">0</span>;
+
+<span class="tok-type">long</span> <span class="tok-type">long</span> <span class="tok-fn">fib</span>(<span class="tok-type">int</span> n) {
+    calls++;
+    <span class="tok-key">if</span> (n &lt;= <span class="tok-num">1</span>) {
+        <span class="tok-key">return</span> n;
+    }
+    <span class="tok-key">return</span> <span class="tok-fn">fib</span>(n - <span class="tok-num">1</span>) + <span class="tok-fn">fib</span>(n - <span class="tok-num">2</span>);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> n = <span class="tok-num">10</span>; n &lt;= <span class="tok-num">30</span>; n += <span class="tok-num">10</span>) {
+        calls = <span class="tok-num">0</span>;
+        <span class="tok-type">long</span> <span class="tok-type">long</span> r = <span class="tok-fn">fib</span>(n);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;fib(%d) = %lld，调用了 %lld 次\n&quot;</span>, n, r, calls);
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>fib(10) = 55，调用了 177 次
+fib(20) = 6765，调用了 21891 次
+fib(30) = 832040，调用了 2692537 次</pre></div><p>算 <code>fib(30)</code> 只需要 30 个数，却调用了 269 万次函数。原因画一下调用树就明白了：<code>fib(30)</code> 要算 <code>fib(29)</code> 和 <code>fib(28)</code>，而 <code>fib(29)</code> 里又要算一遍 <code>fib(28)</code>。同一棵子树被反复重算，越往下重复越多。</p><p><code>n</code> 从 10 涨到 30，调用次数从 177 涨到 269 万，是 1.5 万倍。这不是线性增长，是指数增长，复杂度 O(2^n)。<code>n=50</code> 你这辈子都等不到结果。</p><p>顺便看一个 C 的坑：我先把 <code>fib(n)</code> 存进 <code>r</code>，再打印 <code>r</code> 和 <code>calls</code>。如果写成 <code>printf(&quot;...&quot;, fib(n), calls)</code>，<code>calls</code> 可能在 <code>fib(n)</code> 执行之前就被读走了，打印出来是上一次的旧值。同一个表达式里既修改变量又读它，C 不保证顺序，这类 bug 编译器不会警告。</p><p>递归的第二个代价是栈。每层调用都要占一块栈帧，也就是 <a href="04-stack.html">第 4 课 栈</a> 里说的「函数调用栈」，递归太深就爆。C 的默认栈一般是几 MB，阶乘算到几万层就危险了，而链表递归处理十万个结点必崩。</p><h2 id="sec-3">12.3 分治：把问题劈成两半<i class="anchor">#</i></h2><p>分治是递归的一种用法，套路固定：把问题劈成几个小问题，分别递归解决，再合并。</p><p><a href="11-sorting.html">第 11 课 排序算法总览</a> 里的归并排序就是标准分治。这里换一个更小的例子：在有序数组里二分查找。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">bin_search</span>(<span class="tok-type">int</span> *a, <span class="tok-type">int</span> lo, <span class="tok-type">int</span> hi, <span class="tok-type">int</span> target, <span class="tok-type">int</span> *steps) {
+    <span class="tok-key">if</span> (lo &gt; hi) {
+        <span class="tok-key">return</span> -<span class="tok-num">1</span>;
+    }
+
+    (*steps)++;
+    <span class="tok-type">int</span> mid = lo + (hi - lo) / <span class="tok-num">2</span>;
+
+    <span class="tok-key">if</span> (a[mid] == target) {
+        <span class="tok-key">return</span> mid;
+    }
+    <span class="tok-key">if</span> (a[mid] &lt; target) {
+        <span class="tok-key">return</span> <span class="tok-fn">bin_search</span>(a, mid + <span class="tok-num">1</span>, hi, target, steps);
+    }
+    <span class="tok-key">return</span> <span class="tok-fn">bin_search</span>(a, lo, mid - <span class="tok-num">1</span>, target, steps);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> a[] = {<span class="tok-num">1</span>, <span class="tok-num">3</span>, <span class="tok-num">5</span>, <span class="tok-num">7</span>, <span class="tok-num">9</span>, <span class="tok-num">11</span>, <span class="tok-num">13</span>, <span class="tok-num">15</span>, <span class="tok-num">17</span>, <span class="tok-num">19</span>, <span class="tok-num">21</span>, <span class="tok-num">23</span>, <span class="tok-num">25</span>, <span class="tok-num">27</span>, <span class="tok-num">29</span>};
+    <span class="tok-type">int</span> n = <span class="tok-num">15</span>;
+
+    <span class="tok-type">int</span> targets[] = {<span class="tok-num">11</span>, <span class="tok-num">1</span>, <span class="tok-num">30</span>};
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">3</span>; i++) {
+        <span class="tok-type">int</span> steps = <span class="tok-num">0</span>;
+        <span class="tok-type">int</span> pos = <span class="tok-fn">bin_search</span>(a, <span class="tok-num">0</span>, n - <span class="tok-num">1</span>, targets[i], &amp;steps);
+        <span class="tok-key">if</span> (pos &lt; <span class="tok-num">0</span>) {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;找 %2d：没找到，用了 %d 步\n&quot;</span>, targets[i], steps);
+        } <span class="tok-key">else</span> {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;找 %2d：下标 %d，用了 %d 步\n&quot;</span>, targets[i], pos, steps);
+        }
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>找 11：下标 5，用了 3 步
+找  1：下标 0，用了 4 步
+找 30：没找到，用了 4 步</pre></div><p>三要素在这里长这样：终止条件是 <code>lo &gt; hi</code>（区间空了）或者 <code>a[mid] == target</code>；缩小规模是丢掉一半区间；拼接这一步不存在，因为答案直接就是下标，不用合并。</p><p>15 个元素最多 4 步，100 万个元素最多 20 步。二分能这么快，全靠「数组有序」这个前提。无序数组上二分，第一步就可能走错方向，结论直接作废。</p><p><code>int mid = lo + (hi - lo) / 2</code> 这种写法是为了防溢出。写成 <code>(lo + hi) / 2</code>，当 <code>lo</code> 和 <code>hi</code> 都接近 <code>INT_MAX</code> 时，加法会溢出成负数，然后数组越界。这个坑在竞赛和真实代码里都有人踩过，多敲几个字符能省一次通宵。</p><p>分治和递归的区别在于：递归是「函数调用自己」这种形式，分治是「劈开、各自解决、合并」这种策略。分治一定用递归实现，但递归不一定是分治，阶乘就不分治，它只是把规模减一。</p><h2 id="sec-4">12.4 斐波那契第二种写法：递推<i class="anchor">#</i></h2><p>回到那个 269 万次调用。问题的根源是重复计算，那就从最小的开始，一路算上去，每个值只算一次。</p><p><code>F(0)</code>、<code>F(1)</code> 是已知的，<code>F(2) = F(1) + F(0)</code>，<code>F(3) = F(2) + F(1)</code>，一路往后推。这就是递推，也叫自底向上。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">long</span> <span class="tok-type">long</span> <span class="tok-fn">fib</span>(<span class="tok-type">int</span> n) {
+    <span class="tok-key">if</span> (n &lt;= <span class="tok-num">1</span>) {
+        <span class="tok-key">return</span> n;
+    }
+    <span class="tok-type">long</span> <span class="tok-type">long</span> a = <span class="tok-num">0</span>;
+    <span class="tok-type">long</span> <span class="tok-type">long</span> b = <span class="tok-num">1</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">2</span>; i &lt;= n; i++) {
+        <span class="tok-type">long</span> <span class="tok-type">long</span> t = a + b;
+        a = b;
+        b = t;
+    }
+    <span class="tok-key">return</span> b;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> ns[] = {<span class="tok-num">10</span>, <span class="tok-num">20</span>, <span class="tok-num">50</span>, <span class="tok-num">90</span>};
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">4</span>; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;fib(%d) = %lld\n&quot;</span>, ns[i], <span class="tok-fn">fib</span>(ns[i]));
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>fib(10) = 55
+fib(20) = 6765
+fib(50) = 12586269025
+fib(90) = 2880067194370816120</pre></div><p>同一件事，从 269 万次调用变成 90 次循环，O(2^n) 降到 O(n)。而且只用了两个变量 <code>a</code> 和 <code>b</code>，空间 O(1)。</p><p>那为什么要两个变量而不是一个数组？因为计算 <code>F(n)</code> 只用得到前两项，再往前的值全都没用了。这叫滚动数组，是 DP 里省空间的常用技巧。</p><p>注意类型。<code>int</code> 最大到 21 亿，<code>fib(47)</code> 就溢出了，会变成负数。这里用 <code>long long</code>（64 位）撑到 <code>fib(92)</code>。再往下要用大整数，C 没有内置的，得自己写。格式符要用 <code>%lld</code>，写错成 <code>%d</code> 输出会直接变成乱码。</p><div class="callout callout-tip"><div class="callout-head"><span class="callout-glyph">★</span><span>补充说明</span></div><div class="callout-body"><p>很老的 Dev-C++ 自带运行库比较旧，可能对 <code>%lld</code> 报一个格式警告，但结果是对的，不用改。更新到 MinGW-w64 的新版本就没这个提示了。</p></div></div><p>递推的缺点是「不自然」。人想问题是从 <code>n</code> 往下想的，你偏要从 0 推到 n，还得想清楚顺序：算 <code>F(i)</code> 之前，<code>F(i-1)</code> 和 <code>F(i-2)</code> 必须都已经算好。顺序一乱，拿到的就是没初始化的值。</p><h2 id="sec-5">12.5 第三种写法：记忆化<i class="anchor">#</i></h2><p>有没有一种写法，既保持递归「顺着人的思路」，又避开重复计算？</p><p>有。算过的答案记在本子上，下次先翻本子。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-pre">#define</span> MAXN <span class="tok-num">100</span>
+
+<span class="tok-type">long</span> <span class="tok-type">long</span> memo[MAXN];
+<span class="tok-type">long</span> <span class="tok-type">long</span> calls = <span class="tok-num">0</span>;
+
+<span class="tok-type">long</span> <span class="tok-type">long</span> <span class="tok-fn">fib</span>(<span class="tok-type">int</span> n) {
+    calls++;
+    <span class="tok-key">if</span> (n &lt;= <span class="tok-num">1</span>) {
+        <span class="tok-key">return</span> n;
+    }
+    <span class="tok-key">if</span> (memo[n] != <span class="tok-num">0</span>) {
+        <span class="tok-key">return</span> memo[n];
+    }
+    memo[n] = <span class="tok-fn">fib</span>(n - <span class="tok-num">1</span>) + <span class="tok-fn">fib</span>(n - <span class="tok-num">2</span>);
+    <span class="tok-key">return</span> memo[n];
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">long</span> <span class="tok-type">long</span> r = <span class="tok-fn">fib</span>(<span class="tok-num">30</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;fib(30) = %lld，调用了 %lld 次\n&quot;</span>, r, calls);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>fib(30) = 832040，调用了 59 次</pre></div><p>59 次，对比刚才的 269 万次。函数一行没改逻辑，只在入口加了一次查表、在出口加了一次写表。</p><p><code>memo</code> 是全局数组，自动全 0，正好可以当「还没算过」的标记。这里能这么偷懒，是因为斐波那契的值不可能是 0（除了 <code>F(0)</code>，而 <code>n &lt;= 1</code> 已经提前返回了）。换个问题，比如「最大子段和」可能等于 0，就得另开一个 <code>visited</code> 数组，或者把 <code>memo</code> 初始化成 <code>-1</code>。</p><p>这 59 次是怎么来的？递归树被剪成了左边一条链：<code>fib(30)</code> 一路算到 <code>fib(2)</code>，回来的时候右边的 <code>fib(28)</code>、<code>fib(27)</code> 全都在本子上，直接取。每个 <code>n</code> 只真正计算一次，复杂度 O(n)。</p><p>记忆化搜索 = 递归 + 备忘录。它和递推是同一个算法的两种实现，一个自顶向下，一个自底向上。递推省掉了递归调用的开销，通常更快；记忆化更贴近人的思路，写起来不容易搞错顺序。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p><code>memo</code> 忘了初始化就直接查表，等于拿一堆随机数当答案，程序会算出一个「看起来很正常」的错误结果。全 0 的数组在小数据上有时也能碰对，这种错最难查。</p></div></div><h2 id="sec-6">12.6 DP 的一句话直觉<i class="anchor">#</i></h2><p>三种写法摆在一起，你应该已经看出规律了：</p><div class="table-wrap"><table><thead><tr><th>写法</th><th>思路</th><th>复杂度</th><th>特点</th></tr></thead><tbody><tr><td>朴素递归</td><td>直接按定义往下拆</td><td>O(2^n)</td><td>好写，但重复计算</td></tr><tr><td>记忆化</td><td>递归 + 记答案</td><td>O(n)</td><td>保留思路，加一张表</td></tr><tr><td>递推</td><td>从最小规模往上填表</td><td>O(n)</td><td>最快，但要排好顺序</td></tr></tbody></table></div><p>所谓动态规划，就是把最后一种思路系统化：<strong>把大问题拆成一堆小问题，把每个小问题的答案存进表格，算大的时候直接查表，不重算。</strong></p><p>这句话里其实藏了三样东西，写 DP 时按这三步问自己就行：</p><ul><li>状态：表格的每一格代表什么。斐波那契里是 <code>F(i)</code>；背包里是「前 i 件物品、容量 c 时的最大价值」</li><li>转移：这一格怎么从别的格推出来。斐波那契是 <code>F(i) = F(i-1) + F(i-2)</code>；背包是「拿或不拿，取较大的那个」</li><li>边界：哪些格子是已知的，不用推。斐波那契是 <code>F(0)=0, F(1)=1</code>；背包是第一行全 0</li></ul><p>斐波那契太特殊，<code>n</code> 只有一维。换一个概念上要两维状态的问题：0-1 背包。有 5 件物品，各有重量和价值，背包容量 10，每件最多拿一次，求能装下的最大价值。表格本该是「前 i 件 × 容量 c」，下面用一维滚动数组把 i 那一维压掉。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> weight[] = {<span class="tok-num">2</span>, <span class="tok-num">3</span>, <span class="tok-num">4</span>, <span class="tok-num">5</span>, <span class="tok-num">9</span>};
+    <span class="tok-type">int</span> value[] = {<span class="tok-num">3</span>, <span class="tok-num">4</span>, <span class="tok-num">5</span>, <span class="tok-num">8</span>, <span class="tok-num">10</span>};
+    <span class="tok-type">int</span> n = <span class="tok-num">5</span>;
+    <span class="tok-type">int</span> cap = <span class="tok-num">10</span>;
+    <span class="tok-type">int</span> dp[<span class="tok-num">11</span>] = {<span class="tok-num">0</span>};
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; n; i++) {
+        <span class="tok-key">for</span> (<span class="tok-type">int</span> c = cap; c &gt;= weight[i]; c--) {
+            <span class="tok-type">int</span> take = dp[c - weight[i]] + value[i];
+            <span class="tok-key">if</span> (take &gt; dp[c]) {
+                dp[c] = take;
+            }
+        }
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;放完第 %d 件后，容量 10 的最大价值：%d\n&quot;</span>, i + <span class="tok-num">1</span>, dp[cap]);
+    }
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;最终答案：%d\n&quot;</span>, dp[cap]);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>放完第 1 件后，容量 10 的最大价值：3
+放完第 2 件后，容量 10 的最大价值：7
+放完第 3 件后，容量 10 的最大价值：12
+放完第 4 件后，容量 10 的最大价值：15
+放完第 5 件后，容量 10 的最大价值：15
+最终答案：15</pre></div><p><code>dp[c]</code> 的含义是「当前这些物品里，容量 c 能装的最大价值」。每来一件新物品，就做一个选择：不拿（<code>dp[c]</code> 不变），或者拿（<code>dp[c - weight[i]] + value[i]</code>），两者取大。转移方程就是这一句。</p><p>内层循环必须是 <code>c</code> 从大到小。因为 <code>dp[c]</code> 依赖容量更小的 <code>dp[c - weight[i]]</code>。倒着走的时候，那个位置还是「只看前 i-1 件」的旧值，物品不会被重复拿；正着走的话，那个位置可能刚在本次被更新过，同一件物品就被拿了两次，那就成了「完全背包」。</p><p>这一行方向，是 0-1 背包最经典的错法。写对了很难理解为什么对，写错了也看不出症状，只是答案偏大。</p><p>到这里，这一册的 12 课就齐了。复杂度、线性结构、树、哈希、图、排序、DP，每一块单拎出来都能讲一学期，但骨架都在这里了。接下来你该做的不是继续看，而是找十道题把它们写到手熟。</p><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>写 <code>int sum(int n)</code> 用递归求 1 到 n 的和，然后加一个参数记录递归深度，打印每一层的进出。再用循环写一遍，比较两者在 n=100000 时的行为。</li><li>用递归求一个整数数组的最大值，要求分成两半递归（分治写法），不能遍历整段。</li><li>把 12.6 的 0-1 背包改成「完全背包」：每件物品可以拿任意多次。只需要改内层循环的方向，跑一遍看看答案变了多少。</li><li>爬楼梯：一次可以上 1 阶或 2 阶，问 n 阶有多少种走法。先用递归写，再用记忆化，最后用两个变量递推，把三个版本的复杂度写在注释里。</li></ol></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>递归三要素：终止条件、缩小规模、结果拼接，缺一个就出事</li><li>朴素递归慢在重复计算，斐波那契的调用次数是 O(2^n)</li><li>记忆化 = 递归 + 备忘录，把重复的子树剪掉，降到 O(n)</li><li>DP 三件套：状态、转移、边界；0-1 背包的内层要倒着遍历</li><li>先写递归跑通，再谈优化，这条路径比直接背模板可靠得多</li></ul></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="ds-12-dp"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../ds/11-sorting.html"><span>上一章</span><b>第 11 课 排序算法总览</b></a><span class="pager-item is-empty next"><span>下一章</span><b>已经是最后一篇</b></span></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">12.1 递归三要素</a><a class="toc-link level-2" href="#sec-2">12.2 递归的代价：重复计算</a><a class="toc-link level-2" href="#sec-3">12.3 分治：把问题劈成两半</a><a class="toc-link level-2" href="#sec-4">12.4 斐波那契第二种写法：递推</a><a class="toc-link level-2" href="#sec-5">12.5 第三种写法：记忆化</a><a class="toc-link level-2" href="#sec-6">12.6 DP 的一句话直觉</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

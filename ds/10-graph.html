@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 10 课 图与遍历 · Hello Sekai</title>
+<meta name="description" content="树不能绕回来，图可以。这一课用邻接矩阵和邻接表各存一次图，再走一遍 DFS 和 BFS。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="ds-10-graph" data-track="ds" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link is-active" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">数据结构</span><a class="sidebar-back" href="../ds/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../ds/01-complexity.html" data-id="ds-01-complexity"><span class="side-num">01</span><span class="side-text">第 1 课 复杂度与算法思维</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/02-arraylist.html" data-id="ds-02-arraylist"><span class="side-num">02</span><span class="side-text">第 2 课 线性表与动态数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/03-linked-list.html" data-id="ds-03-linked-list"><span class="side-num">03</span><span class="side-text">第 3 课 链表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/04-stack.html" data-id="ds-04-stack"><span class="side-num">04</span><span class="side-text">第 4 课 栈</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/05-queue.html" data-id="ds-05-queue"><span class="side-num">05</span><span class="side-text">第 5 课 队列与双端队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/06-tree.html" data-id="ds-06-tree"><span class="side-num">06</span><span class="side-text">第 6 课 树与二叉树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/07-bst.html" data-id="ds-07-bst"><span class="side-num">07</span><span class="side-text">第 7 课 二叉搜索树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/08-heap.html" data-id="ds-08-heap"><span class="side-num">08</span><span class="side-text">第 8 课 堆与优先队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/09-hash.html" data-id="ds-09-hash"><span class="side-num">09</span><span class="side-text">第 9 课 哈希表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../ds/10-graph.html" data-id="ds-10-graph"><span class="side-num">10</span><span class="side-text">第 10 课 图与遍历</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/11-sorting.html" data-id="ds-11-sorting"><span class="side-num">11</span><span class="side-text">第 11 课 排序算法总览</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/12-dp.html" data-id="ds-12-dp"><span class="side-num">12</span><span class="side-text">第 12 课 递归、分治与动态规划入门</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../ds/index.html">← 返回数据结构</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../ds/index.html">数据结构</a> <span class="sep">/</span> <span>第 10 课 图与遍历</span></div><h1 class="doc-title">第 10 课 图与遍历</h1><div class="doc-meta"><span>预计 40 分钟</span><span class="dot">·</span><span>约 6,354 字</span><span class="dot">·</span><span>数据结构</span></div><article class="prose" id="article"><p>到这一课为止，你处理过的东西都很有秩序：数组是一条线，链表是一条线，树分叉但绝不回头。图不一样，它可以随便连，还可以绕回自己。</p><p>现实里到处都是图。地铁线路、微信好友、课程先修关系、快递中转站，全是「一堆点，一些连线」。所以图这一课的重点不是「图是什么」，而是两件事：<strong>怎么把它存进内存</strong>，以及<strong>怎么系统地把每个点走一遍</strong>。</p><p>第 6 课讲过树的遍历，那里不需要担心死循环，因为树没有环，走下去一定到底。图不行。</p><h2 id="sec-1">10.1 图比树多了什么<i class="anchor">#</i></h2><p>先把术语对齐，不然后面看不懂题。</p><ul><li>顶点：图里的点，也叫结点，通常记作 V</li><li>边：点之间的连线，记作 E。边可以带方向（有向图），也可以带权重（带权图）</li><li>度：一个顶点连出去的边数。有向图分入度和出度</li><li>路径：从一个点走到另一个点经过的点序列</li><li>环：起点和终点是同一个点的路径</li></ul><p>树其实就是一种特殊的图：连通、无环、边数刚好是 V-1。反过来，图只要多一条边，就会形成环；只要少几条边，就可能不连通，分成好几块。</p><p>这两点差别直接决定了代码怎么写。树里递归不用记录「来过没有」，图里必须记，否则 0 到 1 到 0 到 1，转到栈溢出。</p><h2 id="sec-2">10.2 邻接矩阵：一个二维数组<i class="anchor">#</i></h2><p>最直白的存法：开一个 V×V 的二维数组，<code>adj[u][v] = 1</code> 表示 u 到 v 有边。无向图是对称的，<code>adj[u][v]</code> 和 <code>adj[v][u]</code> 都要置 1。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-pre">#define</span> V <span class="tok-num">6</span>
+
+<span class="tok-type">int</span> adj[V][V];
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> edges[][<span class="tok-num">2</span>] = {{<span class="tok-num">0</span>, <span class="tok-num">1</span>}, {<span class="tok-num">0</span>, <span class="tok-num">2</span>}, {<span class="tok-num">1</span>, <span class="tok-num">3</span>}, {<span class="tok-num">2</span>, <span class="tok-num">4</span>}, {<span class="tok-num">3</span>, <span class="tok-num">5</span>}, {<span class="tok-num">4</span>, <span class="tok-num">5</span>}, {<span class="tok-num">0</span>, <span class="tok-num">3</span>}};
+    <span class="tok-type">int</span> m = <span class="tok-num">7</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; m; i++) {
+        <span class="tok-type">int</span> u = edges[i][<span class="tok-num">0</span>];
+        <span class="tok-type">int</span> v = edges[i][<span class="tok-num">1</span>];
+        adj[u][v] = <span class="tok-num">1</span>;
+        adj[v][u] = <span class="tok-num">1</span>;
+    }
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;   &quot;</span>);
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> j = <span class="tok-num">0</span>; j &lt; V; j++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, j);
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; V; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d: &quot;</span>, i);
+        <span class="tok-key">for</span> (<span class="tok-type">int</span> j = <span class="tok-num">0</span>; j &lt; V; j++) {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, adj[i][j]);
+        }
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    }
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;0 和 3 相邻吗：%s\n&quot;</span>, adj[<span class="tok-num">0</span>][<span class="tok-num">3</span>] ? <span class="tok-str">&quot;是&quot;</span> : <span class="tok-str">&quot;否&quot;</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;0 和 5 相邻吗：%s\n&quot;</span>, adj[<span class="tok-num">0</span>][<span class="tok-num">5</span>] ? <span class="tok-str">&quot;是&quot;</span> : <span class="tok-str">&quot;否&quot;</span>);
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; V; i++) {
+        <span class="tok-type">int</span> deg = <span class="tok-num">0</span>;
+        <span class="tok-key">for</span> (<span class="tok-type">int</span> j = <span class="tok-num">0</span>; j &lt; V; j++) {
+            deg += adj[i][j];
+        }
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;顶点 %d 的度：%d\n&quot;</span>, i, deg);
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>   0 1 2 3 4 5
+0: 0 1 1 1 0 0
+1: 1 0 0 1 0 0
+2: 1 0 0 0 1 0
+3: 1 1 0 0 0 1
+4: 0 0 1 0 0 1
+5: 0 0 0 1 1 0
+0 和 3 相邻吗：是
+0 和 5 相邻吗：否
+顶点 0 的度：3
+顶点 1 的度：2
+顶点 2 的度：2
+顶点 3 的度：3
+顶点 4 的度：2
+顶点 5 的度：2</pre></div><p>矩阵的好处是快：判断两个点是否相邻，一次数组访问 O(1)。求度也简单，把一行加起来就是。</p><p>坏处是浪费。6 个点用 36 个格子，还行。100 万个用户呢？10^12 个格子，每个格子 4 字节就是 4 TB，还没存完就爆了。而且真实社交网络里，一个人平均好友几百个，那一万亿个格子填上的不到 0.1%，剩下全是 0。</p><p><strong>矩阵适合稠密图</strong>（边数接近 V²），不适合稀疏图。</p><h2 id="sec-3">10.3 邻接表：每个点挂一条链表<i class="anchor">#</i></h2><p>邻接表的想法是：别给没边的点对留格子，只给真有边的地方存。</p><p>做法是一个指针数组，每个元素指向一条链表，链表里存这个点的所有邻居。指针数组这套写法就是 <a href="../c/rumen/ch06.html">C 语言 指针</a> 里的内容，只是每个数组元素都拿来存链表的头。建图时一次 <code>malloc</code> 一个结点，返回值照旧没判 <code>NULL</code>。这和你熟悉的结构完全一样，数组加链表，只是换了个用法。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-pre">#define</span> V <span class="tok-num">6</span>
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Edge {
+    <span class="tok-type">int</span> to;
+    <span class="tok-key">struct</span> Edge *next;
+} Edge;
+
+Edge *head[V];
+
+<span class="tok-type">void</span> <span class="tok-fn">add_edge</span>(<span class="tok-type">int</span> u, <span class="tok-type">int</span> v) {
+    Edge *e = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Edge));
+    e-&gt;to = v;
+    e-&gt;next = head[u];
+    head[u] = e;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> edges[][<span class="tok-num">2</span>] = {{<span class="tok-num">0</span>, <span class="tok-num">1</span>}, {<span class="tok-num">0</span>, <span class="tok-num">2</span>}, {<span class="tok-num">1</span>, <span class="tok-num">3</span>}, {<span class="tok-num">2</span>, <span class="tok-num">4</span>}, {<span class="tok-num">3</span>, <span class="tok-num">5</span>}, {<span class="tok-num">4</span>, <span class="tok-num">5</span>}, {<span class="tok-num">0</span>, <span class="tok-num">3</span>}};
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">7</span>; i++) {
+        <span class="tok-type">int</span> u = edges[i][<span class="tok-num">0</span>];
+        <span class="tok-type">int</span> v = edges[i][<span class="tok-num">1</span>];
+        <span class="tok-fn">add_edge</span>(u, v);
+        <span class="tok-fn">add_edge</span>(v, u);
+    }
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> u = <span class="tok-num">0</span>; u &lt; V; u++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d:&quot;</span>, u);
+        <span class="tok-key">for</span> (Edge *e = head[u]; e != NULL; e = e-&gt;next) {
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot; -&gt; %d&quot;</span>, e-&gt;to);
+        }
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>0: -&gt; 3 -&gt; 2 -&gt; 1
+1: -&gt; 3 -&gt; 0
+2: -&gt; 4 -&gt; 0
+3: -&gt; 0 -&gt; 5 -&gt; 1
+4: -&gt; 5 -&gt; 2
+5: -&gt; 4 -&gt; 3</pre></div><p>存的空间是 V 个头指针加 2E 个结点，一共 O(V+E)，稀疏图里比矩阵省几个数量级。判断相邻变慢了：得顺着链表找，平均 O(度)。</p><p>注意输出里的顺序是反的。0 号点先连 1、再连 2、最后连 3，链上却是 3、2、1，因为 <code>add_edge</code> 用的是头插。头插 O(1)，代价是顺序翻转。这一点在遍历时会直接影响结果，下面马上看到。</p><p><code>Edge *head[V]</code> 是全局数组，自动初始化成 0，这点和上一课的 <code>buckets</code> 一样。改成局部变量就必须手动 <code>memset</code> 或循环置 NULL。</p><h2 id="sec-4">10.4 DFS：一条路走到黑<i class="anchor">#</i></h2><p>深度优先的思路：从起点出发，随便挑一个没去过的邻居走进去，到了新点继续这么做，直到走不动了再退回来换一条。</p><p>走迷宫时贴着左手墙一直走，就是 DFS。实现上递归天然就是栈，代码短得不像话，但<strong>必须带 visited 数组</strong>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-pre">#define</span> V <span class="tok-num">6</span>
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Edge {
+    <span class="tok-type">int</span> to;
+    <span class="tok-key">struct</span> Edge *next;
+} Edge;
+
+Edge *head[V];
+<span class="tok-type">int</span> visited[V];
+
+<span class="tok-type">void</span> <span class="tok-fn">add_edge</span>(<span class="tok-type">int</span> u, <span class="tok-type">int</span> v) {
+    Edge *e = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Edge));
+    e-&gt;to = v;
+    e-&gt;next = head[u];
+    head[u] = e;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">dfs</span>(<span class="tok-type">int</span> u) {
+    visited[u] = <span class="tok-num">1</span>;
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, u);
+    <span class="tok-key">for</span> (Edge *e = head[u]; e != NULL; e = e-&gt;next) {
+        <span class="tok-key">if</span> (!visited[e-&gt;to]) {
+            <span class="tok-fn">dfs</span>(e-&gt;to);
+        }
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> edges[][<span class="tok-num">2</span>] = {{<span class="tok-num">0</span>, <span class="tok-num">1</span>}, {<span class="tok-num">0</span>, <span class="tok-num">2</span>}, {<span class="tok-num">1</span>, <span class="tok-num">3</span>}, {<span class="tok-num">2</span>, <span class="tok-num">4</span>}, {<span class="tok-num">3</span>, <span class="tok-num">5</span>}, {<span class="tok-num">4</span>, <span class="tok-num">5</span>}, {<span class="tok-num">0</span>, <span class="tok-num">3</span>}};
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">7</span>; i++) {
+        <span class="tok-type">int</span> u = edges[i][<span class="tok-num">0</span>];
+        <span class="tok-type">int</span> v = edges[i][<span class="tok-num">1</span>];
+        <span class="tok-fn">add_edge</span>(u, v);
+        <span class="tok-fn">add_edge</span>(v, u);
+    }
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;DFS 顺序：&quot;</span>);
+    <span class="tok-fn">dfs</span>(<span class="tok-num">0</span>);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+
+    <span class="tok-type">int</span> reached = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; V; i++) {
+        reached += visited[i];
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;从 0 出发能到 %d 个点\n&quot;</span>, reached);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>DFS 顺序：0 3 5 4 2 1
+从 0 出发能到 6 个点</pre></div><p>跟着走一遍：0 的链表是 3、2、1，先挑 3；3 的链表是 0、5、1，0 去过，走 5；5 的链表是 4、3，走 4；4 的链表是 5、2，走 2；2 的邻居 4、0 都去过，退回来；最后退回 0，还剩 1 没去，走 1。一共六个点，顺序是 0 3 5 4 2 1。</p><p><code>visited[u] = 1</code> 一定要放在函数开头。放到循环里面，或者放在「准备访问」的位置，遇到环就会重复访问同一个点，递归停不下来。这是图遍历最常见的一处翻车，比指针写错还隐蔽，因为它有时能跑出正确答案。</p><p>你可能会想：为什么不是 0 1 3 5 4 2？因为邻居的顺序由存储方式决定。换成 10.2 的邻接矩阵、按 <code>0 到 5</code> 扫描，得到的就是 0 1 3 5 4 2。<strong>两个答案都对</strong>，DFS 的顺序本来就不唯一，除非题目规定了邻居的访问次序。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>记忆点</span></div><div class="callout-body"><p>树遍历不需要 visited，因为树没有环，每个点只有一条路能到。图有环，所以必须记「来过没有」。这一句能省你半小时的调试。</p></div></div><p>DFS 的复杂度是 O(V+E)：每个点访问一次，每条边在两个端点的链表里各看一次。它擅长回答「能不能到」「有几个连通块」「有没有环」这类问题。</p><h2 id="sec-5">10.5 BFS：一层层往外扩散<i class="anchor">#</i></h2><p>广度优先换了个顺序：先看完起点所有直接邻居，再看邻居的邻居，像往水里扔石头，波纹一圈圈推开。</p><p>它需要队列，这正是 <a href="05-queue.html">第 5 课 队列</a> 的内容。在 C 里写 BFS，用一个数组当循环队列就够，不用真去写链表队列。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-pre">#define</span> V <span class="tok-num">6</span>
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> Edge {
+    <span class="tok-type">int</span> to;
+    <span class="tok-key">struct</span> Edge *next;
+} Edge;
+
+Edge *head[V];
+<span class="tok-type">int</span> visited[V];
+<span class="tok-type">int</span> dist[V];
+
+<span class="tok-type">void</span> <span class="tok-fn">add_edge</span>(<span class="tok-type">int</span> u, <span class="tok-type">int</span> v) {
+    Edge *e = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(Edge));
+    e-&gt;to = v;
+    e-&gt;next = head[u];
+    head[u] = e;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> edges[][<span class="tok-num">2</span>] = {{<span class="tok-num">0</span>, <span class="tok-num">1</span>}, {<span class="tok-num">0</span>, <span class="tok-num">2</span>}, {<span class="tok-num">1</span>, <span class="tok-num">3</span>}, {<span class="tok-num">2</span>, <span class="tok-num">4</span>}, {<span class="tok-num">3</span>, <span class="tok-num">5</span>}, {<span class="tok-num">4</span>, <span class="tok-num">5</span>}, {<span class="tok-num">0</span>, <span class="tok-num">3</span>}};
+    <span class="tok-type">int</span> <span class="tok-type">queue</span>[V];
+    <span class="tok-type">int</span> front = <span class="tok-num">0</span>;
+    <span class="tok-type">int</span> rear = <span class="tok-num">0</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">7</span>; i++) {
+        <span class="tok-type">int</span> u = edges[i][<span class="tok-num">0</span>];
+        <span class="tok-type">int</span> v = edges[i][<span class="tok-num">1</span>];
+        <span class="tok-fn">add_edge</span>(u, v);
+        <span class="tok-fn">add_edge</span>(v, u);
+    }
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; V; i++) {
+        dist[i] = -<span class="tok-num">1</span>;
+    }
+
+    visited[<span class="tok-num">0</span>] = <span class="tok-num">1</span>;
+    dist[<span class="tok-num">0</span>] = <span class="tok-num">0</span>;
+    <span class="tok-type">queue</span>[rear] = <span class="tok-num">0</span>;
+    rear++;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;BFS 顺序：&quot;</span>);
+    <span class="tok-key">while</span> (front &lt; rear) {
+        <span class="tok-type">int</span> u = <span class="tok-type">queue</span>[front];
+        front++;
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, u);
+
+        <span class="tok-key">for</span> (Edge *e = head[u]; e != NULL; e = e-&gt;next) {
+            <span class="tok-key">if</span> (!visited[e-&gt;to]) {
+                visited[e-&gt;to] = <span class="tok-num">1</span>;
+                dist[e-&gt;to] = dist[u] + <span class="tok-num">1</span>;
+                <span class="tok-type">queue</span>[rear] = e-&gt;to;
+                rear++;
+            }
+        }
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; V; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;0 到 %d 的边数：%d\n&quot;</span>, i, dist[i]);
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>BFS 顺序：0 3 2 1 5 4
+0 到 0 的边数：0
+0 到 1 的边数：1
+0 到 2 的边数：1
+0 到 3 的边数：1
+0 到 4 的边数：2
+0 到 5 的边数：2</pre></div><p>顺序和 DFS 完全不同。0 先进队，出队时把三个邻居 3、2、1 全塞进去；然后 3 出队，发现 5 和 1（1 已在队里）；然后 2 出队，塞进 4。所以是 0 3 2 1 5 4。</p><p>注意 <code>visited[e-&gt;to] = 1</code> 的位置：<strong>入队时就标记</strong>，不是出队时才标记。如果等出队才标记，同一个点会被不同邻居重复塞进队列，队列膨胀几倍，虽然结果还对，但复杂度就崩了。这一点和 DFS 正好相反，DFS 是进入函数立刻标记。</p><p><code>dist</code> 数组顺便算出了最短距离。因为 BFS 是按层扩散的，一个点第一次被访问时，走的一定是边数最少的路径。这就是<strong>无权图的最短路径算法</strong>：不用额外写什么，BFS 顺手就做了。</p><p>带权图就没这么便宜了。边有长短之分，层数少不代表总长度短，得用 Dijkstra：把 BFS 的队列换成一个按距离排序的优先队列，也就是 <a href="08-heap.html">第 8 课 堆</a> 里那个堆。代码长一些，但骨架就是 BFS。</p><h2 id="sec-6">10.6 图不连通怎么办<i class="anchor">#</i></h2><p>前面两个遍历都有一个隐含前提：从 0 出发能走到所有点。真实数据不保证这一点，比如一个班的人际关系图，可能分成几个小圈子。</p><p>这时候要外面再套一层循环，对每个没访问过的点启动一次遍历：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-pre">#define</span> V <span class="tok-num">6</span>
+
+<span class="tok-type">int</span> adj[V][V];
+<span class="tok-type">int</span> visited[V];
+
+<span class="tok-type">void</span> <span class="tok-fn">dfs</span>(<span class="tok-type">int</span> u) {
+    visited[u] = <span class="tok-num">1</span>;
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, u);
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> v = <span class="tok-num">0</span>; v &lt; V; v++) {
+        <span class="tok-key">if</span> (adj[u][v] &amp;&amp; !visited[v]) {
+            <span class="tok-fn">dfs</span>(v);
+        }
+    }
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> edges[][<span class="tok-num">2</span>] = {{<span class="tok-num">0</span>, <span class="tok-num">1</span>}, {<span class="tok-num">1</span>, <span class="tok-num">2</span>}, {<span class="tok-num">3</span>, <span class="tok-num">4</span>}};
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; <span class="tok-num">3</span>; i++) {
+        <span class="tok-type">int</span> u = edges[i][<span class="tok-num">0</span>];
+        <span class="tok-type">int</span> v = edges[i][<span class="tok-num">1</span>];
+        adj[u][v] = <span class="tok-num">1</span>;
+        adj[v][u] = <span class="tok-num">1</span>;
+    }
+
+    <span class="tok-type">int</span> count = <span class="tok-num">0</span>;
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> u = <span class="tok-num">0</span>; u &lt; V; u++) {
+        <span class="tok-key">if</span> (!visited[u]) {
+            count++;
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;第 %d 块：&quot;</span>, count);
+            <span class="tok-fn">dfs</span>(u);
+            <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+        }
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;一共 %d 个连通块\n&quot;</span>, count);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>第 1 块：0 1 2
+第 2 块：3 4
+第 3 块：5
+一共 3 个连通块</pre></div><p><code>dfs</code> 一次只负责「从 u 能走到的那一片」，外层循环负责「还有没有别的地方没去过」。这个模板改一改就能解很多题：把每次 <code>dfs(u)</code> 的起点记下来，就是连通块的划分；把递归中遇到的边数和点数比一下，就能判有没有环。</p><p>同样的外层循环套在 BFS 上也成立。选哪个都行，规模大又怕递归太深的时候用 BFS，因为 C 的递归栈一般只有几 MB，十万个点排成一条链能直接把栈撑爆。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p><code>visited</code> 数组必须每次遍历前清零。多组测试数据里忘了清，第二组直接全部判成「已访问」，输出一片空白，而你还以为图建错了。</p></div></div><p>图这一课就到这。真正的大头在图算法上：最短路径、最小生成树、拓扑排序、强连通分量，每一个都能单独讲一课。你现在有了两种存法和两个遍历模板，那些算法都是在这套骨架上加东西，不再需要新的数据结构。</p><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>把 10.3 的图改成有向图（只加 <code>add_edge(u, v)</code>，不加反向），再跑 DFS，说说为什么有的点访问不到。写出统计每个点入度的函数。</li><li>用 BFS 写一个函数，判断给定的两个点之间有没有路径，有就输出一条最短路径上的完整点序列。提示：另开一个 <code>parent</code> 数组记「我是从哪个点过来的」。</li><li>写 <code>int has_cycle(int start)</code>，用 DFS 判断无向图里有没有环。提示：记录父结点，遇到已在 visited 里且不是父结点的邻居，就有环。</li><li>一个班级有 n 个同学，给出 m 对「互相认识」的关系，输出每个小团体的人数（从大到小）。这就是 10.6 的模板加一个计数。</li></ol></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>图 = 顶点 + 边，可以有方向、有权重、有环，也可以不连通</li><li>邻接矩阵 O(V²) 空间、判相邻 O(1)；邻接表 O(V+E) 空间，是稀疏图的标准做法</li><li>DFS 用递归，BFS 用队列，都是 O(V+E)，都必须带 visited</li><li>BFS 第一次到达的层数就是无权最短路，带权要换 Dijkstra</li><li>下一课 <a href="11-sorting.html">第 11 课 排序算法总览</a>：把找东西放一放，研究怎么把一堆数排好</li></ul></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="ds-10-graph"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../ds/09-hash.html"><span>上一章</span><b>第 9 课 哈希表</b></a><a class="pager-item next" href="../ds/11-sorting.html"><span>下一章</span><b>第 11 课 排序算法总览</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">10.1 图比树多了什么</a><a class="toc-link level-2" href="#sec-2">10.2 邻接矩阵：一个二维数组</a><a class="toc-link level-2" href="#sec-3">10.3 邻接表：每个点挂一条链表</a><a class="toc-link level-2" href="#sec-4">10.4 DFS：一条路走到黑</a><a class="toc-link level-2" href="#sec-5">10.5 BFS：一层层往外扩散</a><a class="toc-link level-2" href="#sec-6">10.6 图不连通怎么办</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

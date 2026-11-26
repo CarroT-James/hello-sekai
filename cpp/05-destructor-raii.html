@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 5 课 构造、析构与 RAII · Hello Sekai</title>
+<meta name="description" content="对象出生时构造函数跑，离开作用域时析构函数跑。这一课讲清这条生命周期，以及为什么它能把「忘记收尾」这类 bug 从根上消掉。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="cpp-05-destructor-raii" data-track="cpp" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link is-active" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">C++</span><a class="sidebar-back" href="../cpp/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../cpp/01-first-program.html" data-id="cpp-01-first-program"><span class="side-num">01</span><span class="side-text">第 1 课 第一个 C++ 程序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/02-reference-const.html" data-id="cpp-02-reference-const"><span class="side-num">02</span><span class="side-text">第 2 课 引用与 const</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/03-overload-default.html" data-id="cpp-03-overload-default"><span class="side-num">03</span><span class="side-text">第 3 课 函数重载与默认参数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/04-class-basic.html" data-id="cpp-04-class-basic"><span class="side-num">04</span><span class="side-text">第 4 课 类与对象：把数据和操作捆在一起</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../cpp/05-destructor-raii.html" data-id="cpp-05-destructor-raii"><span class="side-num">05</span><span class="side-text">第 5 课 构造、析构与 RAII</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/06-vector-string.html" data-id="cpp-06-vector-string"><span class="side-num">06</span><span class="side-text">第 6 课 vector 与 string</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/07-stl-map.html" data-id="cpp-07-stl-map"><span class="side-num">07</span><span class="side-text">第 7 课 map、set 与 pair</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/08-modern-cpp.html" data-id="cpp-08-modern-cpp"><span class="side-num">08</span><span class="side-text">第 8 课 auto、nullptr 与范围 for</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/09-inheritance.html" data-id="cpp-09-inheritance"><span class="side-num">09</span><span class="side-text">第 9 课 继承与多态：让不同的东西说同一种话</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/10-operator-overload.html" data-id="cpp-10-operator-overload"><span class="side-num">10</span><span class="side-text">第 10 课 运算符重载与友元：让自定义类型也用上 + 号</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/11-template.html" data-id="cpp-11-template"><span class="side-num">11</span><span class="side-text">第 11 课 模板与泛型：写一遍，适配所有类型</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/12-exception.html" data-id="cpp-12-exception"><span class="side-num">12</span><span class="side-text">第 12 课 异常处理：把「出错了」和「算完了」分开</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/13-stl-algorithms.html" data-id="cpp-13-stl-algorithms"><span class="side-num">13</span><span class="side-text">第 13 课 STL 算法与迭代器：装进去之后，怎么处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/14-smart-pointer.html" data-id="cpp-14-smart-pointer"><span class="side-num">14</span><span class="side-text">第 14 课 智能指针与移动语义：让「谁负责释放」写进类型</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/15-class-design.html" data-id="cpp-15-class-design"><span class="side-num">15</span><span class="side-text">第 15 课 类设计实战：手写一个 MyString</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../cpp/16-project.html" data-id="cpp-16-project"><span class="side-num">16</span><span class="side-text">第 16 课 项目组织与调试：把代码拆成多个文件</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../cpp/index.html">← 返回C++</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../cpp/index.html">C++</a> <span class="sep">/</span> <span>第 5 课 构造、析构与 RAII</span></div><h1 class="doc-title">第 5 课 构造、析构与 RAII</h1><div class="doc-meta"><span>预计 30 分钟</span><span class="dot">·</span><span>约 5,025 字</span><span class="dot">·</span><span>C++</span></div><article class="prose" id="article"><p>上一课 <a href="04-class-basic.html">第 4 课 类与对象：把数据和操作捆在一起</a> 里的 <code>Student</code>，只是把几个变量捆在一起。从这一课起，对象开始有「出生」和「死亡」：创建时自动跑构造函数，离开作用域时自动跑析构函数。</p><p>这两件事看起来只是语法，其实是 C++ 最值钱的设计之一。它能把「打开的东西忘记关」这类错误，从「靠人记」变成「编译器管」。</p><h2 id="sec-1">5.1 对象什么时候生，什么时候死<i class="anchor">#</i></h2><p>构造函数不只给某一种特殊写法用。你在函数里直接声明出来的对象（习惯上叫栈对象）、临时创建的对象，只要创建就会调用它。析构函数则相反：对象离开作用域的那一刻自动调用。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+
+<span class="tok-key">class</span> Tracker {
+<span class="tok-key">public</span>:
+    <span class="tok-key">explicit</span> <span class="tok-fn">Tracker</span>(<span class="tok-key">const</span> <span class="tok-type">std</span>::<span class="tok-type">string</span>&amp; name) : <span class="tok-fn">name_</span>(name) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;构造 &quot;</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+    ~<span class="tok-fn">Tracker</span>() {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;析构 &quot;</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+    <span class="tok-type">void</span> <span class="tok-fn">use</span>() <span class="tok-key">const</span> {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;使用 &quot;</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+<span class="tok-key">private</span>:
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> name_;
+};
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;进入 main\n&quot;</span>;
+    {
+        Tracker <span class="tok-fn">a</span>(<span class="tok-str">&quot;a&quot;</span>);
+        Tracker <span class="tok-fn">b</span>(<span class="tok-str">&quot;b&quot;</span>);
+        a.<span class="tok-fn">use</span>();
+        b.<span class="tok-fn">use</span>();
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;离开代码块\n&quot;</span>;
+    }
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;结束 main\n&quot;</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>进入 main
+构造 a
+构造 b
+使用 a
+使用 b
+离开代码块
+析构 b
+析构 a
+结束 main</pre></div><p>注意最后两行：后构造的 b 先析构，先构造的 a 后析构。<strong>析构顺序永远和构造顺序相反</strong>，像叠盘子，后放的先拿。这个规则不是随便定的：后面的对象可能依赖前面的对象，先销毁前面的，后面的就会拿着一个已经没了的东西。倒着来最安全。</p><p><code>~Tracker()</code> 就是析构函数。名字是类名前加一个波浪号，没有参数、没有返回值，也不能重载——一个类只能有一个析构函数。</p><p>包围 <code>a</code>、<code>b</code> 的那对花括号不是装饰。它划出了一个<strong>作用域</strong>：花括号结束时，里面创建的对象全部销毁。这个「对象活到它所在的代码块结束」的规则，是整个 RAII 的地基。</p><h2 id="sec-2">5.2 析构函数该做的事：还资源<i class="anchor">#</i></h2><p>构造函数负责「拿」，析构函数负责「还」。这里的资源可以是内存、文件、数据库连接、网络套接字，也可以是一把锁。</p><p>先想想没有析构函数的世界。你打开一个文件，用完要关；中间有三处提前 <code>return</code>，每个出口都得记得关一次。函数一长、分支一多，漏掉是常态。漏掉以后程序不会立刻报错，只是文件一直被占着，别的程序打不开；或者数据还在缓冲区里没写出去，程序一崩就全丢了。</p><p>更麻烦的是，这种错误<strong>没有报错信息</strong>。程序看起来一切正常，直到某天有人发现文件是空的。</p><p>C++ 的做法是把这个关系写进类里：构造函数打开文件，析构函数关闭文件。对象的寿命就是资源的寿命，你不需要在十个出口各写一遍收尾。这个思路叫 <strong>RAII</strong>，全称 Resource Acquisition Is Initialization，直译是「资源获取即初始化」。名字起得不好，它真正的意思是：<strong>资源的生死，绑定在对象的生死上</strong>。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>一句话记住 RAII</span></div><div class="callout-body"><p>构造函数拿资源，析构函数还资源，中间不用手动收尾。</p><p>对象活着，资源就在；对象死了，资源自动归还。</p></div></div><h2 id="sec-3">5.3 自己写一个 RAII 类<i class="anchor">#</i></h2><p>下面这个 <code>FileGuard</code> 把「打开的文件」包了起来：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;cstdio&gt;
+<span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+
+<span class="tok-key">class</span> FileGuard {
+<span class="tok-key">public</span>:
+    <span class="tok-key">explicit</span> <span class="tok-fn">FileGuard</span>(<span class="tok-key">const</span> <span class="tok-type">std</span>::<span class="tok-type">string</span>&amp; path)
+        : <span class="tok-fn">fp_</span>(<span class="tok-type">std</span>::<span class="tok-fn">fopen</span>(path.<span class="tok-fn">c_str</span>(), <span class="tok-str">&quot;w&quot;</span>)) {
+    }
+
+    ~<span class="tok-fn">FileGuard</span>() {
+        <span class="tok-key">if</span> (fp_ != <span class="tok-key">nullptr</span>) {
+            <span class="tok-type">std</span>::<span class="tok-fn">fclose</span>(fp_);
+            <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;析构：文件已关闭\n&quot;</span>;
+        }
+    }
+
+    <span class="tok-fn">FileGuard</span>(<span class="tok-key">const</span> FileGuard&amp;) = <span class="tok-key">delete</span>;
+    FileGuard&amp; <span class="tok-key">operator</span>=(<span class="tok-key">const</span> FileGuard&amp;) = <span class="tok-key">delete</span>;
+
+    <span class="tok-type">bool</span> <span class="tok-fn">valid</span>() <span class="tok-key">const</span> {
+        <span class="tok-key">return</span> fp_ != <span class="tok-key">nullptr</span>;
+    }
+
+    <span class="tok-type">std</span>::<span class="tok-type">FILE</span>* <span class="tok-fn">get</span>() <span class="tok-key">const</span> {
+        <span class="tok-key">return</span> fp_;
+    }
+
+<span class="tok-key">private</span>:
+    <span class="tok-type">std</span>::<span class="tok-type">FILE</span>* fp_;
+};
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    FileGuard <span class="tok-fn">file</span>(<span class="tok-str">&quot;demo.txt&quot;</span>);
+    <span class="tok-key">if</span> (!file.<span class="tok-fn">valid</span>()) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;打开文件失败\n&quot;</span>;
+        <span class="tok-key">return</span> <span class="tok-num">1</span>;
+    }
+
+    <span class="tok-type">std</span>::<span class="tok-fn">fputs</span>(<span class="tok-str">&quot;hello, RAII\n&quot;</span>, file.<span class="tok-fn">get</span>());
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;写完，准备离开作用域\n&quot;</span>;
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>写完，准备离开作用域
+析构：文件已关闭</pre></div><p><code>main</code> 里根本没有出现 <code>fclose</code>，但文件确实关了。<code>FileGuard</code> 的对象一离开作用域，析构函数自动跑，顺手把文件关掉。你就算在 <code>fputs</code> 和结尾之间加十个 <code>return</code>，每个出口都会关。</p><p>几个细节：</p><ul><li><code>std::fopen</code> 返回的是一个<strong>句柄</strong>，你可以理解成「系统发给你的一个编号」，不是文件本身。打开失败时它是 <code>nullptr</code>，所以 <code>valid()</code> 先检查一次。<code>nullptr</code> 是 C++ 的空指针写法，第 8 课细讲。</li><li><code>path.c_str()</code> 是把 <code>std::string</code> 转成老式接口要的格式。标准库里这类老接口还有不少，看到 <code>c_str()</code> 就用它转一下，不用深究。</li><li>构造函数初始化列表里直接调 <code>std::fopen</code>，成员 <code>fp_</code> 一出生就拿到了句柄，中间没有「先空着再赋值」的空档。</li></ul><p>上面那两行 <code>= delete</code> 是故意的：<strong>禁止复制这个类</strong>。第二行那种 <code>operator=</code> 的写法属于运算符重载，第 10 课才讲，你现在只要知道它也在禁复制就够了。原因下一节说。</p><h2 id="sec-4">5.4 所有权不能复制<i class="anchor">#</i></h2><p>如果允许复制一个 <code>FileGuard</code> 会怎样？<code>fp_</code> 里存的是那个句柄编号。默认的复制行为是「把每个成员抄一遍」，于是两个对象手里拿着<strong>同一个编号</strong>，都以为自己是主人。</p><p>然后它们各自离开作用域，各自调用 <code>fclose</code>。第一次关闭成功，第二次关的是一个已经关掉的句柄——轻则报错，重则把别的文件搞坏。这种事最恶心的地方在于：程序可能不崩，只是偶尔丢数据。</p><p>所以 <code>FileGuard</code> 把复制明确禁掉了。<code>= delete</code> 的意思是「这个函数编译器不许生成，谁调用谁编不过」。这不是运行时的检查，是编译期直接拦住，错不到运行的时候。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>一个类只要「拥有」某个资源，就不能依赖编译器默认生成的复制行为。默认复制是逐成员抄一遍：对 <code>int</code>、<code>double</code> 没问题，对「资源的句柄」就等于把同一份所有权抄给了两个人。初学阶段最稳的办法：<strong>别让类自己去管资源</strong>。要一串数据用 <code>std::vector</code>，要独占一个对象用智能指针（第 14 课），需要文件就用现成的封装。</p></div></div><p>反过来说，标准库里的 <code>std::string</code> 为什么可以随便复制？因为它的复制是「真的复制内容」，不是抄一个编号：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> a = <span class="tok-str">&quot;hello&quot;</span>;
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> b = a;      <span class="tok-com">// b 是 a 的副本，各自有一份内容</span>
+    b[<span class="tok-num">0</span>] = <span class="tok-str">&#x27;H&#x27;</span>;
+
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; a &lt;&lt; <span class="tok-str">&quot; &quot;</span> &lt;&lt; b &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>hello Hello</pre></div><p>改 <code>b</code> 不影响 <code>a</code>。<code>string</code> 内部也有一块动态内存，但它的构造函数、复制、析构是一整套写好的逻辑，你不用操心。第 6 课开始，你会大量使用这种「自己管好自己」的类型。</p><h2 id="sec-5">5.5 作用域、提前 return，都逃不过析构<i class="anchor">#</i></h2><p>再确认一遍析构的触发时机。下面这个 <code>Timer</code> 在构造和析构时各打一行，用来观察顺序：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C++</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;iostream&gt;
+<span class="tok-pre">#include</span> &lt;<span class="tok-type">string</span>&gt;
+
+<span class="tok-key">class</span> Timer {
+<span class="tok-key">public</span>:
+    <span class="tok-key">explicit</span> <span class="tok-fn">Timer</span>(<span class="tok-key">const</span> <span class="tok-type">std</span>::<span class="tok-type">string</span>&amp; name) : <span class="tok-fn">name_</span>(name) {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;开始 &quot;</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+    ~<span class="tok-fn">Timer</span>() {
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;结束 &quot;</span> &lt;&lt; name_ &lt;&lt; <span class="tok-str">&quot;\n&quot;</span>;
+    }
+
+<span class="tok-key">private</span>:
+    <span class="tok-type">std</span>::<span class="tok-type">string</span> name_;
+};
+
+<span class="tok-type">void</span> <span class="tok-fn">work</span>() {
+    Timer <span class="tok-fn">outer</span>(<span class="tok-str">&quot;外层&quot;</span>);
+
+    {
+        Timer <span class="tok-fn">inner</span>(<span class="tok-str">&quot;内层&quot;</span>);
+        <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;干活\n&quot;</span>;
+    }
+
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;内层已经结束\n&quot;</span>;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>() {
+    <span class="tok-fn">work</span>();
+    <span class="tok-type">std</span>::<span class="tok-type">cout</span> &lt;&lt; <span class="tok-str">&quot;work 返回了\n&quot;</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>开始 外层
+开始 内层
+干活
+结束 内层
+内层已经结束
+结束 外层
+work 返回了</pre></div><p>规律很清楚：<strong>谁先出作用域，谁先析构</strong>。内层代码块先结束，<code>inner</code> 先死；函数返回时，<code>outer</code> 再死。</p><p>提前 <code>return</code> 也一样。因为析构跟着<strong>作用域</strong>走，不跟着 <code>return</code> 走——函数返回时，它所有的局部对象都要销毁，不管你是正常走到末尾还是中途 <code>return</code>。</p><p>这条规则还顺带解决了「中途出错怎么办」：哪怕函数中间抛了异常（第 12 课的内容），局部对象也会被销毁，资源照样归还。你不用写一堆 <code>if (出错) { 关文件; return; }</code>。</p><h2 id="sec-6">5.6 日常写法的几条硬建议<i class="anchor">#</i></h2><p>把这一课落到习惯上，就四条：</p><p><strong>第一，优先用普通对象，别手动申请。</strong> 你在函数里写 <code>Timer t(&quot;x&quot;);</code>，它就是栈上的对象，离开作用域自动销毁。这类对象最省心，因为它不需要你记得任何事。</p><p><strong>第二，真要动态申请，就必须配对归还。</strong> <code>new</code> 出来的对象不会自己死，得写 <code>delete</code>；忘一次就漏一次内存。所以日常代码里几乎不该出现裸的 <code>new</code>——第 6 课的 <code>std::vector</code> 和第 14 课的智能指针会替你做这件事。</p><p><strong>第三，类里管着资源，就别依赖默认复制。</strong> 要么像 <code>FileGuard</code> 一样禁掉复制，要么把复制写对（真的复制内容），没有第三条路。</p><p><strong>第四，析构、复制构造、复制赋值，要么都不写，要么成套写。</strong> 这条经验叫「三法则」。只写析构却让默认复制到处跑，比什么都不写更危险——因为你的析构会去释放一个可能已经被别人释放过的东西。</p><div class="callout callout-tip"><div class="callout-head"><span class="callout-glyph">★</span><span>补充说明</span></div><div class="callout-body"><p>析构函数里不要做太复杂的事。它可能在程序异常退出的路径上执行，这时候别的地方状态已经不靠谱了。最稳的写法：析构函数只负责「把资源还回去」，不要在里面打印一堆日志、更不要去调用可能失败的网络操作。</p></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>构造在对象创建时自动跑，析构在对象离开作用域时自动跑，顺序相反。</li><li>RAII 的核心是：构造函数拿资源，析构函数还资源，资源寿命跟着对象走。</li><li>拥有资源的类不能依赖默认复制，要么禁掉（<code>= delete</code>），要么自己写对。</li><li>优先用普通对象，少写 <code>new</code>；漏掉的 <code>delete</code> 不会有任何报错，只会悄悄漏内存。</li><li>下一课是<a href="06-vector-string.html">第 6 课 vector 与 string</a>，两个自己管好内存、可以放心复制的现成类型。</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>写一个 <code>Timer</code> 类，构造时打印「开始」，析构时打印「结束」。在 main 里创建它，分别测试三种情况：正常走到末尾、中途 <code>return</code>、放在内层代码块里。</li><li>给 <code>FileGuard</code> 加一个 <code>bool write(const std::string&amp; text)</code> 成员函数，内部调用 <code>std::fputs</code>，返回是否成功。再故意传一个不存在的目录路径，观察打开失败时析构函数是否安全。</li><li>用两个 <code>FileGuard</code> 对象依次打开两个文件，中途提前 <code>return</code>，根据输出判断哪个先关闭、为什么不用手动 <code>fclose</code>。</li><li>把 <code>FileGuard</code> 里那两行 <code>= delete</code> 删掉，写一句 <code>FileGuard copy = file;</code> 试试。解释编译器为什么放行、以及运行时会出什么问题。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="cpp-05-destructor-raii"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../cpp/04-class-basic.html"><span>上一章</span><b>第 4 课 类与对象：把数据和操作捆在一起</b></a><a class="pager-item next" href="../cpp/06-vector-string.html"><span>下一章</span><b>第 6 课 vector 与 string</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">5.1 对象什么时候生，什么时候死</a><a class="toc-link level-2" href="#sec-2">5.2 析构函数该做的事：还资源</a><a class="toc-link level-2" href="#sec-3">5.3 自己写一个 RAII 类</a><a class="toc-link level-2" href="#sec-4">5.4 所有权不能复制</a><a class="toc-link level-2" href="#sec-5">5.5 作用域、提前 return，都逃不过析构</a><a class="toc-link level-2" href="#sec-6">5.6 日常写法的几条硬建议</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

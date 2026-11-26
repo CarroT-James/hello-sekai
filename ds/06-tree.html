@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 6 课 树与二叉树 · Hello Sekai</title>
+<meta name="description" content="树是第一个非线性结构，这一课把它的术语、C 写法和前序、中序、后序、层序四种遍历一次讲透。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="ds-06-tree" data-track="ds" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link" href="../python/index.html">Python</a><a class="nav-link is-active" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">数据结构</span><a class="sidebar-back" href="../ds/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../ds/01-complexity.html" data-id="ds-01-complexity"><span class="side-num">01</span><span class="side-text">第 1 课 复杂度与算法思维</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/02-arraylist.html" data-id="ds-02-arraylist"><span class="side-num">02</span><span class="side-text">第 2 课 线性表与动态数组</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/03-linked-list.html" data-id="ds-03-linked-list"><span class="side-num">03</span><span class="side-text">第 3 课 链表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/04-stack.html" data-id="ds-04-stack"><span class="side-num">04</span><span class="side-text">第 4 课 栈</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/05-queue.html" data-id="ds-05-queue"><span class="side-num">05</span><span class="side-text">第 5 课 队列与双端队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../ds/06-tree.html" data-id="ds-06-tree"><span class="side-num">06</span><span class="side-text">第 6 课 树与二叉树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/07-bst.html" data-id="ds-07-bst"><span class="side-num">07</span><span class="side-text">第 7 课 二叉搜索树</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/08-heap.html" data-id="ds-08-heap"><span class="side-num">08</span><span class="side-text">第 8 课 堆与优先队列</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/09-hash.html" data-id="ds-09-hash"><span class="side-num">09</span><span class="side-text">第 9 课 哈希表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/10-graph.html" data-id="ds-10-graph"><span class="side-num">10</span><span class="side-text">第 10 课 图与遍历</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/11-sorting.html" data-id="ds-11-sorting"><span class="side-num">11</span><span class="side-text">第 11 课 排序算法总览</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../ds/12-dp.html" data-id="ds-12-dp"><span class="side-num">12</span><span class="side-text">第 12 课 递归、分治与动态规划入门</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../ds/index.html">← 返回数据结构</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../ds/index.html">数据结构</a> <span class="sep">/</span> <span>第 6 课 树与二叉树</span></div><h1 class="doc-title">第 6 课 树与二叉树</h1><div class="doc-meta"><span>预计 40 分钟</span><span class="dot">·</span><span>约 7,945 字</span><span class="dot">·</span><span>数据结构</span></div><article class="prose" id="article"><p>前面几课的结构都是「一条线」：数组是一条线，链表是一条线，栈和队列也不过是线的两种用法。现实里的关系很少这么老实——家里的族谱、电脑里的文件夹、一个公司的组织架构，都是一层一层往下分的。</p><p>树就是用来存这种关系的。</p><p>我得先承认：树的递归遍历是这门课第一个真正绕人的地方。我当年看前序、中序、后序，觉得这三个名字毫无道理，三段代码长得也差不多。后来自己画了一棵树，把三种输出写在一张纸上，才突然明白——所谓「序」，只是根在什么时候被访问。</p><h2 id="sec-1">6.1 树：一个根，往下分叉<i class="anchor">#</i></h2><p>树有一个根结点，从根往下分出若干个子结点，每个子结点再往下分。规则只有两条：</p><ul><li>除了根，每个结点只有一个父结点</li><li>顺着指针往下走，永远不会绕回自己，也就是没有环</li></ul><p>第二条把「环」排除在外。链表其实也能看成树的一个特例：每个结点最多一个孩子，而且只有一边。所以你可以把树理解成「链表放开了孩子数量的限制」。</p><p>看一棵具体的二叉树。它长这样：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">TEXT</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>        1
+       / \
+      2   3
+     / \   \
+    4   5   6</code></pre></div><p>结点 1 是根。它有两个孩子：左边 2，右边 3。2 又有两个孩子 4 和 5，3 只有一个右孩子 6。4、5、6 都没有孩子，叫叶子。</p><h2 id="sec-2">6.2 术语：根、叶、深度、高度<i class="anchor">#</i></h2><p>数据结构的术语第一次看很吓人，其实就那么几个，对着图看一遍就懂了。</p><div class="table-wrap"><table><thead><tr><th>术语</th><th>意思</th><th>在这棵树里</th></tr></thead><tbody><tr><td>根</td><td>唯一没有父结点的结点</td><td>1</td></tr><tr><td>叶子</td><td>没有孩子的结点</td><td>4、5、6</td></tr><tr><td>度</td><td>一个结点有几个孩子</td><td>1 的度是 2，3 的度是 1</td></tr><tr><td>深度</td><td>从根往下数，根为第 0 层</td><td>4 的深度是 2</td></tr><tr><td>高度</td><td>从叶子往上数，叶子为 1</td><td>整棵树的高度是 3</td></tr></tbody></table></div><p>深度和高度最容易混。深度是「从上往下数」，高度是「从下往上数」。同一棵树，根的深度是 0，高度是 3；叶子 4 的深度是 2，高度是 1。做题时看清题目说的是哪个。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>记忆点</span></div><div class="callout-body"><p>二叉树不是「每个结点必须有两个孩子」，而是「每个结点最多两个孩子」。可以没有，可以只有一个。4、5、6 这种没有孩子的，也是合法的二叉树结点。</p></div></div><h2 id="sec-3">6.3 二叉树与它的 C 写法<i class="anchor">#</i></h2><p>二叉树的每个结点，除了存数据，还要存两个指针：左孩子和右孩子。这种「结构体里放指向自己的指针」的写法，和 <a href="../c/rumen/ch07.html">C 语言 结构体</a> 里的链表结点是同一套，只是从一个指针变成了两个。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> TreeNode {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> TreeNode *left;
+    <span class="tok-key">struct</span> TreeNode *right;
+} TreeNode;
+
+TreeNode *<span class="tok-fn">new_node</span>(<span class="tok-type">int</span> v) {
+    TreeNode *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(TreeNode));
+    <span class="tok-key">if</span> (p == NULL) <span class="tok-key">return</span> NULL;
+    p-&gt;value = v;
+    p-&gt;left = NULL;
+    p-&gt;right = NULL;
+    <span class="tok-key">return</span> p;
+}
+
+TreeNode *<span class="tok-fn">build_tree</span>(<span class="tok-type">void</span>) {
+    TreeNode *n1 = <span class="tok-fn">new_node</span>(<span class="tok-num">1</span>);
+    TreeNode *n2 = <span class="tok-fn">new_node</span>(<span class="tok-num">2</span>);
+    TreeNode *n3 = <span class="tok-fn">new_node</span>(<span class="tok-num">3</span>);
+    TreeNode *n4 = <span class="tok-fn">new_node</span>(<span class="tok-num">4</span>);
+    TreeNode *n5 = <span class="tok-fn">new_node</span>(<span class="tok-num">5</span>);
+    TreeNode *n6 = <span class="tok-fn">new_node</span>(<span class="tok-num">6</span>);
+
+    <span class="tok-key">if</span> (n1 == NULL || n2 == NULL || n3 == NULL ||
+        n4 == NULL || n5 == NULL || n6 == NULL) {
+        <span class="tok-key">return</span> NULL;
+    }
+
+    n1-&gt;left = n2;
+    n1-&gt;right = n3;
+    n2-&gt;left = n4;
+    n2-&gt;right = n5;
+    n3-&gt;right = n6;
+
+    <span class="tok-key">return</span> n1;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">free_tree</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span>;
+    <span class="tok-fn">free_tree</span>(root-&gt;left);
+    <span class="tok-fn">free_tree</span>(root-&gt;right);
+    <span class="tok-fn">free</span>(root);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    TreeNode *root = <span class="tok-fn">build_tree</span>();
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span> <span class="tok-num">1</span>;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;根是 %d\n&quot;</span>, root-&gt;value);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;根的左孩子是 %d，右孩子是 %d\n&quot;</span>,
+           root-&gt;left-&gt;value, root-&gt;right-&gt;value);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;左孩子的左孩子是 %d\n&quot;</span>, root-&gt;left-&gt;left-&gt;value);
+
+    <span class="tok-fn">free_tree</span>(root);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>根是 1
+根的左孩子是 2，右孩子是 3
+左孩子的左孩子是 4</pre></div><p><code>left</code> 和 <code>right</code> 为 <code>NULL</code>，表示这个方向没有孩子。叶子的两个指针都是 <code>NULL</code>。</p><p><code>free_tree</code> 是个值得多看两眼的函数：它先释放左子树，再释放右子树，最后释放自己。如果先 <code>free(root)</code> 再去访问 <code>root-&gt;left</code>，就是在读已经回收的内存。这个顺序不是随便定的，下一节讲完后你会发现，它就是后序遍历。</p><h2 id="sec-4">6.4 三种遍历：前序、中序、后序<i class="anchor">#</i></h2><p>遍历就是把每个结点访问一遍。树不是一条线，所以「按什么顺序访问」有好几种答案。最常用的三种，区别只在于根什么时候被访问：</p><ul><li>前序：根 → 左 → 右</li><li>中序：左 → 根 → 右</li><li>后序：左 → 右 → 根</li></ul><p>看代码比看名字快。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> TreeNode {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> TreeNode *left;
+    <span class="tok-key">struct</span> TreeNode *right;
+} TreeNode;
+
+TreeNode *<span class="tok-fn">new_node</span>(<span class="tok-type">int</span> v) {
+    TreeNode *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(TreeNode));
+    <span class="tok-key">if</span> (p == NULL) <span class="tok-key">return</span> NULL;
+    p-&gt;value = v;
+    p-&gt;left = NULL;
+    p-&gt;right = NULL;
+    <span class="tok-key">return</span> p;
+}
+
+TreeNode *<span class="tok-fn">build_tree</span>(<span class="tok-type">void</span>) {
+    TreeNode *n1 = <span class="tok-fn">new_node</span>(<span class="tok-num">1</span>);
+    TreeNode *n2 = <span class="tok-fn">new_node</span>(<span class="tok-num">2</span>);
+    TreeNode *n3 = <span class="tok-fn">new_node</span>(<span class="tok-num">3</span>);
+    TreeNode *n4 = <span class="tok-fn">new_node</span>(<span class="tok-num">4</span>);
+    TreeNode *n5 = <span class="tok-fn">new_node</span>(<span class="tok-num">5</span>);
+    TreeNode *n6 = <span class="tok-fn">new_node</span>(<span class="tok-num">6</span>);
+
+    <span class="tok-key">if</span> (n1 == NULL || n2 == NULL || n3 == NULL ||
+        n4 == NULL || n5 == NULL || n6 == NULL) {
+        <span class="tok-key">return</span> NULL;
+    }
+
+    n1-&gt;left = n2;
+    n1-&gt;right = n3;
+    n2-&gt;left = n4;
+    n2-&gt;right = n5;
+    n3-&gt;right = n6;
+    <span class="tok-key">return</span> n1;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">preorder</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span>;
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, root-&gt;value);
+    <span class="tok-fn">preorder</span>(root-&gt;left);
+    <span class="tok-fn">preorder</span>(root-&gt;right);
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">inorder</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span>;
+    <span class="tok-fn">inorder</span>(root-&gt;left);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, root-&gt;value);
+    <span class="tok-fn">inorder</span>(root-&gt;right);
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">postorder</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span>;
+    <span class="tok-fn">postorder</span>(root-&gt;left);
+    <span class="tok-fn">postorder</span>(root-&gt;right);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, root-&gt;value);
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">free_tree</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span>;
+    <span class="tok-fn">free_tree</span>(root-&gt;left);
+    <span class="tok-fn">free_tree</span>(root-&gt;right);
+    <span class="tok-fn">free</span>(root);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    TreeNode *root = <span class="tok-fn">build_tree</span>();
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span> <span class="tok-num">1</span>;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;前序：&quot;</span>);
+    <span class="tok-fn">preorder</span>(root);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;中序：&quot;</span>);
+    <span class="tok-fn">inorder</span>(root);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;后序：&quot;</span>);
+    <span class="tok-fn">postorder</span>(root);
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+
+    <span class="tok-fn">free_tree</span>(root);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>前序：1 2 4 5 3 6
+中序：4 2 5 1 3 6
+后序：4 5 2 6 3 1</pre></div><p>三个函数只差一行 <code>printf</code> 的位置。前序把根放在最前面，中序放在中间，后序放在最后。你把 <code>printf</code> 在脑子里挪一下位置，输出就跟着变了。</p><p>换个结构试试：把 6 从 3 的右边挪到左边，中序立刻从 <code>4 2 5 1 3 6</code> 变成 <code>4 2 5 1 6 3</code>。树的结构变了，遍历序列一定跟着变。反过来，给定一棵没有重复值的二叉树，中序序列和任意一种其他序列，能唯一还原出这棵树——很多题就是拿这个做文章。</p><h2 id="sec-5">6.5 递归遍历怎么读：相信子树<i class="anchor">#</i></h2><p>我知道递归难。刚学的时候，我会在脑子里把整棵树一层层展开，展开到第三层就乱了：<code>preorder</code> 调用 <code>preorder</code>，里面又调用 <code>preorder</code>，到底执行到哪一行？</p><p>后来我换了个想法：<strong>不要展开，相信它</strong>。</p><p>写 <code>preorder</code> 的时候，你只做三件事：</p><ol><li>打印根</li><li>让左子树自己前序遍历</li><li>让右子树自己前序遍历</li></ol><p>左子树怎么前序遍历？它也用 <code>preorder</code>，也会做这三件事。你不用管它内部怎么转，只要相信它能把自己的子树按前序打完。这就是递归的信任跳跃：<strong>先假设函数对子树已经正确了，再考虑当前这一层</strong>。</p><p>每个递归函数都要有终止条件。这里的终止条件是「空树直接返回」，否则会无限往下调用，最后栈溢出。</p><p>这个套路不只用于打印。数结点、数叶子、求高度，骨架一模一样，只是把「打印」换成了「返回一个数」。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> TreeNode {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> TreeNode *left;
+    <span class="tok-key">struct</span> TreeNode *right;
+} TreeNode;
+
+TreeNode *<span class="tok-fn">new_node</span>(<span class="tok-type">int</span> v) {
+    TreeNode *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(TreeNode));
+    <span class="tok-key">if</span> (p == NULL) <span class="tok-key">return</span> NULL;
+    p-&gt;value = v;
+    p-&gt;left = NULL;
+    p-&gt;right = NULL;
+    <span class="tok-key">return</span> p;
+}
+
+TreeNode *<span class="tok-fn">build_tree</span>(<span class="tok-type">void</span>) {
+    TreeNode *n1 = <span class="tok-fn">new_node</span>(<span class="tok-num">1</span>);
+    TreeNode *n2 = <span class="tok-fn">new_node</span>(<span class="tok-num">2</span>);
+    TreeNode *n3 = <span class="tok-fn">new_node</span>(<span class="tok-num">3</span>);
+    TreeNode *n4 = <span class="tok-fn">new_node</span>(<span class="tok-num">4</span>);
+    TreeNode *n5 = <span class="tok-fn">new_node</span>(<span class="tok-num">5</span>);
+    TreeNode *n6 = <span class="tok-fn">new_node</span>(<span class="tok-num">6</span>);
+
+    <span class="tok-key">if</span> (n1 == NULL || n2 == NULL || n3 == NULL ||
+        n4 == NULL || n5 == NULL || n6 == NULL) {
+        <span class="tok-key">return</span> NULL;
+    }
+
+    n1-&gt;left = n2;
+    n1-&gt;right = n3;
+    n2-&gt;left = n4;
+    n2-&gt;right = n5;
+    n3-&gt;right = n6;
+    <span class="tok-key">return</span> n1;
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">count_nodes</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span> <span class="tok-num">0</span>;
+    <span class="tok-key">return</span> <span class="tok-num">1</span> + <span class="tok-fn">count_nodes</span>(root-&gt;left) + <span class="tok-fn">count_nodes</span>(root-&gt;right);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">count_leaves</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span> <span class="tok-num">0</span>;
+    <span class="tok-key">if</span> (root-&gt;left == NULL &amp;&amp; root-&gt;right == NULL) <span class="tok-key">return</span> <span class="tok-num">1</span>;
+    <span class="tok-key">return</span> <span class="tok-fn">count_leaves</span>(root-&gt;left) + <span class="tok-fn">count_leaves</span>(root-&gt;right);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">height</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span> <span class="tok-num">0</span>;
+    <span class="tok-type">int</span> l = <span class="tok-fn">height</span>(root-&gt;left);
+    <span class="tok-type">int</span> r = <span class="tok-fn">height</span>(root-&gt;right);
+    <span class="tok-key">return</span> (l &gt; r ? l : r) + <span class="tok-num">1</span>;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">free_tree</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span>;
+    <span class="tok-fn">free_tree</span>(root-&gt;left);
+    <span class="tok-fn">free_tree</span>(root-&gt;right);
+    <span class="tok-fn">free</span>(root);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    TreeNode *root = <span class="tok-fn">build_tree</span>();
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span> <span class="tok-num">1</span>;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;结点数：%d\n&quot;</span>, <span class="tok-fn">count_nodes</span>(root));
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;叶子数：%d\n&quot;</span>, <span class="tok-fn">count_leaves</span>(root));
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;高度：%d\n&quot;</span>, <span class="tok-fn">height</span>(root));
+
+    <span class="tok-fn">free_tree</span>(root);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>结点数：6
+叶子数：3
+高度：3</pre></div><p><code>height</code> 里 <code>(l &gt; r ? l : r) + 1</code> 的意思是：左右两边谁高听谁的，再加 1 层自己。空树返回 0，叶子左右都是空，返回 <code>max(0, 0) + 1 = 1</code>，正好。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>空树的返回值要统一。<code>height</code> 空树返回 0，叶子高度就是 1；如果改成返回 -1，叶子高度会变成 0，整棵树高度变成 2。两种约定都有人用，但一棵树的计算里只能用一种。混着用，结果差一位，还不报错。</p></div></div><h2 id="sec-6">6.6 层序遍历：树加队列<i class="anchor">#</i></h2><p>前三种遍历都是一头扎到底，先走完一整条枝再回头。层序遍历不一样：一层一层来，先访问第 0 层，再第 1 层、第 2 层。</p><p>递归在这儿不好使了，因为递归天生是「往下钻」。这时候得请回<a href="05-queue.html">第 5 课 队列</a>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+<span class="tok-pre">#include</span> &lt;stdlib.h&gt;
+
+<span class="tok-key">typedef</span> <span class="tok-key">struct</span> TreeNode {
+    <span class="tok-type">int</span> value;
+    <span class="tok-key">struct</span> TreeNode *left;
+    <span class="tok-key">struct</span> TreeNode *right;
+} TreeNode;
+
+TreeNode *<span class="tok-fn">new_node</span>(<span class="tok-type">int</span> v) {
+    TreeNode *p = <span class="tok-fn">malloc</span>(<span class="tok-key">sizeof</span>(TreeNode));
+    <span class="tok-key">if</span> (p == NULL) <span class="tok-key">return</span> NULL;
+    p-&gt;value = v;
+    p-&gt;left = NULL;
+    p-&gt;right = NULL;
+    <span class="tok-key">return</span> p;
+}
+
+TreeNode *<span class="tok-fn">build_tree</span>(<span class="tok-type">void</span>) {
+    TreeNode *n1 = <span class="tok-fn">new_node</span>(<span class="tok-num">1</span>);
+    TreeNode *n2 = <span class="tok-fn">new_node</span>(<span class="tok-num">2</span>);
+    TreeNode *n3 = <span class="tok-fn">new_node</span>(<span class="tok-num">3</span>);
+    TreeNode *n4 = <span class="tok-fn">new_node</span>(<span class="tok-num">4</span>);
+    TreeNode *n5 = <span class="tok-fn">new_node</span>(<span class="tok-num">5</span>);
+    TreeNode *n6 = <span class="tok-fn">new_node</span>(<span class="tok-num">6</span>);
+
+    <span class="tok-key">if</span> (n1 == NULL || n2 == NULL || n3 == NULL ||
+        n4 == NULL || n5 == NULL || n6 == NULL) {
+        <span class="tok-key">return</span> NULL;
+    }
+
+    n1-&gt;left = n2;
+    n1-&gt;right = n3;
+    n2-&gt;left = n4;
+    n2-&gt;right = n5;
+    n3-&gt;right = n6;
+    <span class="tok-key">return</span> n1;
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">level_order</span>(TreeNode *root) {
+    TreeNode *<span class="tok-type">queue</span>[<span class="tok-num">32</span>];
+    <span class="tok-type">int</span> head = <span class="tok-num">0</span>, tail = <span class="tok-num">0</span>;
+
+    <span class="tok-key">if</span> (root != NULL) <span class="tok-type">queue</span>[tail++] = root;
+
+    <span class="tok-key">while</span> (head &lt; tail) {
+        TreeNode *p = <span class="tok-type">queue</span>[head++];
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;%d &quot;</span>, p-&gt;value);
+
+        <span class="tok-key">if</span> (p-&gt;left != NULL) <span class="tok-type">queue</span>[tail++] = p-&gt;left;
+        <span class="tok-key">if</span> (p-&gt;right != NULL) <span class="tok-type">queue</span>[tail++] = p-&gt;right;
+    }
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+}
+
+<span class="tok-type">void</span> <span class="tok-fn">free_tree</span>(TreeNode *root) {
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span>;
+    <span class="tok-fn">free_tree</span>(root-&gt;left);
+    <span class="tok-fn">free_tree</span>(root-&gt;right);
+    <span class="tok-fn">free</span>(root);
+}
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    TreeNode *root = <span class="tok-fn">build_tree</span>();
+    <span class="tok-key">if</span> (root == NULL) <span class="tok-key">return</span> <span class="tok-num">1</span>;
+
+    <span class="tok-fn">printf</span>(<span class="tok-str">&quot;层序：&quot;</span>);
+    <span class="tok-fn">level_order</span>(root);
+
+    <span class="tok-fn">free_tree</span>(root);
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>层序：1 2 3 4 5 6</pre></div><p>思路就三步：根入队；每次弹出一个结点，打印它；把它的左孩子、右孩子依次入队。队列先进先出，所以第 0 层的 1 出去以后，第 1 层的 2、3 排在队里；等 2、3 都处理完，第 2 层的 4、5、6 才轮到。一层一层，自动就分好了。</p><p>这个套路很值钱：第 8 课的堆，就是按层序把完全二叉树塞进数组；第 10 课的图，BFS 也是同一个骨架，只是把「两个孩子」换成了「所有邻居」。</p><h2 id="sec-7">6.7 两个常见误解<i class="anchor">#</i></h2><p>第一个误解：二叉树就是二叉搜索树。不是。6.1 那棵树只是长成了二叉树的样子，没有任何排序性质。它左子树的值不一定比根小，右子树也不一定比根大。二叉搜索树是在二叉树的基础上<strong>再加一条规矩</strong>，第 7 课讲。</p><p>第二个误解：树只能用指针存。完全二叉树就可以用数组存，而且更省事。把结点按层序编号，从 0 开始，下标 <code>i</code> 的结点，左孩子是 <code>2i+1</code>，右孩子是 <code>2i+2</code>，父亲是 <code>(i-1)/2</code>（<code>i &gt; 0</code> 时）。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">C</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-pre">#include</span> &lt;stdio.h&gt;
+
+<span class="tok-type">int</span> <span class="tok-fn">main</span>(<span class="tok-type">void</span>) {
+    <span class="tok-type">int</span> tree[<span class="tok-num">6</span>] = {<span class="tok-num">1</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>, <span class="tok-num">4</span>, <span class="tok-num">5</span>, <span class="tok-num">6</span>};
+    <span class="tok-type">int</span> n = <span class="tok-num">6</span>;
+
+    <span class="tok-key">for</span> (<span class="tok-type">int</span> i = <span class="tok-num">0</span>; i &lt; n; i++) {
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;tree[%d] = %d&quot;</span>, i, tree[i]);
+        <span class="tok-key">if</span> (<span class="tok-num">2</span> * i + <span class="tok-num">1</span> &lt; n) <span class="tok-fn">printf</span>(<span class="tok-str">&quot;，左孩子 %d&quot;</span>, tree[<span class="tok-num">2</span> * i + <span class="tok-num">1</span>]);
+        <span class="tok-key">if</span> (<span class="tok-num">2</span> * i + <span class="tok-num">2</span> &lt; n) <span class="tok-fn">printf</span>(<span class="tok-str">&quot;，右孩子 %d&quot;</span>, tree[<span class="tok-num">2</span> * i + <span class="tok-num">2</span>]);
+        <span class="tok-fn">printf</span>(<span class="tok-str">&quot;\n&quot;</span>);
+    }
+    <span class="tok-key">return</span> <span class="tok-num">0</span>;
+}</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>tree[0] = 1，左孩子 2，右孩子 3
+tree[1] = 2，左孩子 4，右孩子 5
+tree[2] = 3，左孩子 6
+tree[3] = 4
+tree[4] = 5
+tree[5] = 6</pre></div><p>为什么非得是「完全」二叉树？因为数组中间不能空。要是树长歪了，缺的那个位置也得占着，一棵 1000 个结点的斜树可能要开 2^1000 个格子，根本不可能。完全二叉树一层填满再填下一层，中间没有洞，数组才不浪费。</p><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>写 <code>count_degree_one(TreeNode *root)</code>，统计只有一个孩子的结点个数；再写 <code>find_max(TreeNode *root)</code>，返回指向值最大结点的指针。</li><li>不用递归，用一个数组当栈实现前序遍历。提示：先把右孩子压栈，再压左孩子，这样左孩子会先出来。</li><li>写 <code>same_tree(TreeNode *a, TreeNode *b)</code>，判断两棵树的结构和每个结点的值是否完全一样。</li><li>用数组存一棵完全二叉树，写前序、中序、后序三个递归函数；再写 <code>is_max_heap</code>，判断它是不是大根堆，也就是每个父结点都大于等于它的孩子。</li></ol></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>树有一个根，每个结点最多一个父结点；二叉树每个结点最多两个孩子，用 <code>left</code> 和 <code>right</code> 表示</li><li>前序、中序、后序的区别只有一个：根在什么时候被访问</li><li>写递归遍历别在脑子里展开整棵树，相信子树已经正确</li><li>层序遍历用队列，一层一层出，这个骨架后面还会反复出现</li><li>下一课 <a href="07-bst.html">第 7 课 二叉搜索树</a>：给二叉树加一条规矩，查找就能一路砍半</li></ul></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="ds-06-tree"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../ds/05-queue.html"><span>上一章</span><b>第 5 课 队列与双端队列</b></a><a class="pager-item next" href="../ds/07-bst.html"><span>下一章</span><b>第 7 课 二叉搜索树</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">6.1 树：一个根，往下分叉</a><a class="toc-link level-2" href="#sec-2">6.2 术语：根、叶、深度、高度</a><a class="toc-link level-2" href="#sec-3">6.3 二叉树与它的 C 写法</a><a class="toc-link level-2" href="#sec-4">6.4 三种遍历：前序、中序、后序</a><a class="toc-link level-2" href="#sec-5">6.5 递归遍历怎么读：相信子树</a><a class="toc-link level-2" href="#sec-6">6.6 层序遍历：树加队列</a><a class="toc-link level-2" href="#sec-7">6.7 两个常见误解</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>
