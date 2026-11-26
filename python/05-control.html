@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 5 课 条件、循环与缩进 · Hello Sekai</title>
+<meta name="description" content="缩进划出代码块，if 做判断，for 遍历一串东西，while 转到达成条件。这一课把程序的三种基本走法讲透。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="python-05-control" data-track="python" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link is-active" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">Python</span><a class="sidebar-back" href="../python/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../python/01-hello.html" data-id="python-01-hello"><span class="side-num">01</span><span class="side-text">第 1 课 认识 Python，跑通第一个程序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/02-variables.html" data-id="python-02-variables"><span class="side-num">02</span><span class="side-text">第 2 课 变量、类型与运算</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/03-strings.html" data-id="python-03-strings"><span class="side-num">03</span><span class="side-text">第 3 课 字符串与文本处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/04-list-dict.html" data-id="python-04-list-dict"><span class="side-num">04</span><span class="side-text">第 4 课 列表、元组、字典与集合</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../python/05-control.html" data-id="python-05-control"><span class="side-num">05</span><span class="side-text">第 5 课 条件、循环与缩进</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/06-functions.html" data-id="python-06-functions"><span class="side-num">06</span><span class="side-text">第 6 课 函数与参数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/07-files-errors.html" data-id="python-07-files-errors"><span class="side-num">07</span><span class="side-text">第 7 课 文件、编码与异常处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/08-project.html" data-id="python-08-project"><span class="side-num">08</span><span class="side-text">第 8 课 常用标准库与项目实战</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/09-oop.html" data-id="python-09-oop"><span class="side-num">09</span><span class="side-text">第 9 课 类与对象：把数据和行为装进一个盒子</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/10-inheritance.html" data-id="python-10-inheritance"><span class="side-num">10</span><span class="side-text">第 10 课 继承与魔法方法：子类少写一遍，对象学会比较</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/11-modules.html" data-id="python-11-modules"><span class="side-num">11</span><span class="side-text">第 11 课 模块、包与虚拟环境：把代码拆成能互相借用的文件</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/12-regex.html" data-id="python-12-regex"><span class="side-num">12</span><span class="side-text">第 12 课 正则表达式：给文本画一张形状</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/13-stdlib.html" data-id="python-13-stdlib"><span class="side-num">13</span><span class="side-text">第 13 课 常用标准库：六个模块顶掉一半手写循环</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/14-data.html" data-id="python-14-data"><span class="side-num">14</span><span class="side-text">第 14 课 数据处理入门：从 csv 到一张班级报表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/15-net.html" data-id="python-15-net"><span class="side-num">15</span><span class="side-text">第 15 课 网络与接口：一次请求里到底装了什么</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/16-project2.html" data-id="python-16-project2"><span class="side-num">16</span><span class="side-text">第 16 课 项目：一个能测试的命令行工具</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../python/index.html">← 返回Python</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../python/index.html">Python</a> <span class="sep">/</span> <span>第 5 课 条件、循环与缩进</span></div><h1 class="doc-title">第 5 课 条件、循环与缩进</h1><div class="doc-meta"><span>预计 35 分钟</span><span class="dot">·</span><span>约 5,361 字</span><span class="dot">·</span><span>Python</span></div><article class="prose" id="article"><p>前面几课的代码都是从第一行按顺序执行到最后一行。但程序得会拐弯：分数够了才打印「及格」，一百个数要挨个处理，猜数字要一直问到猜中为止。这一课讲三件事：怎么把代码划成一组、怎么按条件选择、怎么重复执行。</p><h2 id="sec-1">5.1 缩进就是语法<i class="anchor">#</i></h2><p>Python 用缩进表示「这几行属于上面那一块」。上一行以冒号结尾，下面缩进的行就是它的地盘；缩进退回去，这一块就结束了。</p><p>看一个完整的例子：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>score = <span class="tok-num">85</span>
+
+<span class="tok-key">if</span> score &gt;= <span class="tok-num">60</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;及格了&quot;</span>)
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;分数是&quot;</span>, score)
+
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;程序结束&quot;</span>)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>及格了
+分数是 85
+程序结束</pre></div><p><code>if score &gt;= 60:</code> 末尾的冒号表示「下面是我的代码块」。紧跟着的两行 <code>print</code> 往右缩进 4 个空格，表示它们受 <code>if</code> 管，只有分数大于等于 60 才执行。最后一行退回最左边，表示它回到了外层，不管分数多少都会执行。</p><p>规矩只有两条：</p><ul><li>同一组的代码，左边必须对齐，<strong>多一个空格少一个空格都会报错</strong></li><li>下一层比上一层多缩进 4 个空格</li></ul><p>缩进错了，程序连跑都不跑，直接报 <code>IndentationError</code>。比如把上面两行 <code>print</code> 顶格写，会看到这样的报错：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">TEXT</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>    print(&quot;及格了&quot;)
+    ^^^^^
+IndentationError: expected an indented block after &#x27;if&#x27; statement on line 2</code></pre></div><p>意思是：第 2 行的 <code>if</code> 后面应该跟一个缩进的代码块，你没给。这类错误叫语法错误，Python 在运行前就检查出来了，一行都不会执行。报错信息会指到具体行号，照着改就行。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>三种写法最容易把缩进搞坏。忘了写冒号，报 <code>SyntaxError: expected &#x27;:&#x27;</code>；有的行用 Tab、有的行用空格，报 <code>TabError</code>；从网页复制代码，混进了全角空格，报 <code>IndentationError</code> 或 <code>SyntaxError: invalid character</code>。把编辑器设成「Tab 插入 4 个空格」，并且只从可信的地方复制代码。</p></div></div><div class="callout callout-tip"><div class="callout-head"><span class="callout-glyph">★</span><span>为什么缩进能当语法</span></div><div class="callout-body"><p>缩进本来就是你读代码时的视觉线索。Python 把它变成硬性规定：看到哪几行对齐，就知道它们是一组，不用再找别的标记。代价是复制粘贴时容易带错对齐，所以改完代码先扫一眼左边。</p></div></div><h2 id="sec-2">5.2 if / elif / else 与真值判断<i class="anchor">#</i></h2><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>score = <span class="tok-num">78</span>
+
+<span class="tok-key">if</span> score &gt;= <span class="tok-num">90</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;优秀&quot;</span>)
+<span class="tok-key">elif</span> score &gt;= <span class="tok-num">60</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;及格&quot;</span>)
+<span class="tok-key">else</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;不及格&quot;</span>)
+
+name = <span class="tok-str">&quot;&quot;</span>
+<span class="tok-key">if</span> name:
+    <span class="tok-bi">print</span>(f<span class="tok-str">&quot;你好，{name}&quot;</span>)
+<span class="tok-key">else</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;名字是空的&quot;</span>)
+
+nums = []
+<span class="tok-key">if</span> <span class="tok-key">not</span> nums:
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;列表是空的&quot;</span>)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>及格
+名字是空的
+列表是空的</pre></div><p><code>elif</code> 是 else if 的缩写，想写几个写几个。Python 从上往下检查，命中一个就执行那一个块，后面的全部跳过，所以顺序很重要：先写 <code>&gt;= 90</code>，再写 <code>&gt;= 60</code>。写反了，90 分以上的人也会先命中 <code>&gt;= 60</code>，一屋子全是「及格」。</p><p>条件不用括号。写成 <code>if (score &gt;= 90):</code> 也能跑，但 Python 程序员不这么写。另外 <code>=</code> 是赋值，<code>==</code> 才是比较：<code>if score = 90:</code> 会直接报 <code>SyntaxError</code>，少写一个等号在运行前就会被抓住。</p><h3 id="sec-3">真值判断<i class="anchor">#</i></h3><p>Python 里任何对象都能直接当条件，不用写 <code>&gt; 0</code> 或 <code>!= &quot;&quot;</code>。规则只有一条：<strong>空的东西、零、<code>None</code>、<code>False</code> 是假，其他都是真</strong>。</p><p>假的东西一共就这些：<code>0</code>、<code>0.0</code>、<code>&quot;&quot;</code>、<code>[]</code>、<code>()</code>、<code>{}</code>、<code>set()</code>、<code>None</code>、<code>False</code>。</p><p>所以 <code>if len(nums) &gt; 0:</code> 可以写成 <code>if nums:</code>，反过来 <code>if not nums:</code> 就是「列表是空的」。这是 Python 里最常见的写法之一，读别人代码一定会遇到。</p><p>副作用是 <code>0</code> 和 <code>&quot;&quot;</code> 也算假，所以判断 <code>None</code> 时要写 <code>if x is None:</code>，别写 <code>if not x:</code>，不然 0 会被你当成「没有值」。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p><code>if x == None:</code> 能跑，但规范写法是 <code>if x is None:</code>。<code>None</code> 全程序只有一个，用 <code>is</code> 判断身份比用 <code>==</code> 判断相等更准，也更快。</p></div></div><h2 id="sec-4">5.3 while：条件成立就一直转<i class="anchor">#</i></h2><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>total = <span class="tok-num">0</span>
+i = <span class="tok-num">1</span>
+<span class="tok-key">while</span> i &lt;= <span class="tok-num">100</span>:
+    total += i
+    i += <span class="tok-num">1</span>
+
+<span class="tok-bi">print</span>(total)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>5050</pre></div><p><code>while</code> 的流程是：先判断条件，成立就执行循环体，执行完回到条件再判断一次，直到条件不成立才往下走。上面这段把 1 到 100 加起来，<code>i</code> 从 1 开始，每轮加 1，加到 101 时条件不成立，循环结束。</p><p>循环体里一定要有让条件最终变假的动作。漏掉 <code>i += 1</code>，<code>i</code> 永远是 1，条件永远成立，程序卡在那里不动。这叫<strong>死循环</strong>，在终端里按 Ctrl+C 能强制停下。</p><p>死循环不总是错误。<code>while True:</code> 配一个 <code>break</code> 是最常见的写法：条件永远真，靠循环体里的 <code>break</code> 决定什么时候走。5.6 节的猜数字就是这种结构。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p><code>while</code> 的条件里用到的变量，一定要保证它最终会变。少写一句 <code>i += 1</code>，程序不报错，只是永远转下去。这种 bug 比报错难查得多，因为屏幕上什么提示都没有。</p></div></div><h2 id="sec-5">5.4 for 是遍历<i class="anchor">#</i></h2><p><code>for</code> 只有一个意思：<strong>把一串东西挨个拿出来</strong>。句式是 <code>for 变量 in 容器:</code>，缩进下面是循环体，读作「对于容器里的每一个 x，做下面这些事」。容器可以是列表、字符串、字典，也可以是 <code>range()</code> 造出来的一串数字。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">for</span> ch <span class="tok-key">in</span> <span class="tok-str">&quot;Python&quot;</span>:
+    <span class="tok-bi">print</span>(ch)
+
+<span class="tok-key">for</span> n <span class="tok-key">in</span> <span class="tok-bi">range</span>(<span class="tok-num">5</span>):
+    <span class="tok-bi">print</span>(n, end=<span class="tok-str">&quot; &quot;</span>)
+<span class="tok-bi">print</span>()
+
+<span class="tok-key">for</span> n <span class="tok-key">in</span> <span class="tok-bi">range</span>(<span class="tok-num">1</span>, <span class="tok-num">10</span>, <span class="tok-num">2</span>):
+    <span class="tok-bi">print</span>(n, end=<span class="tok-str">&quot; &quot;</span>)
+<span class="tok-bi">print</span>()
+
+names = [<span class="tok-str">&quot;小明&quot;</span>, <span class="tok-str">&quot;小红&quot;</span>, <span class="tok-str">&quot;小刚&quot;</span>]
+<span class="tok-key">for</span> i, name <span class="tok-key">in</span> <span class="tok-bi">enumerate</span>(names, start=<span class="tok-num">1</span>):
+    <span class="tok-bi">print</span>(f<span class="tok-str">&quot;{i}. {name}&quot;</span>)
+
+scores = [<span class="tok-num">88</span>, <span class="tok-num">95</span>, <span class="tok-num">62</span>]
+<span class="tok-key">for</span> name, score <span class="tok-key">in</span> <span class="tok-bi">zip</span>(names, scores):
+    <span class="tok-bi">print</span>(f<span class="tok-str">&quot;{name}：{score}&quot;</span>)
+
+nums = [<span class="tok-num">1</span>, <span class="tok-num">2</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>]
+<span class="tok-key">for</span> n <span class="tok-key">in</span> nums:
+    <span class="tok-key">if</span> n == <span class="tok-num">2</span>:
+        nums.<span class="tok-fn">remove</span>(n)
+<span class="tok-bi">print</span>(nums)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>P
+y
+t
+h
+o
+n
+0 1 2 3 4 
+1 3 5 7 9 
+1. 小明
+2. 小红
+3. 小刚
+小明：88
+小红：95
+小刚：62
+[1, 2, 3]</pre></div><p>逐条看：</p><ul><li><code>for ch in &quot;Python&quot;</code> 把字符串当字符序列，一次吐一个字符</li><li><code>range(5)</code> 生成 0、1、2、3、4，<strong>不含 5</strong>。想从 1 数到 5 要写 <code>range(1, 6)</code>。</li><li><code>range(1, 10, 2)</code> 的第三个参数是步长，得到 1、3、5、7、9。写 <code>range(10, 0, -1)</code> 就是倒着数。</li><li><code>enumerate(names, start=1)</code> 一次给你下标和值。别写 <code>for i in range(len(names)):</code> 再取 <code>names[i]</code>，又长又容易越界。</li><li><code>zip(names, scores)</code> 像拉链一样把两个列表对上，一次拿一对。两个列表不一样长时以短的为准，多出来的直接丢掉。</li></ul><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>别在遍历列表的时候删它的元素。看上面最后那段：本想把 2 全删掉，结果还剩下一个。<code>for n in nums:</code> 内部是按位置往后走的，你删掉一个，后面的元素全体前移，循环正好跳过它。想删就遍历副本 <code>for n in nums[:]:</code>，或者用列表推导式生成一个新列表，更干净。</p></div></div><h2 id="sec-6">5.5 跳出循环与嵌套循环<i class="anchor">#</i></h2><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">for</span> n <span class="tok-key">in</span> [<span class="tok-num">3</span>, <span class="tok-num">7</span>, <span class="tok-num">12</span>, <span class="tok-num">5</span>]:
+    <span class="tok-key">if</span> n == <span class="tok-num">12</span>:
+        <span class="tok-bi">print</span>(<span class="tok-str">&quot;找到 12，跳出&quot;</span>)
+        <span class="tok-key">break</span>
+    <span class="tok-bi">print</span>(n)
+
+<span class="tok-key">for</span> n <span class="tok-key">in</span> <span class="tok-bi">range</span>(<span class="tok-num">1</span>, <span class="tok-num">6</span>):
+    <span class="tok-key">if</span> n % <span class="tok-num">2</span> == <span class="tok-num">0</span>:
+        <span class="tok-key">continue</span>
+    <span class="tok-bi">print</span>(n, end=<span class="tok-str">&quot; &quot;</span>)
+<span class="tok-bi">print</span>()
+
+<span class="tok-key">for</span> n <span class="tok-key">in</span> <span class="tok-bi">range</span>(<span class="tok-num">1</span>, <span class="tok-num">6</span>):
+    <span class="tok-key">if</span> n == <span class="tok-num">3</span>:
+        <span class="tok-bi">print</span>(<span class="tok-str">&quot;找到 3&quot;</span>)
+        <span class="tok-key">break</span>
+<span class="tok-key">else</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;没找到 3&quot;</span>)
+
+<span class="tok-key">for</span> n <span class="tok-key">in</span> <span class="tok-bi">range</span>(<span class="tok-num">1</span>, <span class="tok-num">6</span>):
+    <span class="tok-key">if</span> n == <span class="tok-num">9</span>:
+        <span class="tok-bi">print</span>(<span class="tok-str">&quot;找到 9&quot;</span>)
+        <span class="tok-key">break</span>
+<span class="tok-key">else</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;没找到 9&quot;</span>)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>3
+7
+找到 12，跳出
+1 3 5 
+找到 3
+没找到 9</pre></div><ul><li><code>break</code> 立刻跳出<strong>最近的一层</strong>循环。两层嵌套时，它只跳出里面那层，外面的继续转。</li><li><code>continue</code> 跳过本次剩下的代码，直接进下一次。上面的例子用它只打印奇数。</li><li><code>for ... else</code> 是 Python 的一个特别设计。<code>else</code> 里的代码在循环「正常跑完」时执行；中途被 <code>break</code> 打断，就不执行。</li></ul><p><code>for ... else</code> 第一次看很反直觉，因为它和 <code>if ... else</code> 没有半点关系。把它读成「<strong>没被 break 才执行</strong>」就顺了。典型用途是查找：翻完所有元素都没找到，才说「没有」。找 9 的那个循环跑完了，<code>else</code> 执行；找 3 的那个 <code>break</code> 了，<code>else</code> 跳过。</p><h3 id="sec-7">用嵌套循环打印图形<i class="anchor">#</i></h3><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">for</span> i <span class="tok-key">in</span> <span class="tok-bi">range</span>(<span class="tok-num">1</span>, <span class="tok-num">6</span>):
+    <span class="tok-key">for</span> j <span class="tok-key">in</span> <span class="tok-bi">range</span>(i):
+        <span class="tok-bi">print</span>(<span class="tok-str">&quot;*&quot;</span>, end=<span class="tok-str">&quot;&quot;</span>)
+    <span class="tok-bi">print</span>()</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>*
+**
+***
+****
+*****</pre></div><p>外层 <code>for i in range(1, 6)</code> 管行，<code>i</code> 就是这一行该有几个星号。内层 <code>for j in range(i)</code> 负责在一行里重复打印。</p><p>两个细节：<code>print(&quot;*&quot;, end=&quot;&quot;)</code> 的 <code>end=&quot;&quot;</code> 表示打印完不换行，默认是 <code>end=&quot;\n&quot;</code>；内层结束后单独一句 <code>print()</code> 输出一个空行，也就是换行。</p><p>把 <code>range(1, 6)</code> 改成 <code>range(1, 4)</code>，三角形就矮两行。这个图形其实一行就能画：<code>print(&quot;*&quot; * i)</code>。但两层循环各管一件事，能画 <code>*</code> 拼不出来的东西，比如九九乘法表那种二维表。</p><h2 id="sec-8">5.6 完整程序：猜数字<i class="anchor">#</i></h2><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>answer = <span class="tok-num">42</span>
+count = <span class="tok-num">0</span>
+
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;我想了一个 1 到 100 之间的数，你猜。&quot;</span>)
+<span class="tok-key">while</span> <span class="tok-key">True</span>:
+    text = <span class="tok-bi">input</span>(<span class="tok-str">&quot;猜一个数（1~100）：&quot;</span>).<span class="tok-fn">strip</span>()
+    <span class="tok-key">if</span> <span class="tok-key">not</span> text.<span class="tok-fn">isdigit</span>():
+        <span class="tok-bi">print</span>(<span class="tok-str">&quot;请输入数字。&quot;</span>)
+        <span class="tok-key">continue</span>
+
+    guess = <span class="tok-bi">int</span>(text)
+    count += <span class="tok-num">1</span>
+
+    <span class="tok-key">if</span> guess &gt; answer:
+        <span class="tok-bi">print</span>(<span class="tok-str">&quot;大了&quot;</span>)
+    <span class="tok-key">elif</span> guess &lt; answer:
+        <span class="tok-bi">print</span>(<span class="tok-str">&quot;小了&quot;</span>)
+    <span class="tok-key">else</span>:
+        <span class="tok-bi">print</span>(f<span class="tok-str">&quot;对了，就是 {answer}。你猜了 {count} 次。&quot;</span>)
+        <span class="tok-key">break</span></code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>我想了一个 1 到 100 之间的数，你猜。
+猜一个数（1~100）：50
+大了
+猜一个数（1~100）：25
+小了
+猜一个数（1~100）：38
+小了
+猜一个数（1~100）：42
+对了，就是 42。你猜了 4 次。</pre></div><p>拆开看：</p><ul><li><code>answer = 42</code> 把答案写死，这样输出才固定。想变成真游戏，换成 <code>random.randint(1, 100)</code>，第 8 课讲 <code>random</code>。</li><li><code>while True:</code> 一直循环，唯一的出口是猜对时的 <code>break</code>。</li><li><code>input()</code> 拿回来的一定是字符串，<code>.strip()</code> 去掉两头空格，防止你手滑多敲一个空格。</li><li><code>.isdigit()</code> 判断是不是纯数字。不是就打印提示，然后 <code>continue</code> 重新问，这次不算次数。</li><li>三个分支处理大了、小了、对了。对的时候打印次数再 <code>break</code>，一步都不能少。</li><li><code>count</code> 在循环外面初始化。放在循环里，每轮都会被清零，永远显示 1 次。</li></ul><p>如果删掉那个 <code>break</code>，猜对之后程序还会接着问。它不报错，只是永远停不下来——这又是一个死循环的例子。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>缩进是语法，冒号加 4 个空格，别混 Tab</li><li><code>if</code> / <code>elif</code> / <code>else</code> 从上往下，命中一个就停</li><li>空列表、空字符串、0、<code>None</code> 都是假，所以 <code>if nums:</code> 就是「非空」</li><li><code>while</code> 的条件里那个变量必须最终会变，<code>while True</code> 配 <code>break</code> 才是常态</li><li><code>for</code> 是遍历，<code>range()</code> 造数字，<code>enumerate()</code> 拿下标，<code>zip()</code> 配两个列表</li><li><code>for ... else</code> 的 <code>else</code> 在没被 <code>break</code> 打断时才执行</li><li>上一课是 <a href="04-list-dict.html">第 4 课 列表、元组、字典与集合</a>，下一课 <a href="06-functions.html">第 6 课 函数与参数</a> 把重复的代码打包起来</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>把猜数字改成最多猜 5 次：5 次都没中，就告诉用户答案并结束。</li><li>读一个整数 n，打印 n 行的倒三角形：第一行 n 个星号，最后一行 1 个。</li><li>打印九九乘法表的下三角，第一行只有 <code>1x1=1</code>，第九行到 <code>9x9=81</code>。</li><li>有 <code>nums = [1, 2, 2, 3, 2]</code>，用 <code>for</code> 把里面的 2 全删掉，打印结果。先按直觉写一遍，看看少了什么，再改对。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="python-05-control"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../python/04-list-dict.html"><span>上一章</span><b>第 4 课 列表、元组、字典与集合</b></a><a class="pager-item next" href="../python/06-functions.html"><span>下一章</span><b>第 6 课 函数与参数</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">5.1 缩进就是语法</a><a class="toc-link level-2" href="#sec-2">5.2 if / elif / else 与真值判断</a><a class="toc-link level-3" href="#sec-3">真值判断</a><a class="toc-link level-2" href="#sec-4">5.3 while：条件成立就一直转</a><a class="toc-link level-2" href="#sec-5">5.4 for 是遍历</a><a class="toc-link level-2" href="#sec-6">5.5 跳出循环与嵌套循环</a><a class="toc-link level-3" href="#sec-7">用嵌套循环打印图形</a><a class="toc-link level-2" href="#sec-8">5.6 完整程序：猜数字</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

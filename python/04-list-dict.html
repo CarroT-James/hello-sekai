@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 4 课 列表、元组、字典与集合 · Hello Sekai</title>
+<meta name="description" content="四种容器一次认全：列表能改、元组不能改、字典按名字找、集合自动去重，最后用它们算一张成绩表。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="python-04-list-dict" data-track="python" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link is-active" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">Python</span><a class="sidebar-back" href="../python/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../python/01-hello.html" data-id="python-01-hello"><span class="side-num">01</span><span class="side-text">第 1 课 认识 Python，跑通第一个程序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/02-variables.html" data-id="python-02-variables"><span class="side-num">02</span><span class="side-text">第 2 课 变量、类型与运算</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/03-strings.html" data-id="python-03-strings"><span class="side-num">03</span><span class="side-text">第 3 课 字符串与文本处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../python/04-list-dict.html" data-id="python-04-list-dict"><span class="side-num">04</span><span class="side-text">第 4 课 列表、元组、字典与集合</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/05-control.html" data-id="python-05-control"><span class="side-num">05</span><span class="side-text">第 5 课 条件、循环与缩进</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/06-functions.html" data-id="python-06-functions"><span class="side-num">06</span><span class="side-text">第 6 课 函数与参数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/07-files-errors.html" data-id="python-07-files-errors"><span class="side-num">07</span><span class="side-text">第 7 课 文件、编码与异常处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/08-project.html" data-id="python-08-project"><span class="side-num">08</span><span class="side-text">第 8 课 常用标准库与项目实战</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/09-oop.html" data-id="python-09-oop"><span class="side-num">09</span><span class="side-text">第 9 课 类与对象：把数据和行为装进一个盒子</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/10-inheritance.html" data-id="python-10-inheritance"><span class="side-num">10</span><span class="side-text">第 10 课 继承与魔法方法：子类少写一遍，对象学会比较</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/11-modules.html" data-id="python-11-modules"><span class="side-num">11</span><span class="side-text">第 11 课 模块、包与虚拟环境：把代码拆成能互相借用的文件</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/12-regex.html" data-id="python-12-regex"><span class="side-num">12</span><span class="side-text">第 12 课 正则表达式：给文本画一张形状</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/13-stdlib.html" data-id="python-13-stdlib"><span class="side-num">13</span><span class="side-text">第 13 课 常用标准库：六个模块顶掉一半手写循环</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/14-data.html" data-id="python-14-data"><span class="side-num">14</span><span class="side-text">第 14 课 数据处理入门：从 csv 到一张班级报表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/15-net.html" data-id="python-15-net"><span class="side-num">15</span><span class="side-text">第 15 课 网络与接口：一次请求里到底装了什么</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/16-project2.html" data-id="python-16-project2"><span class="side-num">16</span><span class="side-text">第 16 课 项目：一个能测试的命令行工具</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../python/index.html">← 返回Python</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../python/index.html">Python</a> <span class="sep">/</span> <span>第 4 课 列表、元组、字典与集合</span></div><h1 class="doc-title">第 4 课 列表、元组、字典与集合</h1><div class="doc-meta"><span>预计 30 分钟</span><span class="dot">·</span><span>约 5,871 字</span><span class="dot">·</span><span>Python</span></div><article class="prose" id="article"><p>存一个分数，一个变量就够了；存一个班的分数，就得上容器。Python 有四种常用容器，各有各的脾气：列表像一张可以随时加行删行的清单，元组像一张写死了的卡片，字典像通讯录，集合像一个自动去重的收纳袋。选错了写起来别扭，选对了代码能短一半。这一课挨个过一遍，最后拿它们算一次成绩。</p><h2 id="sec-1">4.1 列表：能装一串东西<i class="anchor">#</i></h2><p>列表用方括号写，元素之间用逗号隔开，顺序就是它记住的顺序：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>scores = [<span class="tok-num">90</span>, <span class="tok-num">85</span>, <span class="tok-num">78</span>]
+scores.<span class="tok-fn">append</span>(<span class="tok-num">92</span>)
+scores.<span class="tok-fn">insert</span>(<span class="tok-num">0</span>, <span class="tok-num">100</span>)
+<span class="tok-bi">print</span>(scores)
+
+scores[<span class="tok-num">1</span>] = <span class="tok-num">88</span>
+<span class="tok-bi">print</span>(scores)
+
+last = scores.<span class="tok-fn">pop</span>()
+<span class="tok-bi">print</span>(last, scores)
+
+scores.<span class="tok-fn">remove</span>(<span class="tok-num">88</span>)
+<span class="tok-bi">print</span>(scores)
+
+<span class="tok-key">del</span> scores[<span class="tok-num">0</span>]
+<span class="tok-bi">print</span>(scores)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>[100, 90, 85, 78, 92]
+[100, 88, 85, 78, 92]
+92 [100, 88, 85, 78]
+[100, 85, 78]
+[85, 78]</pre></div><p>逐个说：</p><div class="table-wrap"><table><thead><tr><th>想做的事</th><th>写法</th><th>说明</th></tr></thead><tbody><tr><td>末尾加一个</td><td><code>a.append(x)</code></td><td>最常用，速度快</td></tr><tr><td>插到指定位置</td><td><code>a.insert(i, x)</code></td><td>后面元素整体往后挪</td></tr><tr><td>删末尾并取出</td><td><code>a.pop()</code></td><td>给个下标就删指定位置</td></tr><tr><td>按值删</td><td><code>a.remove(x)</code></td><td>只删第一个，找不到报 <code>ValueError</code></td></tr><tr><td>按下标删</td><td><code>del a[i]</code></td><td>不返回值</td></tr><tr><td>改</td><td><code>a[i] = x</code></td><td>下标越界报 <code>IndexError</code></td></tr><tr><td>查</td><td><code>a[i]</code>、<code>a.index(x)</code>、<code>x in a</code></td><td><code>in</code> 返回 True 或 False</td></tr></tbody></table></div><p><code>insert(0, 100)</code> 插到最前面，后面的 90、85、78 全体右移；<code>pop()</code> 把最后那个 92 摘下来交给你，列表跟着少一个。这些操作不用你操心容量：列表长度不是提前定死的，加一个元素它就长一格。</p><p>列表不要求元素同类型：<code>[1, &quot;two&quot;, 3.0, True]</code> 完全合法。元素本身也可以是列表，形成嵌套，比如 <code>[[1, 2], [3, 4]]</code> 就是一张两行两列的表。</p><p>有个细节要提前说：<code>append()</code>、<code>insert()</code>、<code>remove()</code> 这些方法<strong>返回值都是 <code>None</code></strong>，它们改的是列表本身。写 <code>scores = scores.append(92)</code>，<code>scores</code> 会变成 <code>None</code>，后面再取下标就报 <code>TypeError</code>。要加就直接写 <code>scores.append(92)</code>，别接返回值。</p><p>但列表是可变对象，第 2 课讲的「标签」模型到这儿开始咬人：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>a = [<span class="tok-num">1</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>]
+b = a
+b.<span class="tok-fn">append</span>(<span class="tok-num">4</span>)
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;a =&quot;</span>, a)
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;b =&quot;</span>, b)
+
+c = a[:]
+c.<span class="tok-fn">append</span>(<span class="tok-num">5</span>)
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;a =&quot;</span>, a)
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;c =&quot;</span>, c)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>a = [1, 2, 3, 4]
+b = [1, 2, 3, 4]
+a = [1, 2, 3, 4]
+c = [1, 2, 3, 4, 5]</pre></div><p><code>b = a</code> 没有复制列表，只是给同一个列表又贴了一张标签，所以改 b 就是改 a，第一行打印 a 也能看到 4。<code>c = a[:]</code> 才是真复制，切片不带起点终点就是整个列表的副本；等价的写法还有 <code>a.copy()</code>。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>看到 <code>b = a</code> 就以为复制了，是初学阶段最贵的错觉。判断标准很简单：赋值号右边是在造新对象，还是指向同一个对象。数字、字符串不可变，怎么指都安全；列表、字典、集合可变，共享迟早出事。要拿一份副本随便改，又不想影响原表，先 <code>a[:]</code> 或 <code>a.copy()</code>。</p></div></div><h2 id="sec-2">4.2 sort()、sorted() 和切片<i class="anchor">#</i></h2><p>排序有两种写法，区别就一条：改不改自己。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>nums = [<span class="tok-num">3</span>, <span class="tok-num">1</span>, <span class="tok-num">4</span>, <span class="tok-num">1</span>, <span class="tok-num">5</span>]
+<span class="tok-bi">print</span>(<span class="tok-bi">sorted</span>(nums))
+<span class="tok-bi">print</span>(nums)
+
+nums.<span class="tok-fn">sort</span>()
+<span class="tok-bi">print</span>(nums)
+<span class="tok-bi">print</span>(<span class="tok-bi">sorted</span>(nums, reverse=<span class="tok-key">True</span>))
+
+<span class="tok-bi">print</span>(nums[<span class="tok-num">1</span>:<span class="tok-num">4</span>])
+<span class="tok-bi">print</span>(nums[:<span class="tok-num">2</span>])
+<span class="tok-bi">print</span>(nums[-<span class="tok-num">2</span>:])
+<span class="tok-bi">print</span>(nums[::-<span class="tok-num">1</span>])</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>[1, 1, 3, 4, 5]
+[3, 1, 4, 1, 5]
+[1, 1, 3, 4, 5]
+[5, 4, 3, 1, 1]
+[1, 3, 4]
+[1, 1]
+[4, 5]
+[5, 4, 3, 1, 1]</pre></div><ul><li><code>sorted(nums)</code> 返回排好的新列表，原表一个不动</li><li><code>nums.sort()</code> 原地排自己，<strong>返回值是 None</strong></li><li><code>reverse=True</code> 从大到小</li><li>切片规则和第 3 课字符串一模一样：含头不含尾，负下标从右数，<code>nums[::-1]</code> 是反转后的副本</li></ul><p><code>sort</code> 不返回值这件事，坑过无数人。写成 <code>nums = nums.sort()</code>，<code>nums</code> 立刻变成 <code>None</code>，后面再 <code>nums[0]</code> 就报 <code>TypeError</code>。要新表就用 <code>sorted(nums)</code>，要原地就单独写一行 <code>nums.sort()</code>，别接返回值。</p><p>排序还能给 <code>key</code>：<code>sorted(names, key=len)</code> 按字符串长度排。这个参数后面配函数用，第 6 课再说。</p><h2 id="sec-3">4.3 元组：不想被改就用它<i class="anchor">#</i></h2><p>元组就是不可变版的列表，用圆括号写：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>point = (<span class="tok-num">3</span>, <span class="tok-num">5</span>)
+<span class="tok-bi">print</span>(point[<span class="tok-num">0</span>], point[<span class="tok-num">1</span>])
+
+x, y = point
+<span class="tok-bi">print</span>(x, y)
+
+a, b = <span class="tok-num">1</span>, <span class="tok-num">2</span>
+a, b = b, a
+<span class="tok-bi">print</span>(a, b)
+
+<span class="tok-bi">print</span>(<span class="tok-bi">type</span>((<span class="tok-num">42</span>)), <span class="tok-bi">type</span>((<span class="tok-num">42</span>,)))</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>3 5
+3 5
+2 1
+&lt;class &#x27;int&#x27;&gt; &lt;class &#x27;tuple&#x27;&gt;</pre></div><p><code>point[0] = 9</code> 会报 <code>TypeError</code>，和字符串一个道理。不能改反而带来两个好处：元组能当字典的键（列表不行），以及别人拿到它也没法改，适合表示「一组成对的数据」，比如坐标、颜色值、数据库的一行记录。</p><p>括号其实能省，<code>point = 3, 5</code> 也是元组，逗号才是关键。这也解释了最后一行：<code>(42)</code> 只是给 42 加了层括号，类型还是 int；一个元素的元组必须写成 <code>(42,)</code>，那个逗号不能丢。</p><p>解包是元组最舒服的地方。<code>x, y = point</code> 一次取出两个值，<code>a, b = b, a</code> 一行交换两个变量，不用开临时变量。注意等号右边的 <code>b, a</code> 会先组成一个元组，再按顺序拆给左边，所以交换是安全的。</p><h2 id="sec-4">4.4 字典：按名字找值<i class="anchor">#</i></h2><p>列表按下标找，字典按键找。键值对的写法是 <code>{键: 值}</code>：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>student = {<span class="tok-str">&quot;name&quot;</span>: <span class="tok-str">&quot;小明&quot;</span>, <span class="tok-str">&quot;age&quot;</span>: <span class="tok-num">18</span>, <span class="tok-str">&quot;score&quot;</span>: <span class="tok-num">91.5</span>}
+<span class="tok-bi">print</span>(student[<span class="tok-str">&quot;name&quot;</span>])
+<span class="tok-bi">print</span>(student.<span class="tok-fn">get</span>(<span class="tok-str">&quot;age&quot;</span>))
+<span class="tok-bi">print</span>(student.<span class="tok-fn">get</span>(<span class="tok-str">&quot;phone&quot;</span>))
+<span class="tok-bi">print</span>(student.<span class="tok-fn">get</span>(<span class="tok-str">&quot;phone&quot;</span>, <span class="tok-str">&quot;未填写&quot;</span>))
+
+student[<span class="tok-str">&quot;age&quot;</span>] = <span class="tok-num">19</span>
+student[<span class="tok-str">&quot;city&quot;</span>] = <span class="tok-str">&quot;杭州&quot;</span>
+<span class="tok-bi">print</span>(student)
+<span class="tok-bi">print</span>(<span class="tok-bi">len</span>(student))
+
+scores = {<span class="tok-str">&quot;语文&quot;</span>: [<span class="tok-num">90</span>, <span class="tok-num">85</span>], <span class="tok-str">&quot;数学&quot;</span>: [<span class="tok-num">95</span>, <span class="tok-num">88</span>]}
+<span class="tok-key">for</span> subject, marks <span class="tok-key">in</span> scores.<span class="tok-fn">items</span>():
+    <span class="tok-bi">print</span>(subject, <span class="tok-str">&quot;平均&quot;</span>, (marks[<span class="tok-num">0</span>] + marks[<span class="tok-num">1</span>]) / <span class="tok-num">2</span>)
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;语文第一次：&quot;</span>, scores[<span class="tok-str">&quot;语文&quot;</span>][<span class="tok-num">0</span>])</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>小明
+18
+None
+未填写
+{&#x27;name&#x27;: &#x27;小明&#x27;, &#x27;age&#x27;: 19, &#x27;score&#x27;: 91.5, &#x27;city&#x27;: &#x27;杭州&#x27;}
+4
+语文 平均 87.5
+数学 平均 91.5
+语文第一次： 90</pre></div><p><code>[]</code> 和 <code>get()</code> 的区别必须记牢：<code>student[&quot;phone&quot;]</code> 取不到会抛 <code>KeyError</code>，程序直接挂；<code>student.get(&quot;phone&quot;)</code> 取不到返回 <code>None</code>，给第二个参数就返回那个默认值。<strong>拿不准键在不在，就用 <code>get()</code>。</strong></p><p>赋值是「有则改、无则加」：<code>student[&quot;age&quot;] = 19</code> 改了已有的键，<code>student[&quot;city&quot;] = &quot;杭州&quot;</code> 新增了一个。删除用 <code>del student[&quot;age&quot;]</code> 或 <code>student.pop(&quot;age&quot;)</code>。字典从 3.7 起保持插入顺序，所以打印出来是 name、age、score、city 排着队。</p><p>键必须是不可变类型，字符串、数字、元组都行，列表不行。值什么都能放，包括列表和另一个字典，这就是「嵌套」。成绩表 <code>{&quot;语文&quot;: [90, 85], &quot;数学&quot;: [95, 88]}</code> 就是字典套列表，取语文的第一次成绩写 <code>scores[&quot;语文&quot;][0]</code>，从外往里一层层剥。</p><p>中间那个 <code>for subject, marks in scores.items()</code> 是循环，第 5 课正式讲。现在只要看明白：<code>items()</code> 把每对键值拆成 <code>subject</code> 和 <code>marks</code> 两个变量，缩进里那一行对每一对执行一次。<code>keys()</code> 只拿键，<code>values()</code> 只拿值。</p><h2 id="sec-5">4.5 集合与列表推导式<i class="anchor">#</i></h2><p>集合（set）只有一条铁律：不许重复。拿它去重最省事：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>nums = [<span class="tok-num">3</span>, <span class="tok-num">1</span>, <span class="tok-num">3</span>, <span class="tok-num">1</span>, <span class="tok-num">5</span>, <span class="tok-num">5</span>]
+unique = <span class="tok-bi">set</span>(nums)
+<span class="tok-bi">print</span>(<span class="tok-bi">len</span>(unique), <span class="tok-bi">sorted</span>(unique))
+
+a = {<span class="tok-num">1</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>, <span class="tok-num">4</span>}
+b = {<span class="tok-num">3</span>, <span class="tok-num">4</span>, <span class="tok-num">5</span>}
+<span class="tok-bi">print</span>(<span class="tok-bi">sorted</span>(a &amp; b))
+<span class="tok-bi">print</span>(<span class="tok-bi">sorted</span>(a | b))
+<span class="tok-bi">print</span>(<span class="tok-bi">sorted</span>(a - b))
+
+squares = [x * x <span class="tok-key">for</span> x <span class="tok-key">in</span> <span class="tok-bi">range</span>(<span class="tok-num">10</span>)]
+<span class="tok-bi">print</span>(squares)
+<span class="tok-bi">print</span>([x <span class="tok-key">for</span> x <span class="tok-key">in</span> <span class="tok-bi">range</span>(<span class="tok-num">10</span>) <span class="tok-key">if</span> x % <span class="tok-num">2</span> == <span class="tok-num">0</span>])
+names = [<span class="tok-str">&quot;amy&quot;</span>, <span class="tok-str">&quot;bob&quot;</span>, <span class="tok-str">&quot;cindy&quot;</span>]
+<span class="tok-bi">print</span>([n.<span class="tok-fn">upper</span>() <span class="tok-key">for</span> n <span class="tok-key">in</span> names])</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>3 [1, 3, 5]
+[3, 4]
+[1, 2, 3, 4, 5]
+[1, 2]
+[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+[0, 2, 4, 6, 8]
+[&#x27;AMY&#x27;, &#x27;BOB&#x27;, &#x27;CINDY&#x27;]</pre></div><p>集合用花括号写，但 <code>{}</code> 是空字典，空集合必须写 <code>set()</code>。集合无序，打印顺序不保证，所以想看有序结果就 <code>sorted()</code> 一下。<code>&amp;</code> 交集、<code>|</code> 并集、<code>-</code> 差集，<code>in</code> 判断成员几乎瞬间完成，这是它比列表强的地方。</p><p>最后几行是列表推导式，写法是 <code>[表达式 for 变量 in 序列]</code>。读法是从左往右：拿 <code>range(10)</code> 里的每个 x，算 <code>x * x</code>，把结果收成一个新列表。<code>range(10)</code> 给出 0 到 9，<strong>不含 10</strong>，这是新手最容易差一位的地方。</p><p>带 <code>if</code> 的版本是先筛再用：只有 <code>x % 2 == 0</code> 的 x 才会被算进去。<code>if</code> 第 5 课讲，这里先照着写。</p><div class="callout callout-tip"><div class="callout-head"><span class="callout-glyph">★</span><span>值和代价</span></div><div class="callout-body"><p>推导式省的是行数，不是脑子。一层加个 <code>if</code> 挺好读，套两层就开始难懂了，三层基本没人愿意看。规则很土：写完自己也看不懂，就拆回普通循环。</p></div></div><h2 id="sec-6">4.6 完整程序：算平均分、找最高分<i class="anchor">#</i></h2><p>一组成绩，要人数、总分、平均分、最高最低、排名、不及格人数。用今天学的凑一凑：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>scores = [<span class="tok-num">72</span>, <span class="tok-num">88</span>, <span class="tok-num">95</span>, <span class="tok-num">55</span>, <span class="tok-num">79</span>, <span class="tok-num">88</span>]
+
+total = <span class="tok-bi">sum</span>(scores)
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;人数：&quot;</span>, <span class="tok-bi">len</span>(scores))
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;总分：&quot;</span>, total)
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;平均分：&quot;</span>, <span class="tok-bi">round</span>(total / <span class="tok-bi">len</span>(scores), <span class="tok-num">1</span>))
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;最高分：&quot;</span>, <span class="tok-bi">max</span>(scores))
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;最低分：&quot;</span>, <span class="tok-bi">min</span>(scores))
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;从高到低：&quot;</span>, <span class="tok-bi">sorted</span>(scores, reverse=<span class="tok-key">True</span>))
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;前三名：&quot;</span>, <span class="tok-bi">sorted</span>(scores, reverse=<span class="tok-key">True</span>)[:<span class="tok-num">3</span>])
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;不及格人数：&quot;</span>, <span class="tok-bi">len</span>([s <span class="tok-key">for</span> s <span class="tok-key">in</span> scores <span class="tok-key">if</span> s &lt; <span class="tok-num">60</span>]))
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;去重后：&quot;</span>, <span class="tok-bi">sorted</span>(<span class="tok-bi">set</span>(scores)))</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>人数： 6
+总分： 477
+平均分： 79.5
+最高分： 95
+最低分： 55
+从高到低： [95, 88, 88, 79, 72, 55]
+前三名： [95, 88, 88]
+不及格人数： 1
+去重后： [55, 72, 79, 88, 95]</pre></div><p>逐行拆：</p><ul><li><code>sum()</code>、<code>max()</code>、<code>min()</code> 是内置函数，直接吃列表，不用自己写循环</li><li><code>round(x, 1)</code> 保留一位小数；这里 477 除以 6 本来就不是整数，所以得留一位</li><li><code>sorted(scores, reverse=True)</code> 返回新表，所以原表还在，后面几行还能继续用</li><li><code>[:3]</code> 在排好的表上切前三个，链式写法很常见</li><li><code>len([s for s in scores if s &lt; 60])</code> 是「先筛出不及格的，再数个数」，比写循环加计数器短</li><li>最后一行 <code>sorted(set(scores))</code> 里，<code>set</code> 去重、<code>sorted</code> 排序，两次转身拿到一张不重复的成绩表</li></ul><p>注意 <code>scores</code> 从头到尾没被改过。这个习惯值得养：需要新结果就让它进新变量，别在原数据上反复动刀。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>list 可变：<code>append</code>、<code>insert</code>、<code>pop</code>、<code>remove</code>、<code>del</code>，下标从 0 起，切片和字符串一样</li><li><code>b = a</code> 不复制列表，<code>a[:]</code> 或 <code>a.copy()</code> 才复制</li><li><code>sorted()</code> 给新表，<code>sort()</code> 改自己且返回 <code>None</code></li><li>tuple 不可变，能当字典键，解包和交换变量最好用</li><li>dict 用 <code>get()</code> 拿不准的键，<code>[]</code> 取不到会 <code>KeyError</code>；<code>items()</code> 拆键值对</li><li>set 自动去重，<code>&amp;</code>、<code>|</code>、<code>-</code> 玩交并差</li><li>推导式 <code>[表达式 for 变量 in 序列]</code>，带 <code>if</code> 就是先筛后算</li><li>上一课是 <a href="03-strings.html">第 3 课 字符串与文本处理</a>；下一课 <a href="05-control.html">第 5 课 条件、循环与缩进</a>，<code>for</code> 正式登场，字典和列表的遍历就靠它</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>用 <code>range(1, 11)</code> 和列表推导式，生成 1 到 10 每个数的平方组成的列表。</li><li>给一个名字列表，去掉重复并排好序；再单独输出长度大于 4 的那些名字。</li><li>用字典存三个人的成绩，输出每个人的名字和分数。然后用 <code>[]</code> 和 <code>get()</code> 分别取一个不存在的键，把两次结果都看一遍。</li><li>有一组成绩，输出平均分、最高分和不及格人数，不许用 <code>for</code>，只能用 <code>sum</code>、<code>max</code>、<code>len</code> 和推导式。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="python-04-list-dict"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../python/03-strings.html"><span>上一章</span><b>第 3 课 字符串与文本处理</b></a><a class="pager-item next" href="../python/05-control.html"><span>下一章</span><b>第 5 课 条件、循环与缩进</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">4.1 列表：能装一串东西</a><a class="toc-link level-2" href="#sec-2">4.2 sort()、sorted() 和切片</a><a class="toc-link level-2" href="#sec-3">4.3 元组：不想被改就用它</a><a class="toc-link level-2" href="#sec-4">4.4 字典：按名字找值</a><a class="toc-link level-2" href="#sec-5">4.5 集合与列表推导式</a><a class="toc-link level-2" href="#sec-6">4.6 完整程序：算平均分、找最高分</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

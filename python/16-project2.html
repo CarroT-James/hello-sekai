@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 16 课 项目：一个能测试的命令行工具 · Hello Sekai</title>
+<meta name="description" content="用 argparse 收参数，把逻辑拆成能单独测的模块，再用 unittest 给自己上保险。写完就有个能交付的小项目。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="python-16-project2" data-track="python" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link is-active" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">Python</span><a class="sidebar-back" href="../python/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../python/01-hello.html" data-id="python-01-hello"><span class="side-num">01</span><span class="side-text">第 1 课 认识 Python，跑通第一个程序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/02-variables.html" data-id="python-02-variables"><span class="side-num">02</span><span class="side-text">第 2 课 变量、类型与运算</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/03-strings.html" data-id="python-03-strings"><span class="side-num">03</span><span class="side-text">第 3 课 字符串与文本处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/04-list-dict.html" data-id="python-04-list-dict"><span class="side-num">04</span><span class="side-text">第 4 课 列表、元组、字典与集合</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/05-control.html" data-id="python-05-control"><span class="side-num">05</span><span class="side-text">第 5 课 条件、循环与缩进</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/06-functions.html" data-id="python-06-functions"><span class="side-num">06</span><span class="side-text">第 6 课 函数与参数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/07-files-errors.html" data-id="python-07-files-errors"><span class="side-num">07</span><span class="side-text">第 7 课 文件、编码与异常处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/08-project.html" data-id="python-08-project"><span class="side-num">08</span><span class="side-text">第 8 课 常用标准库与项目实战</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/09-oop.html" data-id="python-09-oop"><span class="side-num">09</span><span class="side-text">第 9 课 类与对象：把数据和行为装进一个盒子</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/10-inheritance.html" data-id="python-10-inheritance"><span class="side-num">10</span><span class="side-text">第 10 课 继承与魔法方法：子类少写一遍，对象学会比较</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/11-modules.html" data-id="python-11-modules"><span class="side-num">11</span><span class="side-text">第 11 课 模块、包与虚拟环境：把代码拆成能互相借用的文件</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/12-regex.html" data-id="python-12-regex"><span class="side-num">12</span><span class="side-text">第 12 课 正则表达式：给文本画一张形状</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/13-stdlib.html" data-id="python-13-stdlib"><span class="side-num">13</span><span class="side-text">第 13 课 常用标准库：六个模块顶掉一半手写循环</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/14-data.html" data-id="python-14-data"><span class="side-num">14</span><span class="side-text">第 14 课 数据处理入门：从 csv 到一张班级报表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/15-net.html" data-id="python-15-net"><span class="side-num">15</span><span class="side-text">第 15 课 网络与接口：一次请求里到底装了什么</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../python/16-project2.html" data-id="python-16-project2"><span class="side-num">16</span><span class="side-text">第 16 课 项目：一个能测试的命令行工具</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../python/index.html">← 返回Python</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../python/index.html">Python</a> <span class="sep">/</span> <span>第 16 课 项目：一个能测试的命令行工具</span></div><h1 class="doc-title">第 16 课 项目：一个能测试的命令行工具</h1><div class="doc-meta"><span>预计 35 分钟</span><span class="dot">·</span><span>约 7,694 字</span><span class="dot">·</span><span>Python</span></div><article class="prose" id="article"><p>前面十五课的代码，基本都是「写完，跑一遍，看着对，收工」。</p><p>我也这么干过很久。改一行、手动点一遍、再改一行、再点一遍，一个下午就没了。更惨的是改完 A 功能，B 功能悄悄坏了，你三天后才发现。这一课把这两件事一起解决：用 <code>argparse</code> 把参数收干净，用 <code>unittest</code> 让机器替你点。</p><h2 id="sec-1">16.1 需求与结构<i class="anchor">#</i></h2><p>做一个极简待办工具，四条命令：加一条、列出来、标完成、看统计。数据存 <code>todo.json</code>。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">TEXT</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>todo/
+  __init__.py
+  core.py
+  cli.py
+tests/
+  test_core.py</code></pre></div><p>四个文件分工明确：</p><ul><li><code>core.py</code> 管数据和规则，不知道有命令行这回事</li><li><code>cli.py</code> 管参数解析和读写文件</li><li><code>test_core.py</code> 只测 <code>core</code></li><li><code>__init__.py</code> 让 <code>todo</code> 成为一个包</li></ul><p>最关键的一条：<code>core.py</code> 绝对不许 <code>import cli</code>。依赖只能单向，<code>cli</code> 依赖 <code>core</code>。这样 <code>core</code> 才能被测试、被脚本、被将来的网页后端复用。</p><p>写的时候顺序反着来：先把 <code>core.py</code> 写完、测通，再写 <code>cli.py</code>。<code>core</code> 不依赖任何东西，可以边写边在交互式环境里试；<code>cli</code> 依赖 <code>core</code>，反过来就卡住。这个坑我踩过——先写界面后写逻辑，最后发现逻辑根本没法单独测，只能推倒重来。</p><h2 id="sec-2">16.2 核心逻辑：core.py<i class="anchor">#</i></h2><p>这个文件里只有数据结构和规则，没有任何输入输出：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-str">&quot;&quot;&quot;核心逻辑，跟命令行、文件都无关。&quot;&quot;&quot;</span>
+<span class="tok-key">from</span> dataclasses <span class="tok-key">import</span> dataclass, field
+
+
+<span class="tok-pre">@dataclass</span>
+<span class="tok-key">class</span> Task:
+    title: <span class="tok-bi">str</span>
+    done: <span class="tok-bi">bool</span> = <span class="tok-key">False</span>
+
+
+<span class="tok-pre">@dataclass</span>
+<span class="tok-key">class</span> TodoList:
+    tasks: <span class="tok-bi">list</span> = <span class="tok-fn">field</span>(default_factory=<span class="tok-bi">list</span>)
+
+    <span class="tok-key">def</span> <span class="tok-fn">add</span>(self, title):
+        title = title.<span class="tok-fn">strip</span>()
+        <span class="tok-key">if</span> <span class="tok-key">not</span> title:
+            <span class="tok-key">raise</span> <span class="tok-fn">ValueError</span>(<span class="tok-str">&quot;待办内容不能为空&quot;</span>)
+        self.tasks.<span class="tok-fn">append</span>(<span class="tok-fn">Task</span>(title))
+        <span class="tok-key">return</span> self.tasks[-<span class="tok-num">1</span>]
+
+    <span class="tok-key">def</span> <span class="tok-fn">complete</span>(self, index):
+        <span class="tok-key">if</span> <span class="tok-key">not</span> <span class="tok-num">1</span> &lt;= index &lt;= <span class="tok-bi">len</span>(self.tasks):
+            <span class="tok-key">raise</span> <span class="tok-fn">IndexError</span>(f<span class="tok-str">&quot;没有第 {index} 条待办&quot;</span>)
+        self.tasks[index - <span class="tok-num">1</span>].done = <span class="tok-key">True</span>
+
+    <span class="tok-key">def</span> <span class="tok-fn">pending</span>(self):
+        <span class="tok-key">return</span> [t <span class="tok-key">for</span> t <span class="tok-key">in</span> self.tasks <span class="tok-key">if</span> <span class="tok-key">not</span> t.done]
+
+    <span class="tok-key">def</span> <span class="tok-fn">stats</span>(self):
+        total = <span class="tok-bi">len</span>(self.tasks)
+        finished = total - <span class="tok-bi">len</span>(self.<span class="tok-fn">pending</span>())
+        <span class="tok-key">return</span> {<span class="tok-str">&quot;总数&quot;</span>: total, <span class="tok-str">&quot;完成&quot;</span>: finished, <span class="tok-str">&quot;未完成&quot;</span>: total - finished}</code></pre></div><p><code>Task</code> 和 <code>TodoList</code> 都是 <code>@dataclass</code>，<a href="10-inheritance.html">第 10 课</a> 学的，这里正好用上：字段少、纯装数据，手写 <code>__init__</code> 和 <code>__repr__</code> 是浪费。</p><p><code>add</code> 和 <code>complete</code> 都在做「守卫」：<code>add</code> 不许空内容，<code>complete</code> 不许越界。非法输入就在这里抛异常，别让它流到后面变成一条脏数据。守卫越靠前，后面要检查的地方越少。</p><p>注意这个文件里<strong>没有 <code>print</code>，也没有 <code>open</code></strong>。不是洁癖，是为了能测。打印和读写文件都是副作用（除了算结果，还动了外面的东西），混进逻辑里，测试就得去抓屏幕输出、去造临时文件，麻烦十倍。</p><p><code>complete</code> 用的是从 1 开始的下标，因为用户看到的是「第 1 条」。内部列表从 0 开始，转换在 <code>self.tasks[index - 1]</code> 这一下完成。让用户从 1 数，是命令行工具的惯例。</p><p><code>stats</code> 里用 <code>total - len(self.pending())</code> 算完成数，不再遍历一遍。这样「什么叫未完成」只有 <code>pending</code> 一处定义，将来加个「已归档」状态也只改它。</p><h2 id="sec-3">16.3 命令行：argparse<i class="anchor">#</i></h2><p>命令行参数就是空格分开的几个词：<code>todo add 买牛奶</code> 里，<code>todo</code> 是程序，<code>add</code> 是子命令，<code>买牛奶</code> 是内容。<code>argparse</code> 帮你把这些词分好类，还顺手生成帮助页：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-str">&quot;&quot;&quot;命令行入口：解析参数，调用 core，读写文件。&quot;&quot;&quot;</span>
+<span class="tok-key">import</span> argparse
+<span class="tok-key">import</span> json
+<span class="tok-key">from</span> pathlib <span class="tok-key">import</span> Path
+
+<span class="tok-key">from</span> todo.core <span class="tok-key">import</span> TodoList
+
+DATA = <span class="tok-fn">Path</span>(<span class="tok-str">&quot;todo.json&quot;</span>)
+
+
+<span class="tok-key">def</span> <span class="tok-fn">load</span>(path=DATA):
+    todo = <span class="tok-fn">TodoList</span>()
+    <span class="tok-key">if</span> path.<span class="tok-fn">exists</span>():
+        data = json.<span class="tok-fn">loads</span>(path.<span class="tok-fn">read_text</span>(encoding=<span class="tok-str">&quot;utf-8&quot;</span>))
+        <span class="tok-key">for</span> item <span class="tok-key">in</span> data:
+            task = todo.<span class="tok-fn">add</span>(item[<span class="tok-str">&quot;title&quot;</span>])
+            task.done = item[<span class="tok-str">&quot;done&quot;</span>]
+    <span class="tok-key">return</span> todo
+
+
+<span class="tok-key">def</span> <span class="tok-fn">save</span>(todo, path=DATA):
+    data = [{<span class="tok-str">&quot;title&quot;</span>: t.title, <span class="tok-str">&quot;done&quot;</span>: t.done} <span class="tok-key">for</span> t <span class="tok-key">in</span> todo.tasks]
+    path.<span class="tok-fn">write_text</span>(json.<span class="tok-fn">dumps</span>(data, ensure_ascii=<span class="tok-key">False</span>, indent=<span class="tok-num">2</span>), encoding=<span class="tok-str">&quot;utf-8&quot;</span>)
+
+
+<span class="tok-key">def</span> <span class="tok-fn">build_parser</span>():
+    parser = argparse.<span class="tok-fn">ArgumentParser</span>(description=<span class="tok-str">&quot;极简待办工具&quot;</span>)
+    sub = parser.<span class="tok-fn">add_subparsers</span>(dest=<span class="tok-str">&quot;command&quot;</span>, required=<span class="tok-key">True</span>)
+
+    add = sub.<span class="tok-fn">add_parser</span>(<span class="tok-str">&quot;add&quot;</span>, help=<span class="tok-str">&quot;加一条待办&quot;</span>)
+    add.<span class="tok-fn">add_argument</span>(<span class="tok-str">&quot;title&quot;</span>, help=<span class="tok-str">&quot;待办内容&quot;</span>)
+
+    sub.<span class="tok-fn">add_parser</span>(<span class="tok-str">&quot;list&quot;</span>, help=<span class="tok-str">&quot;列出全部待办&quot;</span>)
+    sub.<span class="tok-fn">add_parser</span>(<span class="tok-str">&quot;stats&quot;</span>, help=<span class="tok-str">&quot;看统计&quot;</span>)
+
+    done = sub.<span class="tok-fn">add_parser</span>(<span class="tok-str">&quot;done&quot;</span>, help=<span class="tok-str">&quot;把第几条标记为完成&quot;</span>)
+    done.<span class="tok-fn">add_argument</span>(<span class="tok-str">&quot;index&quot;</span>, <span class="tok-bi">type</span>=<span class="tok-bi">int</span>)
+
+    <span class="tok-key">return</span> parser
+
+
+<span class="tok-key">def</span> <span class="tok-fn">main</span>(argv=<span class="tok-key">None</span>):
+    args = <span class="tok-fn">build_parser</span>().<span class="tok-fn">parse_args</span>(argv)
+    todo = <span class="tok-fn">load</span>()
+
+    <span class="tok-key">if</span> args.command == <span class="tok-str">&quot;add&quot;</span>:
+        task = todo.<span class="tok-fn">add</span>(args.title)
+        <span class="tok-fn">save</span>(todo)
+        <span class="tok-bi">print</span>(f<span class="tok-str">&quot;已添加：{task.title}&quot;</span>)
+    <span class="tok-key">elif</span> args.command == <span class="tok-str">&quot;list&quot;</span>:
+        <span class="tok-key">if</span> <span class="tok-key">not</span> todo.tasks:
+            <span class="tok-bi">print</span>(<span class="tok-str">&quot;还没有待办。&quot;</span>)
+        <span class="tok-key">for</span> i, t <span class="tok-key">in</span> <span class="tok-bi">enumerate</span>(todo.tasks, <span class="tok-num">1</span>):
+            mark = <span class="tok-str">&quot;x&quot;</span> <span class="tok-key">if</span> t.done <span class="tok-key">else</span> <span class="tok-str">&quot; &quot;</span>
+            <span class="tok-bi">print</span>(f<span class="tok-str">&quot;{i}. [{mark}] {t.title}&quot;</span>)
+    <span class="tok-key">elif</span> args.command == <span class="tok-str">&quot;done&quot;</span>:
+        todo.<span class="tok-fn">complete</span>(args.index)
+        <span class="tok-fn">save</span>(todo)
+        <span class="tok-bi">print</span>(f<span class="tok-str">&quot;第 {args.index} 条已完成&quot;</span>)
+    <span class="tok-key">elif</span> args.command == <span class="tok-str">&quot;stats&quot;</span>:
+        <span class="tok-bi">print</span>(todo.<span class="tok-fn">stats</span>())
+
+
+<span class="tok-key">if</span> __name__ == <span class="tok-str">&quot;__main__&quot;</span>:
+    <span class="tok-fn">main</span>()</code></pre></div><p><code>add_subparsers</code> 让 <code>todo add xxx</code> 和 <code>todo list</code> 走不同分支，每个子命令有自己的参数。<code>dest=&quot;command&quot;</code> 把用户敲的子命令名存进 <code>args.command</code>，下面的 <code>if</code> 就靠它分流。<code>required=True</code> 保证不敲子命令直接报错，不会静默什么都不做。</p><p><code>argparse</code> 还会自动生成 <code>--help</code>，每个子命令都有自己的帮助页。上面那些 <code>help=&quot;...&quot;</code> 就是给它用的，别人 <code>todo add --help</code> 一眼就知道要传什么参数。这部分文档不用另写。</p><p><code>add_argument(&quot;index&quot;, type=int)</code> 里的 <code>type=int</code> 会自动把 <code>&quot;3&quot;</code> 转成 <code>3</code>，转不了就报错并打印用法。你不用自己 <code>int(sys.argv[2])</code>，也不用自己写 try。</p><p><code>main(argv=None)</code> 那个参数是给测试留的口子。默认 <code>None</code> 表示读真实命令行，传 <code>[&quot;add&quot;, &quot;测试&quot;]</code> 就能在测试里模拟一次调用，不用开子进程。不过它照样会读写真实的 <code>todo.json</code>——想彻底隔离，就得把文件路径也从参数传进来，那是下一步的事。</p><p><code>load</code> 里复用 <code>todo.add</code> 再改 <code>done</code>，而不是直接造 <code>Task(...)</code>，这样空标题的脏数据会被同一套规则挡掉。</p><h2 id="sec-4">16.4 跑起来<i class="anchor">#</i></h2><p>在项目根目录，按顺序敲：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>python -m todo.cli add &quot;买牛奶&quot;
+python -m todo.cli add &quot;写作业&quot;
+python -m todo.cli list
+python -m todo.cli done 1
+python -m todo.cli stats
+python -m todo.cli list</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>$ python -m todo.cli add 买牛奶
+已添加：买牛奶
+$ python -m todo.cli add 写作业
+已添加：写作业
+$ python -m todo.cli list
+1. [ ] 买牛奶
+2. [ ] 写作业
+$ python -m todo.cli done 1
+第 1 条已完成
+$ python -m todo.cli stats
+{&#x27;总数&#x27;: 2, &#x27;完成&#x27;: 1, &#x27;未完成&#x27;: 1}
+$ python -m todo.cli list
+1. [x] 买牛奶
+2. [ ] 写作业</pre></div><p>为什么是 <code>python -m todo.cli</code> 而不是 <code>python todo/cli.py</code>？因为 <code>-m</code> 会把<strong>当前目录</strong>放进模块搜索路径，<code>from todo.core import TodoList</code> 才找得到 <code>todo</code> 这个包。直接跑文件的话，搜索路径变成 <code>todo/</code> 目录，<code>import todo</code> 立刻 <code>ModuleNotFoundError</code>。</p><p><code>if __name__ == &quot;__main__&quot;: main()</code> 还是老规矩：当脚本跑时执行，被 import 时不执行。测试里 <code>from todo.cli import main</code> 就不会顺手把程序跑起来。这一行在<a href="11-modules.html">第 11 课</a> 讲过，这里只是又用了一次。</p><p>数据存在 <code>todo.json</code>，关掉再开还在。用 json 而不是数据库，是因为只有几十条待办，<code>json</code> 足够，还方便你打开看看里面长什么样。</p><p>注意 <code>todo.json</code> 是相对路径，跟你在哪个目录运行有关。在项目根目录跑，文件就躺在根目录；<code>cd</code> 到别处再 <code>python -m todo.cli</code>，它会老老实实新建一个空文件，你会以为数据丢了。真做工具的话，把路径放到用户目录下更稳。</p><h2 id="sec-5">16.5 unittest：给代码上保险<i class="anchor">#</i></h2><p>手动测试的问题是：这次点了、下次忘、改了 A 不知道 B 坏没坏。单元测试就是把「点一遍」写成代码，让机器每次替你点：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">import</span> unittest
+
+<span class="tok-key">from</span> todo.core <span class="tok-key">import</span> TodoList
+
+
+<span class="tok-key">class</span> <span class="tok-fn">TestTodoList</span>(unittest.TestCase):
+    <span class="tok-key">def</span> <span class="tok-fn">setUp</span>(self):
+        self.todo = <span class="tok-fn">TodoList</span>()
+        self.todo.<span class="tok-fn">add</span>(<span class="tok-str">&quot;写作业&quot;</span>)
+        self.todo.<span class="tok-fn">add</span>(<span class="tok-str">&quot;买牛奶&quot;</span>)
+
+    <span class="tok-key">def</span> <span class="tok-fn">test_add_strips</span>(self):
+        task = self.todo.<span class="tok-fn">add</span>(<span class="tok-str">&quot;  跑步  &quot;</span>)
+        self.<span class="tok-fn">assertEqual</span>(task.title, <span class="tok-str">&quot;跑步&quot;</span>)
+        self.<span class="tok-fn">assertEqual</span>(<span class="tok-bi">len</span>(self.todo.tasks), <span class="tok-num">3</span>)
+
+    <span class="tok-key">def</span> <span class="tok-fn">test_add_empty</span>(self):
+        <span class="tok-key">with</span> self.<span class="tok-fn">assertRaises</span>(ValueError):
+            self.todo.<span class="tok-fn">add</span>(<span class="tok-str">&quot;   &quot;</span>)
+
+    <span class="tok-key">def</span> <span class="tok-fn">test_complete</span>(self):
+        self.todo.<span class="tok-fn">complete</span>(<span class="tok-num">1</span>)
+        self.<span class="tok-fn">assertTrue</span>(self.todo.tasks[<span class="tok-num">0</span>].done)
+        self.<span class="tok-fn">assertEqual</span>(self.todo.<span class="tok-fn">stats</span>()[<span class="tok-str">&quot;完成&quot;</span>], <span class="tok-num">1</span>)
+
+    <span class="tok-key">def</span> <span class="tok-fn">test_complete_out_of_range</span>(self):
+        <span class="tok-key">with</span> self.<span class="tok-fn">assertRaises</span>(IndexError):
+            self.todo.<span class="tok-fn">complete</span>(<span class="tok-num">99</span>)
+
+    <span class="tok-key">def</span> <span class="tok-fn">test_pending</span>(self):
+        self.todo.<span class="tok-fn">complete</span>(<span class="tok-num">2</span>)
+        self.<span class="tok-fn">assertEqual</span>([t.title <span class="tok-key">for</span> t <span class="tok-key">in</span> self.todo.<span class="tok-fn">pending</span>()], [<span class="tok-str">&quot;写作业&quot;</span>])
+
+
+<span class="tok-key">if</span> __name__ == <span class="tok-str">&quot;__main__&quot;</span>:
+    unittest.<span class="tok-fn">main</span>()</code></pre></div><p>一个类继承 <code>TestCase</code>，每个以 <code>test_</code> 开头的方法就是一个测试，方法名就是测试名。写了却没被执行的，多半是名字开头的 <code>test_</code> 拼错了，或者缩进跑到了类外面。</p><p><code>setUp</code> 在每个测试<strong>之前</strong>跑一次，用来准备干净的初始状态。上面每次都新建一个装了两条待办的 <code>TodoList</code>，所以测试之间互不影响——顺序换了、单独跑某一个，结果都一样。这一点很重要，测试不该依赖执行顺序。</p><p>三个断言最常用：<code>assertEqual</code> 判相等，<code>assertTrue</code> 判真假，<code>assertRaises</code> 判有没有抛异常（当上下文管理器用）。<code>assertRaises</code> 还有个好处：不抛异常它自己就失败，你不用担心「以为测了其实没测」。</p><p>测试写的不是「正常情况」，是「我担心的那种情况」。<code>test_add_strips</code> 特意传了带空格的 <code>&quot;  跑步  &quot;</code>，断言拿出来是 <code>&quot;跑步&quot;</code>。正常情况你手点一遍就过了，用不着写测试。</p><p>在项目根目录运行：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Shell</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>python -m unittest discover -s tests -v</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>test_add_empty (test_core.TestTodoList.test_add_empty) ... ok
+test_add_strips (test_core.TestTodoList.test_add_strips) ... ok
+test_complete (test_core.TestTodoList.test_complete) ... ok
+test_complete_out_of_range (test_core.TestTodoList.test_complete_out_of_range) ... ok
+test_pending (test_core.TestTodoList.test_pending) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.000s
+
+OK</pre></div><p><code>discover -s tests</code> 的意思是「去 <code>tests</code> 目录里找所有 <code>test*.py</code> 并运行」。<code>-v</code> 是 verbose，一个测试一行。后面那个耗时每次都不一样，<code>0.000s</code> 只是这台机器跑得快。</p><p>哪天你改坏了 <code>add</code>，这里立刻红一片，还告诉你哪个用例挂了。只想跑一个用例也行：<code>python -m unittest tests.test_core.TestTodoList.test_add_empty</code>，改哪儿测哪儿。比起手动点五遍，这就是十分钟换一下午。</p><h2 id="sec-6">16.6 打包发布：一句话版本<i class="anchor">#</i></h2><p>想让别人敲 <code>todo</code> 就能用，而不是每次 <code>python -m todo.cli</code>，加一个 <code>pyproject.toml</code>：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">TEXT</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>[project]
+name = &quot;todo&quot;
+version = &quot;0.1.0&quot;
+dependencies = []
+
+[project.scripts]
+todo = &quot;todo.cli:main&quot;</code></pre></div><p>然后在项目根目录 <code>pip install -e .</code>（末尾那个点指当前目录）。<code>-e</code> 是「可编辑安装」，装的是指向当前目录的链接，改代码不用重装。装完就能直接敲 <code>todo add 买牛奶</code>。</p><p><code>[project.scripts]</code> 那行的意思是「生成一个叫 <code>todo</code> 的命令，执行 <code>todo.cli</code> 模块里的 <code>main</code> 函数」。这是 Python 打包的标准做法，<code>pip</code>、<code>black</code>、<code>pytest</code> 这些命令都是这么来的。</p><p>真要发布到 PyPI 让别人 <code>pip install todo</code>，还得注册账号、<code>pip install build</code>、<code>python -m build</code>、<code>twine upload</code>。这一步现在不用碰，知道有这回事就行。</p><p>这个装法还能干净卸载，<code>pip uninstall todo</code> 一句话，系统里不留垃圾。比「把脚本复制到某个目录、用的时候去那儿找」靠谱多了。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>记忆点</span></div><div class="callout-body"><p>能测的代码长什么样：不打印、不读文件、参数从外面传。把这三件事推到边缘，核心逻辑就是纯函数（同样的输入永远同样的输出，不碰外面），测试写起来两分钟一个。</p></div></div><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li>项目分层：<code>core</code> 管逻辑不碰 IO，<code>cli</code> 管参数和文件，依赖单向</li><li><code>argparse</code> 的 <code>add_subparsers</code> 做子命令，<code>type=int</code> 自动转换，<code>main(argv=None)</code> 方便测试</li><li><code>unittest</code> 里 <code>setUp</code> 准备状态，<code>test_</code> 开头的方法才被执行，<code>assertRaises</code> 测异常</li><li>运行用 <code>python -m 包.模块</code>，路径才对；入口守在 <code>if __name__ == &quot;__main__&quot;:</code> 后面</li><li><code>pyproject.toml</code> 加 <code>[project.scripts]</code>，<code>pip install -e .</code> 之后就有自己的命令了</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>给工具加 <code>todo remove 2</code> 命令，删掉第 2 条。先给 <code>core.py</code> 写 <code>remove</code> 方法，再补两个测试（正常删除、越界报错），最后才写 <code>cli.py</code> 的分支。</li><li>给 <code>list</code> 加一个 <code>--done</code> 参数，只显示已完成的。提示：<code>add_argument(&quot;--done&quot;, action=&quot;store_true&quot;)</code>，然后想清楚 <code>args.done</code> 为真为假时分别怎么过滤。</li><li>给 <code>stats</code> 加一个「完成率」字段，返回百分比（保留一位小数）。写测试的时候注意除零：一条待办都没有时该返回什么？</li><li>把 <code>DATA</code> 改成从环境变量读：<code>os.environ.get(&quot;TODO_FILE&quot;, &quot;todo.json&quot;)</code>（记得在文件开头 <code>import os</code>）。写测试验证设置环境变量和不设置时，读的是不同文件。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="python-16-project2"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../python/15-net.html"><span>上一章</span><b>第 15 课 网络与接口：一次请求里到底装了什么</b></a><span class="pager-item is-empty next"><span>下一章</span><b>已经是最后一篇</b></span></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">16.1 需求与结构</a><a class="toc-link level-2" href="#sec-2">16.2 核心逻辑：core.py</a><a class="toc-link level-2" href="#sec-3">16.3 命令行：argparse</a><a class="toc-link level-2" href="#sec-4">16.4 跑起来</a><a class="toc-link level-2" href="#sec-5">16.5 unittest：给代码上保险</a><a class="toc-link level-2" href="#sec-6">16.6 打包发布：一句话版本</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

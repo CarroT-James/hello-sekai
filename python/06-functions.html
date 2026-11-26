@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 6 课 函数与参数 · Hello Sekai</title>
+<meta name="description" content="把代码装进函数、起个名字反复用。这一课讲参数、返回值、作用域、lambda，还有那个坑过无数人的可变默认参数。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="python-06-functions" data-track="python" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link is-active" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">Python</span><a class="sidebar-back" href="../python/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../python/01-hello.html" data-id="python-01-hello"><span class="side-num">01</span><span class="side-text">第 1 课 认识 Python，跑通第一个程序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/02-variables.html" data-id="python-02-variables"><span class="side-num">02</span><span class="side-text">第 2 课 变量、类型与运算</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/03-strings.html" data-id="python-03-strings"><span class="side-num">03</span><span class="side-text">第 3 课 字符串与文本处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/04-list-dict.html" data-id="python-04-list-dict"><span class="side-num">04</span><span class="side-text">第 4 课 列表、元组、字典与集合</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/05-control.html" data-id="python-05-control"><span class="side-num">05</span><span class="side-text">第 5 课 条件、循环与缩进</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../python/06-functions.html" data-id="python-06-functions"><span class="side-num">06</span><span class="side-text">第 6 课 函数与参数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/07-files-errors.html" data-id="python-07-files-errors"><span class="side-num">07</span><span class="side-text">第 7 课 文件、编码与异常处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/08-project.html" data-id="python-08-project"><span class="side-num">08</span><span class="side-text">第 8 课 常用标准库与项目实战</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/09-oop.html" data-id="python-09-oop"><span class="side-num">09</span><span class="side-text">第 9 课 类与对象：把数据和行为装进一个盒子</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/10-inheritance.html" data-id="python-10-inheritance"><span class="side-num">10</span><span class="side-text">第 10 课 继承与魔法方法：子类少写一遍，对象学会比较</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/11-modules.html" data-id="python-11-modules"><span class="side-num">11</span><span class="side-text">第 11 课 模块、包与虚拟环境：把代码拆成能互相借用的文件</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/12-regex.html" data-id="python-12-regex"><span class="side-num">12</span><span class="side-text">第 12 课 正则表达式：给文本画一张形状</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/13-stdlib.html" data-id="python-13-stdlib"><span class="side-num">13</span><span class="side-text">第 13 课 常用标准库：六个模块顶掉一半手写循环</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/14-data.html" data-id="python-14-data"><span class="side-num">14</span><span class="side-text">第 14 课 数据处理入门：从 csv 到一张班级报表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/15-net.html" data-id="python-15-net"><span class="side-num">15</span><span class="side-text">第 15 课 网络与接口：一次请求里到底装了什么</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/16-project2.html" data-id="python-16-project2"><span class="side-num">16</span><span class="side-text">第 16 课 项目：一个能测试的命令行工具</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../python/index.html">← 返回Python</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../python/index.html">Python</a> <span class="sep">/</span> <span>第 6 课 函数与参数</span></div><h1 class="doc-title">第 6 课 函数与参数</h1><div class="doc-meta"><span>预计 35 分钟</span><span class="dot">·</span><span>约 6,503 字</span><span class="dot">·</span><span>Python</span></div><article class="prose" id="article"><p>前面几课的代码都摊在文件里，从上往下一路写到底。程序一长，同一个「算平均分」的逻辑复制三遍，改的时候漏掉一处就出 bug。函数就是给一段代码起个名字，用的时候喊一声，改的时候只改一处。这一课把函数的每个零件拆开看。</p><h2 id="sec-1">6.1 定义一个函数<i class="anchor">#</i></h2><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">def</span> <span class="tok-fn">add</span>(a, b):
+    <span class="tok-key">return</span> a + b
+
+
+<span class="tok-key">def</span> <span class="tok-fn">divmod2</span>(a, b):
+    <span class="tok-key">return</span> a // b, a % b
+
+
+<span class="tok-key">def</span> <span class="tok-fn">say_hi</span>(name):
+    <span class="tok-bi">print</span>(f<span class="tok-str">&quot;你好，{name}&quot;</span>)
+
+
+<span class="tok-bi">print</span>(<span class="tok-fn">add</span>(<span class="tok-num">3</span>, <span class="tok-num">5</span>))
+<span class="tok-bi">print</span>(<span class="tok-fn">divmod2</span>(<span class="tok-num">17</span>, <span class="tok-num">5</span>))
+q, r = <span class="tok-fn">divmod2</span>(<span class="tok-num">17</span>, <span class="tok-num">5</span>)
+<span class="tok-bi">print</span>(q, r)
+x = <span class="tok-fn">say_hi</span>(<span class="tok-str">&quot;小明&quot;</span>)
+<span class="tok-bi">print</span>(x)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>8
+(3, 2)
+3 2
+你好，小明
+None</pre></div><p><code>def</code> 是 define 的缩写，后面跟函数名、括号、冒号，缩进的部分就是函数体。调用写 <code>add(3, 5)</code>，括号里的 3 和 5 叫<strong>实参</strong>，函数定义里的 <code>a</code>、<code>b</code> 叫<strong>形参</strong>，调用时实参按位置交给形参。</p><p><code>return</code> 把值交回给调用者，函数立刻结束，后面的代码不执行。<code>divmod2</code> 那行 <code>return a // b, a % b</code> 看起来像返回两个值，其实是返回一个<strong>元组</strong>，外面那层括号被省掉了。所以 <code>q, r = divmod2(17, 5)</code> 能一次拆开，这叫解包，等价于先拿元组再按下标取。</p><p><code>say_hi</code> 没有 <code>return</code>，那它返回什么？<code>None</code>。Python 里没有返回值的函数统一返回 <code>None</code>，所以 <code>x = say_hi(...)</code> 语法上永远合法，<code>x</code> 是 <code>None</code>。注意 <code>say_hi(&quot;小明&quot;)</code> 会先打印「你好，小明」，然后才把 <code>None</code> 交给 <code>x</code>，最后那行 <code>print(x)</code> 打出来的就是 <code>None</code>。</p><p>只写函数名不写括号，函数不会执行。<code>say_hi</code> 拿到的是函数本身，<code>say_hi(&quot;小明&quot;)</code> 才是调用。这个区别调试时很关键：屏幕上什么都不打印，八成是括号忘了。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>记忆点</span></div><div class="callout-body"><p><code>return a, b</code> 返回的是元组 <code>(a, b)</code>。要接住就跑 <code>x, y = f()</code>。看到别人的函数这么写，不用怀疑，就是元组。</p></div></div><h2 id="sec-2">6.2 参数：位置、关键字、默认值<i class="anchor">#</i></h2><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">def</span> <span class="tok-fn">introduce</span>(name, age, city=<span class="tok-str">&quot;北京&quot;</span>):
+    <span class="tok-bi">print</span>(f<span class="tok-str">&quot;{name}，{age} 岁，来自{city}&quot;</span>)
+
+
+<span class="tok-fn">introduce</span>(<span class="tok-str">&quot;小明&quot;</span>, <span class="tok-num">18</span>)
+<span class="tok-fn">introduce</span>(<span class="tok-str">&quot;小红&quot;</span>, <span class="tok-num">19</span>, <span class="tok-str">&quot;上海&quot;</span>)
+<span class="tok-fn">introduce</span>(age=<span class="tok-num">20</span>, name=<span class="tok-str">&quot;小刚&quot;</span>)
+<span class="tok-fn">introduce</span>(<span class="tok-str">&quot;小美&quot;</span>, city=<span class="tok-str">&quot;广州&quot;</span>, age=<span class="tok-num">18</span>)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>小明，18 岁，来自北京
+小红，19 岁，来自上海
+小刚，20 岁，来自北京
+小美，18 岁，来自广州</pre></div><p>三种传参方式在这一段里全用上了：</p><ul><li>前两次是<strong>位置参数</strong>，按顺序对号入座，第三个不传就用默认值「北京」</li><li>第三次是<strong>关键字参数</strong>，写 <code>名字=值</code>，顺序随便，Python 自己找位置</li><li>第四次混着用，位置参数在前，关键字参数在后</li></ul><p>规则只有一条：<strong>位置参数必须排在关键字参数前面</strong>。写成 <code>introduce(name=&quot;小明&quot;, 18)</code> 是语法错误，因为 Python 不知道那个 18 该给谁。</p><p>默认参数必须放在参数列表末尾。<code>def f(a=1, b)</code> 直接报 <code>SyntaxError: non-default argument follows default argument</code>。</p><p>如果调用时少传一个没默认值的参数，会报 <code>TypeError: introduce() missing 1 required positional argument: &#x27;age&#x27;</code>。读法：<code>introduce()</code> 少了一个必需的位置参数 <code>age</code>。这种报错一眼就能定位。</p><p>默认值不是「每次调用都重新算」，而是<strong>在 <code>def</code> 执行的那一刻算好，只算一次</strong>。下一节就有个坑等着它。</p><h2 id="sec-3">6.3 默认参数的坑：可变对象<i class="anchor">#</i></h2><p>先看一段能跑、但结果是错的代码：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">def</span> <span class="tok-fn">add_item_bad</span>(item, cart=[]):
+    cart.<span class="tok-fn">append</span>(item)
+    <span class="tok-key">return</span> cart
+
+
+<span class="tok-bi">print</span>(<span class="tok-fn">add_item_bad</span>(<span class="tok-str">&quot;苹果&quot;</span>))
+<span class="tok-bi">print</span>(<span class="tok-fn">add_item_bad</span>(<span class="tok-str">&quot;香蕉&quot;</span>))
+
+
+<span class="tok-key">def</span> <span class="tok-fn">add_item</span>(item, cart=<span class="tok-key">None</span>):
+    <span class="tok-key">if</span> cart <span class="tok-key">is</span> <span class="tok-key">None</span>:
+        cart = []
+    cart.<span class="tok-fn">append</span>(item)
+    <span class="tok-key">return</span> cart
+
+
+<span class="tok-bi">print</span>(<span class="tok-fn">add_item</span>(<span class="tok-str">&quot;苹果&quot;</span>))
+<span class="tok-bi">print</span>(<span class="tok-fn">add_item</span>(<span class="tok-str">&quot;香蕉&quot;</span>))</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>[&#x27;苹果&#x27;]
+[&#x27;苹果&#x27;, &#x27;香蕉&#x27;]
+[&#x27;苹果&#x27;]
+[&#x27;香蕉&#x27;]</pre></div><p>前两行是<strong>错误现象</strong>：第二次调用凭空多出一个苹果。后两行是正确写法，每次都是干净的列表。</p><p>原因还是「默认值只算一次」。<code>cart=[]</code> 里的 <code>[]</code> 只创建了一个列表对象，之后每次调用没传 <code>cart</code>，用的都是这同一个。函数把它记住了，你往里面 append，它就越来越大。这个列表甚至活到程序结束。</p><p>记住一句话：<strong>默认值只放不可变对象</strong>。数字、字符串、元组、<code>None</code> 都安全，列表、字典、集合不行。</p><p>需要「默认是空列表」时，用 <code>None</code> 当哨兵：默认值写 <code>None</code>，函数开头判断 <code>if cart is None:</code>，再新建一个。<code>dict</code> 同理，<code>def f(d={})</code> 也是同样的 bug。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>看到 <code>def f(x, y=[])</code> 或者 <code>y={}</code>，基本可以直接判定是 bug。这不是风格问题，是逻辑错误：所有调用共享同一个容器，数据会串。默认值写 <code>None</code> 是标准解法，几乎所有 Python 项目都这么写。</p></div></div><h2 id="sec-4">6.4 *args 与 **kwargs<i class="anchor">#</i></h2><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">def</span> <span class="tok-fn">total</span>(*args):
+    <span class="tok-bi">print</span>(args)
+    <span class="tok-key">return</span> <span class="tok-bi">sum</span>(args)
+
+
+<span class="tok-bi">print</span>(<span class="tok-fn">total</span>(<span class="tok-num">1</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>))
+<span class="tok-bi">print</span>(<span class="tok-fn">total</span>(<span class="tok-num">10</span>, <span class="tok-num">20</span>))
+
+
+<span class="tok-key">def</span> <span class="tok-fn">show</span>(**kwargs):
+    <span class="tok-key">for</span> key, value <span class="tok-key">in</span> kwargs.<span class="tok-fn">items</span>():
+        <span class="tok-bi">print</span>(f<span class="tok-str">&quot;{key} = {value}&quot;</span>)
+
+
+<span class="tok-fn">show</span>(name=<span class="tok-str">&quot;小明&quot;</span>, age=<span class="tok-num">18</span>, city=<span class="tok-str">&quot;北京&quot;</span>)
+
+
+<span class="tok-key">def</span> <span class="tok-fn">mix</span>(a, b=<span class="tok-num">2</span>, *args, **kwargs):
+    <span class="tok-bi">print</span>(a, b, args, kwargs)
+
+
+<span class="tok-fn">mix</span>(<span class="tok-num">1</span>)
+<span class="tok-fn">mix</span>(<span class="tok-num">1</span>, <span class="tok-num">3</span>, <span class="tok-num">5</span>, <span class="tok-num">7</span>, name=<span class="tok-str">&quot;小红&quot;</span>)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>(1, 2, 3)
+6
+(10, 20)
+30
+name = 小明
+age = 18
+city = 北京
+1 2 () {}
+1 3 (5, 7) {&#x27;name&#x27;: &#x27;小红&#x27;}</pre></div><p><code>*args</code> 把多出来的位置参数收成一个<strong>元组</strong>。名字不重要，<code>*nums</code>、<code>*items</code> 都行，星号才是关键，<code>args</code> 只是惯例。<code>total(1, 2, 3)</code> 里 <code>args</code> 就是 <code>(1, 2, 3)</code>，所以能直接 <code>sum</code>。</p><p><code>**kwargs</code> 把多出来的关键字参数收成一个<strong>字典</strong>，所以用 <code>.items()</code> 遍历。<code>name=&quot;小明&quot;</code> 进去变成 <code>{&quot;name&quot;: &quot;小明&quot;}</code>。</p><p><code>mix</code> 展示了参数顺序：位置参数 → 有默认值的参数 → <code>*args</code> → <code>**kwargs</code>。这个顺序不能乱，Python 靠位置区分它们。<code>mix(1)</code> 里 <code>a=1</code>、<code>b</code> 用默认值 2、<code>args</code> 是空元组、<code>kwargs</code> 是空字典。<code>mix(1, 3, 5, 7, name=&quot;小红&quot;)</code> 里 5 和 7 被 <code>args</code> 收走，<code>name</code> 被 <code>kwargs</code> 收走。</p><p>星号反过来也能用：调用时 <code>total(*[1, 2, 3])</code> 把列表拆成三个参数，效果和 <code>total(1, 2, 3)</code> 一样。第 6.6 节的完整程序就用了这一招。</p><h2 id="sec-5">6.5 作用域：LEGB 与 global<i class="anchor">#</i></h2><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>x = <span class="tok-num">10</span>
+
+
+<span class="tok-key">def</span> <span class="tok-fn">inner</span>():
+    x = <span class="tok-num">20</span>
+    <span class="tok-bi">print</span>(<span class="tok-str">&quot;函数里的 x：&quot;</span>, x)
+
+
+<span class="tok-fn">inner</span>()
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;函数外的 x：&quot;</span>, x)
+
+count = <span class="tok-num">0</span>
+
+
+<span class="tok-key">def</span> <span class="tok-fn">add_one</span>():
+    <span class="tok-key">global</span> count
+    count += <span class="tok-num">1</span>
+
+
+<span class="tok-fn">add_one</span>()
+<span class="tok-fn">add_one</span>()
+<span class="tok-bi">print</span>(<span class="tok-str">&quot;count =&quot;</span>, count)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>函数里的 x： 20
+函数外的 x： 10
+count = 2</pre></div><p>函数里 <code>x = 20</code> 不会改外面的 <code>x</code>，它创建了一个<strong>局部变量</strong>，函数一结束就没了。外面的 <code>x</code> 还是 10。函数内部是独立的小房间，房间里的新东西不会自动搬到外面。</p><p>找变量时 Python 按 <strong>LEGB</strong> 的顺序找：Local（函数里）→ Enclosing（外层函数）→ Global（模块全局）→ Builtin（内置）。先找到谁就用谁，找不到才 <code>NameError</code>。所以函数里只读不写全局变量是合法的，一赋值就变成了局部变量。</p><p>真要改全局变量，得先用 <code>global count</code> 声明。声明之后 <code>count += 1</code> 才会作用到外面那个。</p><p>但 <code>global</code> 要少用。函数偷偷改了全局变量，你在别处调用它时根本看不出副作用，出 bug 只能一行行翻。正确的做法是把值当参数传进去，把结果 <code>return</code> 出来，函数变成「输入什么、输出什么」的干净东西。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>在函数里读一个全局变量、又在同一个函数里给它赋值，会报 <code>UnboundLocalError</code>。原因还是作用域：只要函数体里出现过 <code>count = 1</code>，Python 就把整个函数里的 <code>count</code> 当成局部变量，前面那句 <code>print(count)</code> 执行时它还没赋值。想读全局的，就别在函数里给同名变量赋值。</p></div></div><h2 id="sec-6">6.6 函数是对象、lambda 和 <code>__main__</code><i class="anchor">#</i></h2><h3 id="sec-7">函数可以当参数传<i class="anchor">#</i></h3><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">def</span> <span class="tok-fn">square</span>(x):
+    <span class="tok-key">return</span> x * x
+
+
+f = square
+<span class="tok-bi">print</span>(<span class="tok-fn">f</span>(<span class="tok-num">4</span>))
+
+students = [(<span class="tok-str">&quot;小明&quot;</span>, <span class="tok-num">88</span>), (<span class="tok-str">&quot;小红&quot;</span>, <span class="tok-num">95</span>), (<span class="tok-str">&quot;小刚&quot;</span>, <span class="tok-num">62</span>)]
+<span class="tok-bi">print</span>(<span class="tok-bi">sorted</span>(students, key=<span class="tok-key">lambda</span> s: s[<span class="tok-num">1</span>]))
+<span class="tok-bi">print</span>(<span class="tok-bi">sorted</span>(students, key=<span class="tok-key">lambda</span> s: s[<span class="tok-num">1</span>], reverse=<span class="tok-key">True</span>))</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>16
+[(&#x27;小刚&#x27;, 62), (&#x27;小明&#x27;, 88), (&#x27;小红&#x27;, 95)]
+[(&#x27;小红&#x27;, 95), (&#x27;小明&#x27;, 88), (&#x27;小刚&#x27;, 62)]</pre></div><p><code>f = square</code> 没有调用函数，只是给同一个函数对象多起了一个名字。<code>f(4)</code> 和 <code>square(4)</code> 完全一样。函数在 Python 里就是普通对象，能赋值、能放进列表、能当参数。</p><p><code>sorted</code> 的 <code>key</code> 参数要的就是一个函数。排序前，<code>sorted</code> 拿每个元素调用它一次，按返回值比较大小。这里 <code>lambda s: s[1]</code> 返回元组的第二项，也就是分数，所以按分数排。</p><p><code>lambda</code> 是匿名函数，<code>lambda s: s[1]</code> 等价于一个只有 <code>return s[1]</code> 的小函数，只是不用起名字。它只能写一个表达式，不能有语句，用完就扔。简单的一行逻辑用 lambda 很顺手，逻辑一复杂就老老实实 <code>def</code> 起个名字，不然没人看得懂。</p><h3 id="sec-8"><code>if __name__ == &quot;__main__&quot;:</code> 是什么<i class="anchor">#</i></h3><p>每个 <code>.py</code> 文件都有一个内置变量 <code>__name__</code>。用 <code>python 文件名.py</code> 直接运行时，它是字符串 <code>&quot;__main__&quot;</code>；被别的文件 <code>import</code> 时，它是模块名。</p><p>所以 <code>if __name__ == &quot;__main__&quot;:</code> 的意思是：<strong>这段代码只在直接运行时执行，被 import 时不执行</strong>。</p><p>为什么要写？因为别人可能想用你文件里的函数。他 <code>import</code> 你的文件，结果你的测试代码也跑了一遍，屏幕上凭空多出一堆输出。加上这个判断，测试代码就留在自己家里。你现在写的文件小，看不出好处；等文件多了，这是每个 Python 文件的标配。</p><h3 id="sec-9">完整程序：成绩小报告<i class="anchor">#</i></h3><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">def</span> <span class="tok-fn">stats</span>(*scores):
+    <span class="tok-str">&quot;&quot;&quot;返回最低分、最高分、平均分&quot;&quot;&quot;</span>
+    <span class="tok-key">return</span> <span class="tok-bi">min</span>(scores), <span class="tok-bi">max</span>(scores), <span class="tok-bi">sum</span>(scores) / <span class="tok-bi">len</span>(scores)
+
+
+<span class="tok-key">def</span> <span class="tok-fn">by_score</span>(record):
+    <span class="tok-key">return</span> record[<span class="tok-num">1</span>]
+
+
+<span class="tok-key">def</span> <span class="tok-fn">report</span>(records, title=<span class="tok-str">&quot;成绩报告&quot;</span>, reverse=<span class="tok-key">True</span>):
+    scores = [score <span class="tok-key">for</span> _, score <span class="tok-key">in</span> records]
+    low, high, avg = <span class="tok-fn">stats</span>(*scores)
+
+    <span class="tok-bi">print</span>(f<span class="tok-str">&quot;== {title} ==&quot;</span>)
+    ordered = <span class="tok-bi">sorted</span>(records, key=by_score, reverse=reverse)
+    <span class="tok-key">for</span> i, (name, score) <span class="tok-key">in</span> <span class="tok-bi">enumerate</span>(ordered, start=<span class="tok-num">1</span>):
+        <span class="tok-bi">print</span>(f<span class="tok-str">&quot;{i}. {name}：{score} 分&quot;</span>)
+    <span class="tok-bi">print</span>(f<span class="tok-str">&quot;最低 {low}，最高 {high}，平均 {avg:.1f} 分&quot;</span>)
+
+
+<span class="tok-key">if</span> __name__ == <span class="tok-str">&quot;__main__&quot;</span>:
+    data = [(<span class="tok-str">&quot;小明&quot;</span>, <span class="tok-num">88</span>), (<span class="tok-str">&quot;小红&quot;</span>, <span class="tok-num">95</span>), (<span class="tok-str">&quot;小刚&quot;</span>, <span class="tok-num">62</span>), (<span class="tok-str">&quot;小美&quot;</span>, <span class="tok-num">79</span>)]
+    <span class="tok-fn">report</span>(data)
+    <span class="tok-bi">print</span>()
+    <span class="tok-fn">report</span>(data, title=<span class="tok-str">&quot;从低到高&quot;</span>, reverse=<span class="tok-key">False</span>)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>== 成绩报告 ==
+1. 小红：95 分
+2. 小明：88 分
+3. 小美：79 分
+4. 小刚：62 分
+最低 62，最高 95，平均 81.0 分
+
+== 从低到高 ==
+1. 小刚：62 分
+2. 小美：79 分
+3. 小明：88 分
+4. 小红：95 分
+最低 62，最高 95，平均 81.0 分</pre></div><ul><li><code>stats(*scores)</code> 里的 <code>*</code> 把列表拆成一个个参数，正好接上第 6.4 节的 <code>*args</code>。列表里有 4 个分数，就拆成 4 个参数传进去。</li><li><code>by_score</code> 单独起名字而不是写 lambda，是因为排序依据以后可能改（比如按总分），改一处就行，也更好读。</li><li><code>report</code> 的 <code>title</code> 和 <code>reverse</code> 都有默认值，平时只传 <code>records</code> 就够，想换标题和顺序再传。</li><li><code>avg:.1f</code> 是 f-string 的格式控制，保留一位小数。</li><li><code>if __name__ == &quot;__main__&quot;:</code> 里的 <code>data</code> 只是演示数据。别人 import 这个文件，不会看到任何打印。</li></ul><p>把最后一行改成 <code>report(data, title=&quot;从低到高&quot;)</code>，顺序又变回从高到低，因为这次没传 <code>reverse</code>，它用了默认值 <code>True</code>。默认参数的作用就是让常用的调用最短。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li><code>def</code> 定义、<code>名字(参数)</code> 调用；没有 <code>return</code> 的函数返回 <code>None</code></li><li><code>return a, b</code> 返回元组，<code>x, y = f()</code> 解包</li><li>位置参数在前，关键字参数在后，默认参数放末尾</li><li>默认值只放不可变对象，容器默认写 <code>None</code>，进函数再新建</li><li><code>*args</code> 收成元组，<code>**kwargs</code> 收成字典；调用时 <code>*</code> 还能把列表拆开</li><li>作用域按 LEGB 找；<code>global</code> 能不用就不用，用参数和返回值代替</li><li>函数是对象，能当参数传；<code>sorted(key=...)</code> 配 lambda 是最常见的组合</li><li><code>if __name__ == &quot;__main__&quot;:</code> 只在直接运行时执行，import 时不执行</li><li>上一课是 <a href="05-control.html">第 5 课 条件、循环与缩进</a>，下一课 <a href="07-files-errors.html">第 7 课 文件、编码与异常处理</a> 让数据活过程序结束</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>写 <code>def is_prime(n)</code> 判断质数，再用循环打印 1 到 50 里的所有质数。</li><li>写 <code>def average(*nums)</code>：没有参数时返回 0，否则返回平均值。想想为什么不能直接 <code>sum(nums) / len(nums)</code>。</li><li>给 <code>report</code> 加一个参数 <code>min_score=0</code>，只打印分数不低于它的人。调用时试试只传两个参数、再传三个参数。</li><li>猜一猜：函数写成 <code>def f(a, b=[])</code>，里面先 <code>b.append(a)</code> 再 <code>return b</code>，连续调用 <code>f(1)</code> 三次，三次的输出分别是什么？先写答案，再运行验证。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="python-06-functions"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../python/05-control.html"><span>上一章</span><b>第 5 课 条件、循环与缩进</b></a><a class="pager-item next" href="../python/07-files-errors.html"><span>下一章</span><b>第 7 课 文件、编码与异常处理</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">6.1 定义一个函数</a><a class="toc-link level-2" href="#sec-2">6.2 参数：位置、关键字、默认值</a><a class="toc-link level-2" href="#sec-3">6.3 默认参数的坑：可变对象</a><a class="toc-link level-2" href="#sec-4">6.4 *args 与 **kwargs</a><a class="toc-link level-2" href="#sec-5">6.5 作用域：LEGB 与 global</a><a class="toc-link level-2" href="#sec-6">6.6 函数是对象、lambda 和 <code>__main__</code></a><a class="toc-link level-3" href="#sec-7">函数可以当参数传</a><a class="toc-link level-3" href="#sec-8"><code>if __name__ == &quot;__main__&quot;:</code> 是什么</a><a class="toc-link level-3" href="#sec-9">完整程序：成绩小报告</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>

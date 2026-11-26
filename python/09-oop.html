@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 9 课 类与对象：把数据和行为装进一个盒子 · Hello Sekai</title>
+<meta name="description" content="一个学生有姓名、有分数，还该会算平均分。先用生活里的例子把「数据和动作打包」讲透，再动手写第一个 class。">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="icon" href="../assets/favicon.svg?v=4" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/style.css">
+<script>(function(){try{var d=document.documentElement;var t=localStorage.getItem('slc-theme')||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');d.setAttribute('data-theme',t);d.setAttribute('data-bg',localStorage.getItem('slc-bg')||'shot');}catch(e){}})();</script>
+</head>
+<body class="is-doc" data-page="python-09-oop" data-track="python" data-root="../">
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav" id="top"><div class="read-bar" id="read-bar"></div><div class="nav-inner"><a class="brand" href="../index.html" aria-label="Hello Sekai 首页"><span class="brand-mark">&gt;_&lt;</span><span class="brand-text">Hello Sekai</span></a><nav class="nav-links" id="nav-links"><a class="nav-link" href="../c/index.html">C 语言</a><a class="nav-link" href="../cpp/index.html">C++</a><a class="nav-link is-active" href="../python/index.html">Python</a><a class="nav-link" href="../ds/index.html">数据结构</a><a class="nav-link" href="../fund/index.html">计算机基础</a><a class="nav-link" href="../practice.html">刷题</a><a class="nav-link" href="../about.html">关于</a></nav><div class="nav-actions"><button class="icon-btn" id="search-open" type="button" aria-label="搜索（Ctrl+K）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="icon-btn" id="theme-toggle" type="button" aria-label="切换深色模式"><span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></span><span class="ico-moon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z"/></svg></span></button><button class="icon-btn only-art" id="bg-switch" type="button" aria-label="切换背景" title="切换背景（截图 / 房间）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg></button><button class="icon-btn only-mobile" id="nav-toggle" type="button" aria-label="菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div></div></header>
+<div class="doc-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-head"><span class="sidebar-title">Python</span><a class="sidebar-back" href="../python/index.html">总览</a></div><nav class="side-nav"><a class="side-link" href="../python/01-hello.html" data-id="python-01-hello"><span class="side-num">01</span><span class="side-text">第 1 课 认识 Python，跑通第一个程序</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/02-variables.html" data-id="python-02-variables"><span class="side-num">02</span><span class="side-text">第 2 课 变量、类型与运算</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/03-strings.html" data-id="python-03-strings"><span class="side-num">03</span><span class="side-text">第 3 课 字符串与文本处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/04-list-dict.html" data-id="python-04-list-dict"><span class="side-num">04</span><span class="side-text">第 4 课 列表、元组、字典与集合</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/05-control.html" data-id="python-05-control"><span class="side-num">05</span><span class="side-text">第 5 课 条件、循环与缩进</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/06-functions.html" data-id="python-06-functions"><span class="side-num">06</span><span class="side-text">第 6 课 函数与参数</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/07-files-errors.html" data-id="python-07-files-errors"><span class="side-num">07</span><span class="side-text">第 7 课 文件、编码与异常处理</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/08-project.html" data-id="python-08-project"><span class="side-num">08</span><span class="side-text">第 8 课 常用标准库与项目实战</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link is-active" href="../python/09-oop.html" data-id="python-09-oop"><span class="side-num">09</span><span class="side-text">第 9 课 类与对象：把数据和行为装进一个盒子</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/10-inheritance.html" data-id="python-10-inheritance"><span class="side-num">10</span><span class="side-text">第 10 课 继承与魔法方法：子类少写一遍，对象学会比较</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/11-modules.html" data-id="python-11-modules"><span class="side-num">11</span><span class="side-text">第 11 课 模块、包与虚拟环境：把代码拆成能互相借用的文件</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/12-regex.html" data-id="python-12-regex"><span class="side-num">12</span><span class="side-text">第 12 课 正则表达式：给文本画一张形状</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/13-stdlib.html" data-id="python-13-stdlib"><span class="side-num">13</span><span class="side-text">第 13 课 常用标准库：六个模块顶掉一半手写循环</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/14-data.html" data-id="python-14-data"><span class="side-num">14</span><span class="side-text">第 14 课 数据处理入门：从 csv 到一张班级报表</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/15-net.html" data-id="python-15-net"><span class="side-num">15</span><span class="side-text">第 15 课 网络与接口：一次请求里到底装了什么</span><span class="side-done" aria-hidden="true"></span></a><a class="side-link" href="../python/16-project2.html" data-id="python-16-project2"><span class="side-num">16</span><span class="side-text">第 16 课 项目：一个能测试的命令行工具</span><span class="side-done" aria-hidden="true"></span></a></nav><a class="sidebar-foot" href="../python/index.html">← 返回Python</a></aside><main class="doc" id="main"><div class="crumbs"><a href="../index.html">首页</a> <span class="sep">/</span> <a href="../python/index.html">Python</a> <span class="sep">/</span> <span>第 9 课 类与对象：把数据和行为装进一个盒子</span></div><h1 class="doc-title">第 9 课 类与对象：把数据和行为装进一个盒子</h1><div class="doc-meta"><span>预计 30 分钟</span><span class="dot">·</span><span>约 6,438 字</span><span class="dot">·</span><span>Python</span></div><article class="prose" id="article"><p>「学生」这个词，你脑子里有一套现成的理解：他有名字，有一串分数；同时他还能做点事——算出自己的平均分，报告自己及格没有。注意这两半是一起出现的。你从不会先把「小明的分数」摊在桌上，再另外抽一张纸写「怎么算平均分」，然后提醒自己算的时候别忘了把分数拿过来。</p><p>写程序的时候，我们经常真的就这么干了。</p><h2 id="sec-1">9.1 先看看不打包的写法<i class="anchor">#</i></h2><p>用已经学过的两样东西——字典装数据（<a href="04-list-dict.html">第 4 课</a> 讲过）、函数做动作——可以这么表示一个学生：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code>student = {<span class="tok-str">&quot;name&quot;</span>: <span class="tok-str">&quot;小明&quot;</span>, <span class="tok-str">&quot;scores&quot;</span>: [<span class="tok-num">88</span>, <span class="tok-num">92</span>, <span class="tok-num">79</span>]}
+
+
+<span class="tok-key">def</span> <span class="tok-fn">average</span>(scores):
+    <span class="tok-key">return</span> <span class="tok-bi">sum</span>(scores) / <span class="tok-bi">len</span>(scores)
+
+
+<span class="tok-bi">print</span>(student[<span class="tok-str">&quot;name&quot;</span>], <span class="tok-fn">average</span>(student[<span class="tok-str">&quot;scores&quot;</span>]))</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>小明 86.33333333333333</pre></div><p>能跑，结果也对。但把这段放到真实场景里，会露出三个毛病。</p><p>第一，名字靠字符串对。哪天手一抖写成 <code>student[&quot;scroe&quot;]</code>，编辑器不会提醒你，因为对字典来说那只是个普通字符串，跑到那一行才甩你一个 <code>KeyError</code>。</p><p>第二，数据和动作是散的。<code>average</code> 只认一个列表，谁都能把别人的分数传进去，它也没法拒绝。调用的时候，你得自己记住「这个函数是给学生的分数用的」，程序不替你把关。</p><p>第三，字段一改，全线崩。哪天想把 <code>scores</code> 改名叫 <code>grades</code>，字典那一行要改，<code>average</code> 的调用点要改，所有用过它的地方都要改，漏一处就是运行时错误。</p><p>一句话：数据在一个地方，动作在另一个地方，中间靠人的记性绑着。类就是把这根绳系上。</p><h2 id="sec-2">9.2 第一个类<i class="anchor">#</i></h2><p>把「学生有哪些数据」和「学生能做什么」写在同一段代码里，长这样：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">class</span> Student:
+    <span class="tok-key">def</span> <span class="tok-fn">__init__</span>(self, name, scores):
+        self.name = name
+        self.scores = <span class="tok-bi">list</span>(scores)
+
+    <span class="tok-key">def</span> <span class="tok-fn">average</span>(self):
+        <span class="tok-key">return</span> <span class="tok-bi">sum</span>(self.scores) / <span class="tok-bi">len</span>(self.scores)
+
+
+s = <span class="tok-fn">Student</span>(<span class="tok-str">&quot;小明&quot;</span>, [<span class="tok-num">88</span>, <span class="tok-num">92</span>, <span class="tok-num">79</span>])
+<span class="tok-bi">print</span>(s.name, s.<span class="tok-fn">average</span>())
+<span class="tok-bi">print</span>(<span class="tok-bi">type</span>(s))</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>小明 86.33333333333333
+&lt;class &#x27;__main__.Student&#x27;&gt;</pre></div><p>一段一段拆。</p><p><code>class Student:</code> 是声明一个新类型，名字叫 <code>Student</code>。你可以把它当成一张空表格：表格上写着「一个学生应该有 <code>name</code> 和 <code>scores</code>，并且会算平均分」。</p><p><code>Student(&quot;小明&quot;, [88, 92, 79])</code> 是照着这张表造出一份具体的东西。造出来的这份叫<strong>实例</strong>，也叫<strong>对象</strong>。一个类可以造出无数个实例，每个实例的数据各管各的。</p><p><code>__init__</code> 是造实例时<strong>自动执行</strong>的方法，你从来没手动调用过它。它只干一件事：把外面传进来的数据挂到新对象身上。<code>self.name = name</code> 读作「我这个对象的 <code>name</code>，等于传进来的 <code>name</code>」。</p><p><code>self</code> 就是「正在被操作的那个对象」。点号读作「的」：<code>self.name</code> 是「我的名字」，<code>self.scores</code> 是「我的分数列表」。</p><p><code>average</code> 是定义在类里的函数，叫<strong>方法</strong>。注意它不需要外面把分数递进来，因为 <code>self.scores</code> 就长在自己身上。调用写 <code>s.average()</code>，括号里是空的——<code>self</code> 不用你传，Python 自动把 <code>s</code> 塞进去。</p><p>和 9.1 对比一下就很清楚：以前是 <code>average(scores)</code>，你得保证传对了列表；现在是 <code>s.average()</code>，对象自己算自己的。数据和行为第一次待在了同一个地方。</p><p><code>self.scores = list(scores)</code> 里那层 <code>list()</code> 是复制一份。直接写 <code>self.scores = scores</code> 的话，外面那个列表以后被谁改了，你的对象也跟着变，这种 bug 查起来很烦。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>把 <code>def __init__(self, name, scores):</code> 写成 <code>def __init__(name, scores):</code>，创建时立刻报 <code>TypeError: Student.__init__() takes 2 positional arguments but 3 were given</code>。数一下：你只传了两个参数，报错却说给了三个——多出来那个就是对象自己。忘了 <code>self</code> 是新手第一道坎，报错里那个「多出来的参数」就是答案。</p><p>另一个坑是在 <code>__init__</code> 里写 <code>return</code>。它只能返回 <code>None</code>，写 <code>return 0</code> 会得到 <code>TypeError: __init__() should return None</code>。想返回东西，用别的方法。</p></div></div><h2 id="sec-3">9.3 self 到底是谁<i class="anchor">#</i></h2><p>一个类造出两个对象，同一个方法却输出不同结果，靠的就是 <code>self</code>：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">class</span> Student:
+    <span class="tok-key">def</span> <span class="tok-fn">__init__</span>(self, name, score):
+        self.name = name
+        self.score = score
+
+    <span class="tok-key">def</span> <span class="tok-fn">introduce</span>(self):
+        <span class="tok-bi">print</span>(f<span class="tok-str">&quot;我叫 {self.name}，考了 {self.score} 分&quot;</span>)
+
+
+a = <span class="tok-fn">Student</span>(<span class="tok-str">&quot;小明&quot;</span>, <span class="tok-num">88</span>)
+b = <span class="tok-fn">Student</span>(<span class="tok-str">&quot;小红&quot;</span>, <span class="tok-num">95</span>)
+
+a.<span class="tok-fn">introduce</span>()
+b.<span class="tok-fn">introduce</span>()
+<span class="tok-bi">print</span>(a <span class="tok-key">is</span> b)
+<span class="tok-bi">print</span>(a.__dict__)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>我叫 小明，考了 88 分
+我叫 小红，考了 95 分
+False
+{&#x27;name&#x27;: &#x27;小明&#x27;, &#x27;score&#x27;: 88}</pre></div><p>方法只有一份，输出却不一样，因为 <code>self</code> 指向的对象不一样。<code>a.introduce()</code> 和 <code>Student.introduce(a)</code> 是同一件事，点号只是帮你把 <code>a</code> 塞进第一个参数。</p><p><code>a is b</code> 是 <code>False</code>，两个对象彼此独立。每个实例都有自己的属性字典，<code>print(a.__dict__)</code> 能看到里面装了什么：<code>{&#x27;name&#x27;: &#x27;小明&#x27;, &#x27;score&#x27;: 88}</code>。<code>b</code> 有它自己的一份。</p><p>如果写 <code>Student.introduce()</code> 不传东西，会报 <code>TypeError: introduce() missing 1 required positional argument: &#x27;self&#x27;</code>。看到「missing self」，就知道是忘了造对象，或者忘了传实例。</p><p>反过来，把方法里的 <code>self.name</code> 错写成 <code>name</code>，Python 会去翻全局变量，翻不到就报 <code>NameError</code>；翻到了更糟——输出看着正常，读的却是别处的数据。</p><h2 id="sec-4">9.4 实例属性和类属性<i class="anchor">#</i></h2><p>属性有两种住处：挂在每个对象上，还是挂在类上让所有对象共用。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">class</span> Student:
+    school = <span class="tok-str">&quot;武汉大学&quot;</span>
+    tags = []
+
+    <span class="tok-key">def</span> <span class="tok-fn">__init__</span>(self, name):
+        self.name = name
+
+
+a = <span class="tok-fn">Student</span>(<span class="tok-str">&quot;小明&quot;</span>)
+b = <span class="tok-fn">Student</span>(<span class="tok-str">&quot;小红&quot;</span>)
+
+<span class="tok-bi">print</span>(a.school, b.school)
+Student.school = <span class="tok-str">&quot;武汉大学杜伦大学联合学院&quot;</span>
+<span class="tok-bi">print</span>(a.school)
+
+a.tags.<span class="tok-fn">append</span>(<span class="tok-str">&quot;三班&quot;</span>)
+<span class="tok-bi">print</span>(a.tags, b.tags, a.tags <span class="tok-key">is</span> b.tags)
+
+a.score = <span class="tok-num">88</span>
+<span class="tok-bi">print</span>(a.score, <span class="tok-fn">hasattr</span>(b, <span class="tok-str">&quot;score&quot;</span>))</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>武汉大学 武汉大学
+武汉大学杜伦大学联合学院
+[&#x27;三班&#x27;] [&#x27;三班&#x27;] True
+88 False</pre></div><p>写在 <code>class</code> 下面、方法外面的变量是<strong>类属性</strong>，所有实例共用一份。改 <code>Student.school</code>，两个对象看到的都变了，因为大家读的是同一个格子。</p><p><code>a.score = 88</code> 是<strong>实例属性</strong>，只挂在 <code>a</code> 身上。所以最后一行是 <code>88 False</code>——<code>b</code> 根本没有 <code>score</code>。</p><p>怎么判断该放哪？看「所有对象是不是该同步变」。学校名全班一样，放类属性；姓名分数一人一份，放实例属性。要是写 <code>a.school = &quot;北大&quot;</code>，那不会改类属性，只是给 <code>a</code> 新加了一个同名属性，把类属性遮住了，<code>b</code> 那边纹丝不动。这种遮蔽查起来很费劲，因为赋值看起来「成功了」。</p><p>真正的坑在 <code>tags</code>。<code>tags = []</code> 是类属性，于是全班共用这一个列表。<code>a.tags.append(&quot;三班&quot;)</code> 之后 <code>b.tags</code> 也是 <code>[&#x27;三班&#x27;]</code>，<code>a.tags is b.tags</code> 是 <code>True</code>。这不是 bug，是「共用一份」的字面含义。</p><div class="callout callout-warn"><div class="callout-head"><span class="callout-glyph">▲</span><span>常见错误</span></div><div class="callout-body"><p>凡是可变的默认值——列表、字典、集合——都不要写成类属性。想给每个对象一份自己的，就放进 <code>__init__</code> 里：<code>self.tags = []</code>。同样的坑在函数默认参数里也出现过：<code>def f(x, items=[])</code> 的那个空列表，是所有调用共用的一份。</p></div></div><h2 id="sec-5">9.5 让对象会说话：__str__ 和 __repr__<i class="anchor">#</i></h2><p>不写这两个方法，<code>print(s)</code> 打印的是 <code>&lt;__main__.Student object at 0x000001F...&gt;</code>。那串地址每次运行都不一样，除了证明「有这么个东西」没有任何信息量。</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">class</span> Student:
+    <span class="tok-key">def</span> <span class="tok-fn">__init__</span>(self, name, score):
+        self.name = name
+        self.score = score
+
+    <span class="tok-key">def</span> <span class="tok-fn">__str__</span>(self):
+        <span class="tok-key">return</span> f<span class="tok-str">&quot;{self.name}（{self.score} 分）&quot;</span>
+
+    <span class="tok-key">def</span> <span class="tok-fn">__repr__</span>(self):
+        <span class="tok-key">return</span> f<span class="tok-str">&quot;Student(name={self.name!r}, score={self.score})&quot;</span>
+
+
+s = <span class="tok-fn">Student</span>(<span class="tok-str">&quot;小明&quot;</span>, <span class="tok-num">88</span>)
+<span class="tok-bi">print</span>(s)
+<span class="tok-bi">print</span>(<span class="tok-bi">repr</span>(s))
+<span class="tok-bi">print</span>([s])
+<span class="tok-bi">print</span>(f<span class="tok-str">&quot;{s}&quot;</span>)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>小明（88 分）
+Student(name=&#x27;小明&#x27;, score=88)
+[Student(name=&#x27;小明&#x27;, score=88)]
+小明（88 分）</pre></div><p><code>__str__</code> 管「给人看」。<code>print(s)</code> 和 f-string 都走它，输出是「小明（88 分）」这种人话。</p><p><code>__repr__</code> 管「给程序员看」。调试时你看到的几乎全是它，所以它该写成「一眼能看出怎么重建这个对象」的样子：<code>Student(name=&#x27;小明&#x27;, score=88)</code> 正好能复制回代码里。</p><p><code>print([s])</code> 打印列表时，元素用的是 <code>__repr__</code>，因为列表本身要靠它区分每个元素到底是什么。最后一行 f-string 又回到 <code>__str__</code>。</p><p><code>{self.name!r}</code> 里的 <code>!r</code> 是「按 repr 转成字符串」，等价于 <code>repr(self.name)</code>。字符串不加 <code>!r</code> 就丢掉引号，<code>Student(name=小明, ...)</code> 会让人分不清小明是字符串还是一个变量名。</p><p>只写 <code>__repr__</code> 不写 <code>__str__</code> 也行，<code>print</code> 会自动退回去用它。反过来只写 <code>__str__</code>，列表里打印还是一坨地址。</p><h2 id="sec-6">9.6 完整例子：一个班级<i class="anchor">#</i></h2><p>一个学生管好自己，一个班级管一群学生。两个类，各管一层：</p><div class="code-block"><div class="code-head"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">Python</span><button class="code-copy" type="button" aria-label="复制代码">复制</button></div><pre><code><span class="tok-key">class</span> Student:
+    total = <span class="tok-num">0</span>
+
+    <span class="tok-key">def</span> <span class="tok-fn">__init__</span>(self, name, score):
+        self.name = name
+        self.score = score
+        Student.total += <span class="tok-num">1</span>
+
+    <span class="tok-key">def</span> <span class="tok-fn">passed</span>(self):
+        <span class="tok-key">return</span> self.score &gt;= <span class="tok-num">60</span>
+
+    <span class="tok-key">def</span> <span class="tok-fn">__repr__</span>(self):
+        <span class="tok-key">return</span> f<span class="tok-str">&quot;{self.name}({self.score})&quot;</span>
+
+
+<span class="tok-key">class</span> Classroom:
+    <span class="tok-key">def</span> <span class="tok-fn">__init__</span>(self):
+        self.students = []
+
+    <span class="tok-key">def</span> <span class="tok-fn">add</span>(self, name, score):
+        self.students.<span class="tok-fn">append</span>(<span class="tok-fn">Student</span>(name, score))
+
+    <span class="tok-key">def</span> <span class="tok-fn">average</span>(self):
+        <span class="tok-key">if</span> <span class="tok-key">not</span> self.students:
+            <span class="tok-key">return</span> <span class="tok-num">0</span>
+        <span class="tok-key">return</span> <span class="tok-bi">sum</span>(s.score <span class="tok-key">for</span> s <span class="tok-key">in</span> self.students) / <span class="tok-bi">len</span>(self.students)
+
+    <span class="tok-key">def</span> <span class="tok-fn">top</span>(self):
+        <span class="tok-key">return</span> <span class="tok-bi">max</span>(self.students, key=<span class="tok-key">lambda</span> s: s.score)
+
+
+room = <span class="tok-fn">Classroom</span>()
+<span class="tok-key">for</span> name, score <span class="tok-key">in</span> [(<span class="tok-str">&quot;小明&quot;</span>, <span class="tok-num">88</span>), (<span class="tok-str">&quot;小红&quot;</span>, <span class="tok-num">95</span>), (<span class="tok-str">&quot;小刚&quot;</span>, <span class="tok-num">52</span>)]:
+    room.<span class="tok-fn">add</span>(name, score)
+
+<span class="tok-bi">print</span>(<span class="tok-bi">round</span>(room.<span class="tok-fn">average</span>(), <span class="tok-num">1</span>))
+<span class="tok-bi">print</span>(room.<span class="tok-fn">top</span>())
+<span class="tok-bi">print</span>([s.name <span class="tok-key">for</span> s <span class="tok-key">in</span> room.students <span class="tok-key">if</span> <span class="tok-key">not</span> s.<span class="tok-fn">passed</span>()])
+<span class="tok-bi">print</span>(Student.total)</code></pre></div><div class="output-block"><div class="output-head"><span class="output-dot"></span>运行结果</div><pre>78.3
+小红(95)
+[&#x27;小刚&#x27;]
+3</pre></div><p><code>Classroom</code> 里装着一堆 <code>Student</code> 对象，这种「一个类的对象里装着另一个类的对象」叫<strong>组合</strong>。它比继承更常用，因为大部分现实关系是「有」而不是「是」：班级<strong>有</strong>学生，不是班级<strong>是</strong>学生。</p><p>几个值得停下来看的地方：</p><ul><li><code>Student.total += 1</code> 写在 <code>__init__</code> 里，造一个学生就加一。注意写的是 <code>Student.total</code> 不是 <code>self.total</code>，后者会给这个对象新造一个实例属性，计数就废了</li><li><code>average</code> 先判断空列表。不加这行，空班级会 <code>ZeroDivisionError</code></li><li><code>max(..., key=lambda s: s.score)</code> 直接拿到最高分那个对象，不用先排序</li><li><code>add</code> 只是 <code>append</code> 的包装，但它留了个入口：以后要查重、限制人数、打日志，改这里就行，调用方一行不动</li><li><code>passed</code> 现在只是一行比较，等规则变成「期末 60 分且作业交齐」，也只改这一处，不用翻遍全项目找 <code>&gt;= 60</code></li></ul><p>加字段同样轻松：<code>Student</code> 里添一句 <code>self.major = major</code>，<code>Classroom</code> 完全不用动。这就是把「一个学生长什么样」收在一处的回报。</p><p>下一步是把 <code>Student</code> 拆成「人」和「学生」两层，让子类少写一遍重复代码，再给对象配上比较和排序的能力，那是<a href="10-inheritance.html">第 10 课</a>的事。</p><div class="callout callout-note"><div class="callout-head"><span class="callout-glyph">◆</span><span>小结</span></div><div class="callout-body"><ul><li><code>class</code> 定义模板，<code>Student(...)</code> 造实例，<code>__init__</code> 在造的时候自动执行，只负责挂属性</li><li><code>self</code> 是实例自己，方法的第一个参数，调用时不用传</li><li>类属性全班共用一份，实例属性各有一份；列表这类可变默认值一定放 <code>__init__</code></li><li><code>__str__</code> 给人看，<code>__repr__</code> 给调试看，列表里打印元素用的是 <code>__repr__</code></li><li>一个类里装着另一个类的对象叫组合，它比继承更常用</li></ul></div></div><div class="callout callout-exercise"><div class="callout-head"><span class="callout-glyph">✎</span><span>练习</span></div><div class="callout-body"><ol><li>给 <code>Student</code> 加一个 <code>birth_year</code> 参数和 <code>age()</code> 方法，按 2026 年算年龄，再打印班级平均年龄。</li><li>给 9.6 的 <code>Classroom</code> 加 <code>ranking()</code>，返回按分数从高到低排好的学生列表，再打印前三名。提示：<code>sorted</code> 的 <code>key</code> 参数。</li><li>写一个 <code>BankAccount</code> 类，有 <code>deposit</code> 和 <code>withdraw</code> 两个方法，余额不足时抛 <code>ValueError</code>，再用 <code>__str__</code> 打印「当前余额 XX 元」。</li><li>把 9.4 的 <code>tags = []</code> 挪进 <code>__init__</code>，重新运行，解释 <code>a.tags is b.tags</code> 为什么从 <code>True</code> 变成了 <code>False</code>。</li></ol></div></div></article><div class="doc-foot"><button class="done-btn" id="done-btn" type="button" data-id="python-09-oop"><span class="done-box" aria-hidden="true"></span><span class="done-label">标记为已学完</span></button><a class="feedback" href="../about.html#contribute">内容有误？告诉我</a></div><nav class="pager"><a class="pager-item prev" href="../python/08-project.html"><span>上一章</span><b>第 8 课 常用标准库与项目实战</b></a><a class="pager-item next" href="../python/10-inheritance.html"><span>下一章</span><b>第 10 课 继承与魔法方法：子类少写一遍，对象学会比较</b></a></nav></main><button class="toc-fab" id="toc-fab" type="button">目录</button><aside class="toc-rail"><div class="toc-sticky"><div class="toc-title">本页目录</div><nav class="toc-nav"><a class="toc-link level-2" href="#sec-1">9.1 先看看不打包的写法</a><a class="toc-link level-2" href="#sec-2">9.2 第一个类</a><a class="toc-link level-2" href="#sec-3">9.3 self 到底是谁</a><a class="toc-link level-2" href="#sec-4">9.4 实例属性和类属性</a><a class="toc-link level-2" href="#sec-5">9.5 让对象会说话：__str__ 和 __repr__</a><a class="toc-link level-2" href="#sec-6">9.6 完整例子：一个班级</a></nav></div></aside></div>
+<button class="back-top" id="back-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg></button>
+<footer class="footer"><div class="footer-inner"><div class="foot-brand"><span class="brand-mark">&gt;_&lt;</span> <b>Hello Sekai</b><p>C · C++ · Python · 数据结构 · 计算机基础</p><p class="foot-college">武汉大学杜伦大学联合学院</p></div><div class="foot-col"><h4>教程</h4><a href="../c/index.html">C 语言</a><a href="../cpp/index.html">C++</a><a href="../python/index.html">Python</a><a href="../ds/index.html">数据结构</a><a href="../fund/index.html">计算机基础</a></div><div class="foot-col"><h4>练习与本站</h4><a href="../practice.html">在线刷题</a><a href="../roadmap.html">学习路线</a><a href="../about.html">关于与更新</a><a href="../about.html#contribute">投稿与纠错</a></div><div class="foot-note"><p>内容由 胡翔恩 整理编写，面向 杜伦大学联合学院 的同学免费开放。</p><p class="muted">代码示例建议在电脑上阅读，手机可读正文。</p></div></div><div class="footer-bottom">© 2026 Hello Sekai · 武汉大学杜伦大学联合学院 · 纯静态页面，无需登录、无广告</div></footer><div class="search-modal" id="search-modal" hidden><div class="search-backdrop" data-close="1"></div><div class="search-panel" role="dialog" aria-modal="true" aria-label="站内搜索"><div class="search-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="search-input" type="search" placeholder="搜索章节、知识点，如 指针 / 数组 / printf" autocomplete="off" spellcheck="false"><kbd>ESC</kbd></div><div class="search-results" id="search-results"></div><div class="search-foot">↑↓ 选择 · Enter 打开 · 共 <span id="search-count">0</span> 条结果</div></div></div>
+<script src="../assets/site-data.js"></script>
+<script src="../assets/app.js"></script>
+
+</body>
+</html>
